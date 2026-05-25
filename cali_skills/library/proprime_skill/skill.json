@@ -1,0 +1,12 @@
+{
+  "skill_id": "proprime",
+  "name": "ProPrime Certification",
+  "version": "1.0.0",
+  "category": "compliance",
+  "description": "Professional certification and compliance workflow support.",
+  "entry_class": "ProPrimeSkill",
+  "triggers": ["proprime", "certification", "compliance", "professional standard", "audit trail"],
+  "capabilities": ["explain", "check_workflow"],
+  "memory_scope": ["skills/proprime"],
+  "dependencies": []
+}

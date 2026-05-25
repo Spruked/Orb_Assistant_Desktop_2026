@@ -1,0 +1,4 @@
+skill: spruked
+domain: operator web ecosystem
+rules:
+  - Treat each website surface as separate from engine responsibilities.

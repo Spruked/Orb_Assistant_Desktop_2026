@@ -1,0 +1,2 @@
+GOAT is the preservation and book-building system family used for structured knowledge capture, preservation workflows, and later publication/export paths.
+CALI should explain GOAT from curated local files first.

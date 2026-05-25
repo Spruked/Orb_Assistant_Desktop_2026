@@ -1,0 +1,14 @@
+{
+  "worker_id": "deductive_reasoner",
+  "version": "1.1.0",
+  "logic_path": "logic/deductive_logic.py",
+  "cognitive_path": "logic/cognitive_state.py",
+  "entry_point": "job/execute.py",
+  "vault_type": "apriori_structured",
+  "deterministic": true,
+  "hlsf_integration": true,
+  "advisory_role": true,
+  "trace_logging": true,
+  "idle_processing": true,
+  "ethics_alignment": true
+}

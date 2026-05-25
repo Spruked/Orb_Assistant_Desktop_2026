@@ -1,0 +1,171 @@
+:root {
+  --orb-size: 200px;
+  --orb-color-good: #2dd4ff;
+  --orb-color-warn: #facc15;
+  --orb-color-bad: #f87171;
+}
+
+.living-orb-shell {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: var(--orb-size);
+  height: var(--orb-size);
+  pointer-events: auto;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.living-orb-core {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0)),
+              radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1), rgba(255,255,255,0)),
+              linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0));
+  box-shadow: 0 0 50px rgba(0,0,0,0.35), 0 0 80px rgba(0,0,0,0.2);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  animation: orbPulse 2.4s ease-in-out infinite;
+}
+
+.living-orb-core.listening::after,
+.living-orb-core.speaking::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.5;
+  animation: orbRing 1.6s ease-out infinite;
+}
+
+.living-orb-core:hover {
+  transform: scale(1.05);
+}
+
+.living-orb-glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: 0.85;
+  z-index: 0;
+}
+
+.living-orb-surface {
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(255,255,255,0));
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+.living-orb-rings {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+
+.living-orb-rings span {
+  position: absolute;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.25;
+  animation: ringPulse 3s ease-in-out infinite;
+}
+
+.living-orb-rings span:nth-child(1) { width: 70%; height: 70%; animation-delay: 0.0s; }
+.living-orb-rings span:nth-child(2) { width: 90%; height: 90%; animation-delay: 0.4s; }
+.living-orb-rings span:nth-child(3) { width: 110%; height: 110%; animation-delay: 0.8s; }
+
+.living-orb-status {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  color: #e5e7eb;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.9;
+  user-select: none;
+}
+
+.permission-toggles {
+  position: absolute;
+  right: -12px;
+  bottom: -12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 3;
+}
+
+.permission-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+}
+
+.permission-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.permission-toggle .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  transition: all 0.15s ease;
+}
+
+.permission-toggle.off .dot {
+  background: #f87171;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.6);
+}
+
+.living-orb-status strong {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+}
+
+@keyframes orbPulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(0.9); opacity: 0.25; }
+  50% { transform: scale(1.05); opacity: 0.35; }
+  100% { transform: scale(1.2); opacity: 0.15; }
+}
+
+@keyframes orbRing {
+  0% { transform: scale(0.95); opacity: 0.3; }
+  70% { transform: scale(1.1); opacity: 0; }
+  100% { transform: scale(1.2); opacity: 0; }
+}

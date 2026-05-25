@@ -1,0 +1,1531 @@
+{
+  "schema_version": "1.0",
+  "registry_name": "top_200_public_research_apis_by_domain",
+  "status": "full_rebuild_complete",
+  "updated_on": "2026-03-17",
+  "domain_count": 20,
+  "total_entries": 200,
+  "provenance": "Recovered from user-provided session text across Batches 1 through 4. This registry preserves the recovered list for downstream API-call planning and agent use and has not been independently revalidated here.",
+  "domains": [
+    {
+      "domain": "agriculture_ecology_environment",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 131,
+          "provider": "USDA",
+          "domain": "agriculture_ecology_environment",
+          "name": "USDA Plants Database",
+          "reference_url": "https://plants.sc.egov.usda.gov/"
+        },
+        {
+          "rank": 132,
+          "provider": "USDA",
+          "domain": "agriculture_ecology_environment",
+          "name": "USDA Soil Data Access",
+          "reference_url": "https://sdmdataaccess.sc.egov.usda.gov/"
+        },
+        {
+          "rank": 133,
+          "provider": "GBIF",
+          "domain": "agriculture_ecology_environment",
+          "name": "GBIF Species Occurrence",
+          "reference_url": "https://www.gbif.org/developer/summary"
+        },
+        {
+          "rank": 134,
+          "provider": "iNaturalist",
+          "domain": "agriculture_ecology_environment",
+          "name": "iNaturalist",
+          "reference_url": "https://api.inaturalist.org/v1/docs/"
+        },
+        {
+          "rank": 135,
+          "provider": "OpenTreeOfLife",
+          "domain": "agriculture_ecology_environment",
+          "name": "OpenTreeOfLife",
+          "reference_url": "https://github.com/OpenTreeOfLife/germinator/wiki/TNRS-API-Documentation"
+        },
+        {
+          "rank": 136,
+          "provider": "FishBase",
+          "domain": "agriculture_ecology_environment",
+          "name": "FishBase",
+          "reference_url": "https://fishbase.ropensci.org/"
+        },
+        {
+          "rank": 137,
+          "provider": "ReefBase",
+          "domain": "agriculture_ecology_environment",
+          "name": "ReefBase",
+          "reference_url": "http://www.reefbase.org/main.aspx"
+        },
+        {
+          "rank": 138,
+          "provider": "OBIS",
+          "domain": "agriculture_ecology_environment",
+          "name": "Ocean Biodiversity Information System",
+          "reference_url": "https://obis.org/manual/api/"
+        },
+        {
+          "rank": 139,
+          "provider": "Global Forest Watch",
+          "domain": "agriculture_ecology_environment",
+          "name": "Global Forest Watch",
+          "reference_url": "https://www.globalforestwatch.org/developers/"
+        },
+        {
+          "rank": 140,
+          "provider": "Agify",
+          "domain": "agriculture_ecology_environment",
+          "name": "Agify (demographic prediction)",
+          "reference_url": "https://agify.io/"
+        }
+      ]
+    },
+    {
+      "domain": "biology_genomics_life_sciences",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 111,
+          "provider": "Ensembl",
+          "domain": "biology_genomics_life_sciences",
+          "name": "Ensembl REST API",
+          "reference_url": "https://rest.ensembl.org/"
+        },
+        {
+          "rank": 112,
+          "provider": "UniProt",
+          "domain": "biology_genomics_life_sciences",
+          "name": "UniProt",
+          "reference_url": "https://www.uniprot.org/help/api"
+        },
+        {
+          "rank": 113,
+          "provider": "Protein Data Bank",
+          "domain": "biology_genomics_life_sciences",
+          "name": "Protein Data Bank",
+          "reference_url": "https://data.rcsb.org/"
+        },
+        {
+          "rank": 114,
+          "provider": "KEGG",
+          "domain": "biology_genomics_life_sciences",
+          "name": "KEGG API",
+          "reference_url": "https://www.kegg.jp/kegg/rest/keggapi.html"
+        },
+        {
+          "rank": 115,
+          "provider": "WormBase",
+          "domain": "biology_genomics_life_sciences",
+          "name": "WormBase",
+          "reference_url": "https://wormbase.org/about/userguide/for_developers"
+        },
+        {
+          "rank": 116,
+          "provider": "FlyBase",
+          "domain": "biology_genomics_life_sciences",
+          "name": "FlyBase",
+          "reference_url": "https://flybase.org/api"
+        },
+        {
+          "rank": 117,
+          "provider": "Human Protein Atlas",
+          "domain": "biology_genomics_life_sciences",
+          "name": "Human Protein Atlas",
+          "reference_url": "https://www.proteinatlas.org/about/api"
+        },
+        {
+          "rank": 118,
+          "provider": "Allen Brain Atlas",
+          "domain": "biology_genomics_life_sciences",
+          "name": "Allen Brain Atlas",
+          "reference_url": "https://help.brain-map.org/display/api/Allen+Brain+Atlas+API"
+        },
+        {
+          "rank": 119,
+          "provider": "BioGRID",
+          "domain": "biology_genomics_life_sciences",
+          "name": "BioGRID",
+          "reference_url": "https://wiki.thebiogrid.org/doku.php/api"
+        },
+        {
+          "rank": 120,
+          "provider": "Gene Ontology",
+          "domain": "biology_genomics_life_sciences",
+          "name": "Gene Ontology",
+          "reference_url": "http://api.geneontology.org/api"
+        }
+      ]
+    },
+    {
+      "domain": "biomedical_genomics_clinical",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 21,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NCBI E-utilities",
+          "reference_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+        },
+        {
+          "rank": 22,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "PubMed Search",
+          "reference_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+        },
+        {
+          "rank": 23,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "PubChem",
+          "reference_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
+        },
+        {
+          "rank": 24,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "ClinicalTrials.gov",
+          "reference_url": "https://clinicaltrials.gov/api"
+        },
+        {
+          "rank": 25,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NIH Reporter",
+          "reference_url": "https://api.reporter.nih.gov"
+        },
+        {
+          "rank": 26,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NLM RxNorm",
+          "reference_url": "https://rxnav.nlm.nih.gov/REST"
+        },
+        {
+          "rank": 27,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NLM SNOMED CT Browser",
+          "reference_url": "https://browser.ihtsdotools.org/api"
+        },
+        {
+          "rank": 28,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NLM UMLS",
+          "reference_url": "https://documentation.uts.nlm.nih.gov/rest"
+        },
+        {
+          "rank": 29,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NLM MedlinePlus",
+          "reference_url": "https://medlineplus.gov/connect/service.html"
+        },
+        {
+          "rank": 30,
+          "provider": "NIH / NCBI",
+          "domain": "biomedical_genomics_clinical",
+          "name": "NCBI Genome Assembly",
+          "reference_url": "https://api.ncbi.nlm.nih.gov/datasets/v2"
+        }
+      ]
+    },
+    {
+      "domain": "census_labor_education_energy",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 31,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "U.S. Census Data",
+          "reference_url": "https://api.census.gov/data"
+        },
+        {
+          "rank": 32,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "Bureau of Labor Statistics",
+          "reference_url": "https://download.bls.gov/pub/time.series"
+        },
+        {
+          "rank": 33,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "Department of Education",
+          "reference_url": "https://api.data.gov/ed/"
+        },
+        {
+          "rank": 34,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "Energy Information Administration",
+          "reference_url": "https://api.eia.gov"
+        },
+        {
+          "rank": 35,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "Federal Register",
+          "reference_url": "https://www.federalregister.gov/api"
+        },
+        {
+          "rank": 36,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "USA Spending",
+          "reference_url": "https://api.usaspending.gov"
+        },
+        {
+          "rank": 37,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "SEC EDGAR",
+          "reference_url": "https://www.sec.gov/edgar/sec-api"
+        },
+        {
+          "rank": 38,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "CFPB Consumer Complaints",
+          "reference_url": "https://www.consumerfinance.gov/data-research/ccdb/api"
+        },
+        {
+          "rank": 39,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "FEC Campaign Finance",
+          "reference_url": "https://api.open.fec.gov"
+        },
+        {
+          "rank": 40,
+          "provider": "U.S. Government",
+          "domain": "census_labor_education_energy",
+          "name": "USDA FoodData Central",
+          "reference_url": "https://api.nal.usda.gov/fdc"
+        }
+      ]
+    },
+    {
+      "domain": "chemistry_materials_environment",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 51,
+          "provider": "EPA",
+          "domain": "chemistry_materials_environment",
+          "name": "EPA Air Quality System",
+          "reference_url": "https://aqs.epa.gov/aqsweb/documents/data_api.html"
+        },
+        {
+          "rank": 52,
+          "provider": "EPA",
+          "domain": "chemistry_materials_environment",
+          "name": "EPA EnviroFacts",
+          "reference_url": "https://enviro.epa.gov/enviro/efservice"
+        },
+        {
+          "rank": 53,
+          "provider": "EPA",
+          "domain": "chemistry_materials_environment",
+          "name": "EPA Toxic Release Inventory",
+          "reference_url": "https://www.epa.gov/enviro/tri-data-and-tools"
+        },
+        {
+          "rank": 54,
+          "provider": "EPA",
+          "domain": "chemistry_materials_environment",
+          "name": "EPA Water Quality Portal",
+          "reference_url": "https://www.waterqualitydata.us/webservices_documentation/"
+        },
+        {
+          "rank": 55,
+          "provider": "USGS",
+          "domain": "chemistry_materials_environment",
+          "name": "USGS Earthquake Hazards",
+          "reference_url": "https://earthquake.usgs.gov/fdsnws/event/1/"
+        },
+        {
+          "rank": 56,
+          "provider": "USGS",
+          "domain": "chemistry_materials_environment",
+          "name": "USGS Water Services",
+          "reference_url": "https://waterservices.usgs.gov/"
+        },
+        {
+          "rank": 57,
+          "provider": "USGS",
+          "domain": "chemistry_materials_environment",
+          "name": "USGS National Map",
+          "reference_url": "https://nationalmap.gov/epqs/"
+        },
+        {
+          "rank": 58,
+          "provider": "USGS",
+          "domain": "chemistry_materials_environment",
+          "name": "USGS Landsat Metadata",
+          "reference_url": "https://m2m.cr.usgs.gov/api/docs/json/"
+        },
+        {
+          "rank": 59,
+          "provider": "OpenAQ",
+          "domain": "chemistry_materials_environment",
+          "name": "OpenAQ",
+          "reference_url": "https://docs.openaq.org/"
+        },
+        {
+          "rank": 60,
+          "provider": "Carbon Interface",
+          "domain": "chemistry_materials_environment",
+          "name": "Carbon Interface",
+          "reference_url": "https://docs.carboninterface.com/"
+        }
+      ]
+    },
+    {
+      "domain": "chemistry_materials_physics",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 121,
+          "provider": "Materials Project",
+          "domain": "chemistry_materials_physics",
+          "name": "Materials Project",
+          "reference_url": "https://materialsproject.org/api"
+        },
+        {
+          "rank": 122,
+          "provider": "NIST",
+          "domain": "chemistry_materials_physics",
+          "name": "NIST Chemistry WebBook",
+          "reference_url": "https://webbook.nist.gov/chemistry/"
+        },
+        {
+          "rank": 123,
+          "provider": "NIST",
+          "domain": "chemistry_materials_physics",
+          "name": "NIST Atomic Spectra",
+          "reference_url": "https://physics.nist.gov/PhysRefData/ASD/Html/api.html"
+        },
+        {
+          "rank": 124,
+          "provider": "PubChem",
+          "domain": "chemistry_materials_physics",
+          "name": "PubChem PUG REST",
+          "reference_url": "https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest"
+        },
+        {
+          "rank": 125,
+          "provider": "ChemSpider",
+          "domain": "chemistry_materials_physics",
+          "name": "ChemSpider",
+          "reference_url": "http://www.chemspider.com/AboutServices.aspx"
+        },
+        {
+          "rank": 126,
+          "provider": "OpenChemistry",
+          "domain": "chemistry_materials_physics",
+          "name": "OpenChemistry",
+          "reference_url": "https://openchemistry.org/"
+        },
+        {
+          "rank": 127,
+          "provider": "Crystallography Open Database",
+          "domain": "chemistry_materials_physics",
+          "name": "Crystallography Open Database",
+          "reference_url": "https://wiki.crystallography.net/api/"
+        },
+        {
+          "rank": 128,
+          "provider": "Open Reaction Database",
+          "domain": "chemistry_materials_physics",
+          "name": "Open Reaction Database",
+          "reference_url": "https://open-reaction-database.org/api"
+        },
+        {
+          "rank": 129,
+          "provider": "WolframAlpha",
+          "domain": "chemistry_materials_physics",
+          "name": "WolframAlpha Short Answers",
+          "reference_url": "https://products.wolframalpha.com/api/"
+        },
+        {
+          "rank": 130,
+          "provider": "OQMD",
+          "domain": "chemistry_materials_physics",
+          "name": "Open Quantum Materials Database",
+          "reference_url": "https://oqmd.org/api"
+        }
+      ]
+    },
+    {
+      "domain": "economics_finance_markets",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 71,
+          "provider": "World Trading Data",
+          "domain": "economics_finance_markets",
+          "name": "World Trading Data",
+          "reference_url": "https://www.worldtradingdata.com/"
+        },
+        {
+          "rank": 72,
+          "provider": "Alpha Vantage",
+          "domain": "economics_finance_markets",
+          "name": "Alpha Vantage",
+          "reference_url": "https://www.alphavantage.co/documentation/"
+        },
+        {
+          "rank": 73,
+          "provider": "Yahoo Finance",
+          "domain": "economics_finance_markets",
+          "name": "Yahoo Finance (Unofficial)",
+          "reference_url": "https://query1.finance.yahoo.com/"
+        },
+        {
+          "rank": 74,
+          "provider": "FRED",
+          "domain": "economics_finance_markets",
+          "name": "FRED (Federal Reserve)",
+          "reference_url": "https://fred.stlouisfed.org/docs/api/fred/"
+        },
+        {
+          "rank": 75,
+          "provider": "IMF",
+          "domain": "economics_finance_markets",
+          "name": "IMF Data",
+          "reference_url": "https://datahelp.imf.org/knowledgebase/articles/667681-using-the-imf-api"
+        },
+        {
+          "rank": 76,
+          "provider": "OECD",
+          "domain": "economics_finance_markets",
+          "name": "OECD Data",
+          "reference_url": "https://data.oecd.org/api/sdmx-json-documentation/"
+        },
+        {
+          "rank": 77,
+          "provider": "CryptoCompare",
+          "domain": "economics_finance_markets",
+          "name": "CryptoCompare",
+          "reference_url": "https://min-api.cryptocompare.com/"
+        },
+        {
+          "rank": 78,
+          "provider": "CoinGecko",
+          "domain": "economics_finance_markets",
+          "name": "CoinGecko",
+          "reference_url": "https://www.coingecko.com/en/api"
+        },
+        {
+          "rank": 79,
+          "provider": "Polygon.io",
+          "domain": "economics_finance_markets",
+          "name": "Polygon.io",
+          "reference_url": "https://polygon.io/docs/"
+        },
+        {
+          "rank": 80,
+          "provider": "Tiingo",
+          "domain": "economics_finance_markets",
+          "name": "Tiingo",
+          "reference_url": "https://api.tiingo.com/"
+        }
+      ]
+    },
+    {
+      "domain": "education_learning_research",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 161,
+          "provider": "ERIC",
+          "domain": "education_learning_research",
+          "name": "ERIC Education Research",
+          "reference_url": "https://eric.ed.gov/?api"
+        },
+        {
+          "rank": 162,
+          "provider": "OpenStax",
+          "domain": "education_learning_research",
+          "name": "OpenStax Textbook API",
+          "reference_url": "https://openstax.org/api"
+        },
+        {
+          "rank": 163,
+          "provider": "Ed-Fi",
+          "domain": "education_learning_research",
+          "name": "Ed-Fi Data Standard",
+          "reference_url": "https://api.ed-fi.org/"
+        },
+        {
+          "rank": 164,
+          "provider": "UNESCO",
+          "domain": "education_learning_research",
+          "name": "UNESCO Education Data",
+          "reference_url": "http://api.uis.unesco.org/"
+        },
+        {
+          "rank": 165,
+          "provider": "OECD",
+          "domain": "education_learning_research",
+          "name": "OECD Education Indicators",
+          "reference_url": "https://stats.oecd.org/"
+        },
+        {
+          "rank": 166,
+          "provider": "Harvard Dataverse",
+          "domain": "education_learning_research",
+          "name": "Harvard Dataverse",
+          "reference_url": "https://guides.dataverse.org/en/latest/api/"
+        },
+        {
+          "rank": 167,
+          "provider": "MIT OpenCourseWare",
+          "domain": "education_learning_research",
+          "name": "MIT OpenCourseWare",
+          "reference_url": "https://ocw.mit.edu/api"
+        },
+        {
+          "rank": 168,
+          "provider": "Europeana",
+          "domain": "education_learning_research",
+          "name": "Europeana Cultural Heritage",
+          "reference_url": "https://pro.europeana.eu/page/apis"
+        },
+        {
+          "rank": 169,
+          "provider": "Smithsonian",
+          "domain": "education_learning_research",
+          "name": "Smithsonian Open Access",
+          "reference_url": "https://api.si.edu/openaccess/api/v1.0/"
+        },
+        {
+          "rank": 170,
+          "provider": "Library of Congress",
+          "domain": "education_learning_research",
+          "name": "Library of Congress",
+          "reference_url": "https://www.loc.gov/apis/"
+        }
+      ]
+    },
+    {
+      "domain": "energy_infrastructure_utilities",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 171,
+          "provider": "OpenEI",
+          "domain": "energy_infrastructure_utilities",
+          "name": "OpenEI Energy Data",
+          "reference_url": "https://openei.org/services/api/"
+        },
+        {
+          "rank": 172,
+          "provider": "EIA",
+          "domain": "energy_infrastructure_utilities",
+          "name": "EIA Open Data",
+          "reference_url": "https://api.eia.gov/"
+        },
+        {
+          "rank": 173,
+          "provider": "ENTSO-E",
+          "domain": "energy_infrastructure_utilities",
+          "name": "ENTSO-E Electricity Grid",
+          "reference_url": "https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html"
+        },
+        {
+          "rank": 174,
+          "provider": "National Grid ESO",
+          "domain": "energy_infrastructure_utilities",
+          "name": "UK National Grid ESO",
+          "reference_url": "https://api.nationalgrideso.com/"
+        },
+        {
+          "rank": 175,
+          "provider": "Open Power System Data",
+          "domain": "energy_infrastructure_utilities",
+          "name": "Open Power System Data",
+          "reference_url": "https://open-power-system-data.org/"
+        },
+        {
+          "rank": 176,
+          "provider": "Global Solar Atlas",
+          "domain": "energy_infrastructure_utilities",
+          "name": "Global Solar Atlas",
+          "reference_url": "https://globalsolaratlas.info/api"
+        },
+        {
+          "rank": 177,
+          "provider": "OpenChargeMap",
+          "domain": "energy_infrastructure_utilities",
+          "name": "Open Charge Map",
+          "reference_url": "https://openchargemap.org/site/develop/api"
+        },
+        {
+          "rank": 178,
+          "provider": "Electricity Maps",
+          "domain": "energy_infrastructure_utilities",
+          "name": "Electricity Maps (Carbon Intensity)",
+          "reference_url": "https://api.electricitymap.org/"
+        },
+        {
+          "rank": 179,
+          "provider": "OpenNEM",
+          "domain": "energy_infrastructure_utilities",
+          "name": "OpenNEM (Australia Energy)",
+          "reference_url": "https://opennem.org.au/api/"
+        },
+        {
+          "rank": 180,
+          "provider": "OpenInfraMap",
+          "domain": "energy_infrastructure_utilities",
+          "name": "OpenInfraMap",
+          "reference_url": "https://openinframap.org/"
+        }
+      ]
+    },
+    {
+      "domain": "geopolitics_international_data_global_indicators",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 91,
+          "provider": "United Nations",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "UN Data",
+          "reference_url": "https://data.un.org/Host.aspx?Content=API"
+        },
+        {
+          "rank": 92,
+          "provider": "UNHCR",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "UNHCR Refugee Data",
+          "reference_url": "https://data.unhcr.org/en/documents/api"
+        },
+        {
+          "rank": 93,
+          "provider": "WHO",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "WHO Global Health Observatory",
+          "reference_url": "https://ghoapi.azureedge.net/api"
+        },
+        {
+          "rank": 94,
+          "provider": "WHO",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "World Health Organization COVID",
+          "reference_url": "https://covid19.who.int/WHO-COVID-19-global-data.csv"
+        },
+        {
+          "rank": 95,
+          "provider": "World Bank",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "World Bank Indicators",
+          "reference_url": "https://api.worldbank.org/v2"
+        },
+        {
+          "rank": 96,
+          "provider": "FAO",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "FAO Food & Agriculture",
+          "reference_url": "https://fenixservices.fao.org/faostat/api/v1/en/"
+        },
+        {
+          "rank": 97,
+          "provider": "UNESCO",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "UNESCO Institute for Statistics",
+          "reference_url": "http://api.uis.unesco.org/"
+        },
+        {
+          "rank": 98,
+          "provider": "Transparency International",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "Transparency International",
+          "reference_url": "https://www.transparency.org/en/cpi/api"
+        },
+        {
+          "rank": 99,
+          "provider": "GBIF",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "Global Biodiversity Information Facility",
+          "reference_url": "https://www.gbif.org/developer/summary"
+        },
+        {
+          "rank": 100,
+          "provider": "Humanitarian Data Exchange",
+          "domain": "geopolitics_international_data_global_indicators",
+          "name": "Humanitarian Data Exchange",
+          "reference_url": "https://data.humdata.org/faq"
+        }
+      ]
+    },
+    {
+      "domain": "geospatial_mapping_earth_data",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 61,
+          "provider": "OpenStreetMap",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "OpenStreetMap Overpass",
+          "reference_url": "https://overpass-api.de/"
+        },
+        {
+          "rank": 62,
+          "provider": "Mapbox",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "Mapbox Geocoding",
+          "reference_url": "https://docs.mapbox.com/api/search/geocoding/"
+        },
+        {
+          "rank": 63,
+          "provider": "OpenTopoData",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "OpenTopoData",
+          "reference_url": "https://www.opentopodata.org/"
+        },
+        {
+          "rank": 64,
+          "provider": "GeoNames",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "GeoNames",
+          "reference_url": "http://www.geonames.org/export/web-services.html"
+        },
+        {
+          "rank": 65,
+          "provider": "OpenWeatherMap",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "OpenWeatherMap Geocoding",
+          "reference_url": "https://openweathermap.org/api/geocoding-api"
+        },
+        {
+          "rank": 66,
+          "provider": "HERE",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "HERE Maps Geocoding",
+          "reference_url": "https://developer.here.com/documentation/geocoding-search-api/"
+        },
+        {
+          "rank": 67,
+          "provider": "Esri",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "Esri ArcGIS REST",
+          "reference_url": "https://developers.arcgis.com/rest/"
+        },
+        {
+          "rank": 68,
+          "provider": "Sentinel Hub",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "Sentinel Hub",
+          "reference_url": "https://docs.sentinel-hub.com/api/latest/"
+        },
+        {
+          "rank": 69,
+          "provider": "Open-Meteo",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "Open-Meteo",
+          "reference_url": "https://open-meteo.com/en/docs"
+        },
+        {
+          "rank": 70,
+          "provider": "Climatiq",
+          "domain": "geospatial_mapping_earth_data",
+          "name": "Climatiq",
+          "reference_url": "https://www.climatiq.io/docs"
+        }
+      ]
+    },
+    {
+      "domain": "geospatial_transportation_mobility",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 101,
+          "provider": "OpenRouteService",
+          "domain": "geospatial_transportation_mobility",
+          "name": "OpenRouteService",
+          "reference_url": "https://openrouteservice.org/dev/#/"
+        },
+        {
+          "rank": 102,
+          "provider": "TransportAPI",
+          "domain": "geospatial_transportation_mobility",
+          "name": "TransportAPI (UK)",
+          "reference_url": "https://developer.transportapi.com/"
+        },
+        {
+          "rank": 103,
+          "provider": "OpenRailwayMap",
+          "domain": "geospatial_transportation_mobility",
+          "name": "OpenRailwayMap API",
+          "reference_url": "https://wiki.openstreetmap.org/wiki/OpenRailwayMap/API"
+        },
+        {
+          "rank": 104,
+          "provider": "AviationStack",
+          "domain": "geospatial_transportation_mobility",
+          "name": "AviationStack",
+          "reference_url": "https://aviationstack.com/documentation"
+        },
+        {
+          "rank": 105,
+          "provider": "ADS-B Exchange",
+          "domain": "geospatial_transportation_mobility",
+          "name": "ADS-B Exchange",
+          "reference_url": "https://www.adsbexchange.com/data/"
+        },
+        {
+          "rank": 106,
+          "provider": "FAA",
+          "domain": "geospatial_transportation_mobility",
+          "name": "FAA Airport Status",
+          "reference_url": "https://services.faa.gov/airport/"
+        },
+        {
+          "rank": 107,
+          "provider": "OpenSky Network",
+          "domain": "geospatial_transportation_mobility",
+          "name": "OpenSky Network",
+          "reference_url": "https://opensky-network.org/apidoc/"
+        },
+        {
+          "rank": 108,
+          "provider": "MarineTraffic",
+          "domain": "geospatial_transportation_mobility",
+          "name": "MarineTraffic (limited free)",
+          "reference_url": "https://www.marinetraffic.com/en/ais-api-services"
+        },
+        {
+          "rank": 109,
+          "provider": "OpenChargeMap",
+          "domain": "geospatial_transportation_mobility",
+          "name": "OpenChargeMap (EV stations)",
+          "reference_url": "https://openchargemap.org/site/develop/api"
+        },
+        {
+          "rank": 110,
+          "provider": "CityBikes",
+          "domain": "geospatial_transportation_mobility",
+          "name": "CityBikes API",
+          "reference_url": "https://api.citybik.es/v2/"
+        }
+      ]
+    },
+    {
+      "domain": "global_development_humanitarian_social_data",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 181,
+          "provider": "UN OCHA ReliefWeb",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "UN OCHA ReliefWeb",
+          "reference_url": "https://api.reliefweb.int/v1/"
+        },
+        {
+          "rank": 182,
+          "provider": "UNDP",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "UNDP Human Development",
+          "reference_url": "https://hdr.undp.org/data-api"
+        },
+        {
+          "rank": 183,
+          "provider": "UNICEF",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "UNICEF Data",
+          "reference_url": "https://data.unicef.org/resources/resource-type/api/"
+        },
+        {
+          "rank": 184,
+          "provider": "GODAN",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "Global Open Data for Agriculture",
+          "reference_url": "https://www.godan.info/"
+        },
+        {
+          "rank": 185,
+          "provider": "WorldPop",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "WorldPop Population Data",
+          "reference_url": "https://www.worldpop.org/"
+        },
+        {
+          "rank": 186,
+          "provider": "IATI",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "International Aid Transparency Initiative",
+          "reference_url": "https://iatistandard.org/en/iati-tools-and-resources/api/"
+        },
+        {
+          "rank": 187,
+          "provider": "Global Health Data Exchange",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "Global Health Data Exchange",
+          "reference_url": "http://ghdx.healthdata.org/"
+        },
+        {
+          "rank": 188,
+          "provider": "START",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "Global Terrorism Database",
+          "reference_url": "https://www.start.umd.edu/gtd/"
+        },
+        {
+          "rank": 189,
+          "provider": "ACLED",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "ACLED Conflict Data",
+          "reference_url": "https://developer.acleddata.com/"
+        },
+        {
+          "rank": 190,
+          "provider": "Human Rights Measurement Initiative",
+          "domain": "global_development_humanitarian_social_data",
+          "name": "Human Rights Measurement Initiative",
+          "reference_url": "https://humanrightsmeasurement.org/data/"
+        }
+      ]
+    },
+    {
+      "domain": "health_medicine_public_health",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 151,
+          "provider": "CDC",
+          "domain": "health_medicine_public_health",
+          "name": "CDC Data API",
+          "reference_url": "https://data.cdc.gov/resource/"
+        },
+        {
+          "rank": 152,
+          "provider": "CDC",
+          "domain": "health_medicine_public_health",
+          "name": "CDC FluView",
+          "reference_url": "https://gis.cdc.gov/grasp/fluview/fluportaldashboard.html"
+        },
+        {
+          "rank": 153,
+          "provider": "FDA",
+          "domain": "health_medicine_public_health",
+          "name": "FDA Drug Labeling",
+          "reference_url": "https://api.fda.gov/drug/label.json"
+        },
+        {
+          "rank": 154,
+          "provider": "FDA",
+          "domain": "health_medicine_public_health",
+          "name": "FDA Device Recalls",
+          "reference_url": "https://api.fda.gov/device/recall.json"
+        },
+        {
+          "rank": 155,
+          "provider": "FDA",
+          "domain": "health_medicine_public_health",
+          "name": "FDA Food Enforcement",
+          "reference_url": "https://api.fda.gov/food/enforcement.json"
+        },
+        {
+          "rank": 156,
+          "provider": "OpenFDA",
+          "domain": "health_medicine_public_health",
+          "name": "OpenFDA Adverse Events",
+          "reference_url": "https://api.fda.gov/drug/event.json"
+        },
+        {
+          "rank": 157,
+          "provider": "HealthData.gov",
+          "domain": "health_medicine_public_health",
+          "name": "HealthData.gov",
+          "reference_url": "https://healthdata.gov/developers"
+        },
+        {
+          "rank": 158,
+          "provider": "CMS",
+          "domain": "health_medicine_public_health",
+          "name": "Medicare Provider Data",
+          "reference_url": "https://data.cms.gov/developers"
+        },
+        {
+          "rank": 159,
+          "provider": "NIH / NCBI",
+          "domain": "health_medicine_public_health",
+          "name": "NIH Genetic Testing Registry",
+          "reference_url": "https://www.ncbi.nlm.nih.gov/gtr/api/"
+        },
+        {
+          "rank": 160,
+          "provider": "WHO",
+          "domain": "health_medicine_public_health",
+          "name": "WHO Mortality Database",
+          "reference_url": "https://ghoapi.azureedge.net/api"
+        }
+      ]
+    },
+    {
+      "domain": "knowledge_graphs_and_scholarly_metadata",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 41,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "Semantic Scholar",
+          "reference_url": "https://api.semanticscholar.org"
+        },
+        {
+          "rank": 42,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "CrossRef",
+          "reference_url": "https://api.crossref.org"
+        },
+        {
+          "rank": 43,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "OpenAlex",
+          "reference_url": "https://api.openalex.org"
+        },
+        {
+          "rank": 44,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "arXiv",
+          "reference_url": "https://export.arxiv.org/api"
+        },
+        {
+          "rank": 45,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "CORE Research",
+          "reference_url": "https://core.ac.uk/services#api"
+        },
+        {
+          "rank": 46,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "Europe PMC",
+          "reference_url": "https://www.ebi.ac.uk/europepmc/webservices/rest"
+        },
+        {
+          "rank": 47,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "Open Library",
+          "reference_url": "https://openlibrary.org/developers/api"
+        },
+        {
+          "rank": 48,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "Wikidata Query",
+          "reference_url": "https://query.wikidata.org/sparql"
+        },
+        {
+          "rank": 49,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "DBpedia",
+          "reference_url": "https://dbpedia.org/sparql"
+        },
+        {
+          "rank": 50,
+          "provider": "Academic / Research",
+          "domain": "knowledge_graphs_and_scholarly_metadata",
+          "name": "World Bank Data",
+          "reference_url": "https://api.worldbank.org/v2"
+        }
+      ]
+    },
+    {
+      "domain": "machine_learning_nlp_ai_research",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 81,
+          "provider": "Hugging Face",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "HuggingFace Models",
+          "reference_url": "https://huggingface.co/docs/api-inference/index"
+        },
+        {
+          "rank": 82,
+          "provider": "Hugging Face",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "HuggingFace Datasets",
+          "reference_url": "https://huggingface.co/docs/datasets"
+        },
+        {
+          "rank": 83,
+          "provider": "OpenAI",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "OpenAI Embeddings",
+          "reference_url": "https://platform.openai.com/docs/api-reference/embeddings"
+        },
+        {
+          "rank": 84,
+          "provider": "Cohere",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "Cohere NLP",
+          "reference_url": "https://docs.cohere.com/"
+        },
+        {
+          "rank": 85,
+          "provider": "Stability AI",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "Stability AI",
+          "reference_url": "https://platform.stability.ai/docs"
+        },
+        {
+          "rank": 86,
+          "provider": "Replicate",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "Replicate",
+          "reference_url": "https://replicate.com/docs"
+        },
+        {
+          "rank": 87,
+          "provider": "DeepAI",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "DeepAI",
+          "reference_url": "https://deepai.org/machine-learning-model"
+        },
+        {
+          "rank": 88,
+          "provider": "OpenML",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "OpenML",
+          "reference_url": "https://www.openml.org/api"
+        },
+        {
+          "rank": 89,
+          "provider": "Papers With Code",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "Papers With Code",
+          "reference_url": "https://paperswithcode.com/api/v1"
+        },
+        {
+          "rank": 90,
+          "provider": "Kaggle",
+          "domain": "machine_learning_nlp_ai_research",
+          "name": "Kaggle Datasets",
+          "reference_url": "https://www.kaggle.com/docs/api"
+        }
+      ]
+    },
+    {
+      "domain": "space_astronomy_physics_additional",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 191,
+          "provider": "SpaceX",
+          "domain": "space_astronomy_physics_additional",
+          "name": "SpaceX Launch Data",
+          "reference_url": "https://api.spacexdata.com/v4/"
+        },
+        {
+          "rank": 192,
+          "provider": "Open Notify",
+          "domain": "space_astronomy_physics_additional",
+          "name": "Open Notify (ISS)",
+          "reference_url": "http://api.open-notify.org/"
+        },
+        {
+          "rank": 193,
+          "provider": "Minor Planet Center",
+          "domain": "space_astronomy_physics_additional",
+          "name": "Minor Planet Center",
+          "reference_url": "https://minorplanetcenter.net/data"
+        },
+        {
+          "rank": 194,
+          "provider": "JPL",
+          "domain": "space_astronomy_physics_additional",
+          "name": "JPL Horizons (Ephemerides)",
+          "reference_url": "https://ssd.jpl.nasa.gov/horizons/"
+        },
+        {
+          "rank": 195,
+          "provider": "ESA",
+          "domain": "space_astronomy_physics_additional",
+          "name": "ESA Gaia Archive",
+          "reference_url": "https://gea.esac.esa.int/archive/"
+        },
+        {
+          "rank": 196,
+          "provider": "NASA",
+          "domain": "space_astronomy_physics_additional",
+          "name": "SkyView Astronomy",
+          "reference_url": "https://skyview.gsfc.nasa.gov/current/cgi/query.pl"
+        },
+        {
+          "rank": 197,
+          "provider": "Astroquery",
+          "domain": "space_astronomy_physics_additional",
+          "name": "Astroquery (multi-observatory)",
+          "reference_url": "https://astroquery.readthedocs.io/en/latest/"
+        },
+        {
+          "rank": 198,
+          "provider": "NASA ADS",
+          "domain": "space_astronomy_physics_additional",
+          "name": "ADS NASA Astrophysics",
+          "reference_url": "https://api.adsabs.harvard.edu/"
+        },
+        {
+          "rank": 199,
+          "provider": "HEASARC",
+          "domain": "space_astronomy_physics_additional",
+          "name": "HEASARC Astrophysics Data",
+          "reference_url": "https://heasarc.gsfc.nasa.gov/docs/heasarc/data-access.html"
+        },
+        {
+          "rank": 200,
+          "provider": "Sloan Digital Sky Survey",
+          "domain": "space_astronomy_physics_additional",
+          "name": "Sloan Digital Sky Survey",
+          "reference_url": "https://api.sdss.org/"
+        }
+      ]
+    },
+    {
+      "domain": "space_earth_science_imagery",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 1,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA APOD",
+          "reference_url": "https://api.nasa.gov/planetary/apod"
+        },
+        {
+          "rank": 2,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA NeoWS (Asteroids)",
+          "reference_url": "https://api.nasa.gov/neo/rest/v1"
+        },
+        {
+          "rank": 3,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA EONET",
+          "reference_url": "https://eonet.gsfc.nasa.gov/api/v3"
+        },
+        {
+          "rank": 4,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA Earth Assets",
+          "reference_url": "https://api.nasa.gov/planetary/earth/assets"
+        },
+        {
+          "rank": 5,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA Earth Imagery",
+          "reference_url": "https://api.nasa.gov/planetary/earth/imagery"
+        },
+        {
+          "rank": 6,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA DONKI",
+          "reference_url": "https://api.nasa.gov/DONKI"
+        },
+        {
+          "rank": 7,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA Mars Rover Photos",
+          "reference_url": "https://api.nasa.gov/mars-photos/api/v1/rovers"
+        },
+        {
+          "rank": 8,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA TechTransfer",
+          "reference_url": "https://api.nasa.gov/techtransfer"
+        },
+        {
+          "rank": 9,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA GeneLab",
+          "reference_url": "https://genelab-data.ndc.nasa.gov/genelab/data"
+        },
+        {
+          "rank": 10,
+          "provider": "NASA",
+          "domain": "space_earth_science_imagery",
+          "name": "NASA Satellite Situation Center",
+          "reference_url": "https://sscweb.gsfc.nasa.gov/WS/ssc"
+        }
+      ]
+    },
+    {
+      "domain": "urban_data_infrastructure_public_services",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 141,
+          "provider": "Open511",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "Open511 (Traffic Incidents)",
+          "reference_url": "http://open511.org/"
+        },
+        {
+          "rank": 142,
+          "provider": "OpenParking",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "OpenParking",
+          "reference_url": "https://www.openparking.io/"
+        },
+        {
+          "rank": 143,
+          "provider": "OpenDataSoft",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "OpenDataSoft",
+          "reference_url": "https://docs.opendatasoft.com/en/api/"
+        },
+        {
+          "rank": 144,
+          "provider": "NYC Open Data",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "NYC Open Data",
+          "reference_url": "https://opendata.cityofnewyork.us/data/"
+        },
+        {
+          "rank": 145,
+          "provider": "Chicago Data Portal",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "Chicago Data Portal",
+          "reference_url": "https://dev.socrata.com/foundry/data.cityofchicago.org"
+        },
+        {
+          "rank": 146,
+          "provider": "LA Open Data",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "LA Open Data",
+          "reference_url": "https://data.lacity.org/"
+        },
+        {
+          "rank": 147,
+          "provider": "San Francisco Open Data",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "San Francisco Open Data",
+          "reference_url": "https://datasf.org/opendata/"
+        },
+        {
+          "rank": 148,
+          "provider": "UK Data Service",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "UK Data Service",
+          "reference_url": "https://ukdataservice.ac.uk/"
+        },
+        {
+          "rank": 149,
+          "provider": "EU Open Data Portal",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "EU Open Data Portal",
+          "reference_url": "https://data.europa.eu/en"
+        },
+        {
+          "rank": 150,
+          "provider": "Canadian Open Government",
+          "domain": "urban_data_infrastructure_public_services",
+          "name": "Canadian Open Government",
+          "reference_url": "https://open.canada.ca/en"
+        }
+      ]
+    },
+    {
+      "domain": "weather_climate_ocean_storms",
+      "entry_count": 10,
+      "entries": [
+        {
+          "rank": 11,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Weather Alerts",
+          "reference_url": "https://api.weather.gov/alerts"
+        },
+        {
+          "rank": 12,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Forecast",
+          "reference_url": "https://api.weather.gov/gridpoints"
+        },
+        {
+          "rank": 13,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Radar Stations",
+          "reference_url": "https://api.weather.gov/radar/stations"
+        },
+        {
+          "rank": 14,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Tides & Currents",
+          "reference_url": "https://api.tidesandcurrents.noaa.gov/api"
+        },
+        {
+          "rank": 15,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Climate Data",
+          "reference_url": "https://www.ncei.noaa.gov/cdo-web/api/v2"
+        },
+        {
+          "rank": 16,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Storm Events",
+          "reference_url": "https://www.ncdc.noaa.gov/stormevents"
+        },
+        {
+          "rank": 17,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Space Weather",
+          "reference_url": "https://services.swpc.noaa.gov/json"
+        },
+        {
+          "rank": 18,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Buoy Data",
+          "reference_url": "https://www.ndbc.noaa.gov/data"
+        },
+        {
+          "rank": 19,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA Ocean Observations",
+          "reference_url": "https://api.ioos.us"
+        },
+        {
+          "rank": 20,
+          "provider": "NOAA",
+          "domain": "weather_climate_ocean_storms",
+          "name": "NOAA National Water Model",
+          "reference_url": "https://water.noaa.gov/api"
+        }
+      ]
+    }
+  ]
+}

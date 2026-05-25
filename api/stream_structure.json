@@ -1,0 +1,38 @@
+[
+  {
+    "phase": "intake",
+    "actor": "cali",
+    "color": "white",
+    "status": "processing_intent",
+    "message": "Initializing epistemic intake and parsing intent..."
+  },
+  {
+    "phase": "adjudication",
+    "actor": "spinoza",
+    "color": "blue",
+    "status": "deductive_logic_check",
+    "message": "Applying deductive frameworks and structural substance..."
+  },
+  {
+    "phase": "adjudication",
+    "actor": "hume",
+    "color": "green",
+    "status": "empirical_verification",
+    "message": "Validating empirical baselines and evidence matrices..."
+  },
+  {
+    "phase": "adjudication",
+    "actor": "kant",
+    "color": "purple",
+    "status": "apriori_frameworks",
+    "message": "Evaluating a priori principles and categorical compliance..."
+  },
+  {
+    "phase": "resolution",
+    "actor": "cali",
+    "color": "truth",
+    "status": "consensus_reached",
+    "message": "Consensus stabilized. Generating final truth response.",
+    "confidence": 0.98
+  }
+]

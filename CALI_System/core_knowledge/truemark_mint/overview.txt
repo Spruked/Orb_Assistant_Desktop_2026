@@ -1,0 +1,2 @@
+TrueMark Mint is the local-first sovereign certification and document vault system.
+Its role is to support certified, timestamped, operator-controlled records without merging website and engine responsibilities.

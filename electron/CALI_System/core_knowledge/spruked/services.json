@@ -1,0 +1,79 @@
+{
+  "services": [
+    {
+      "service_id": "spruked",
+      "instance_id": "dockstation-default",
+      "display_name": "Spruked",
+      "domain": "spruked.com",
+      "public_url": "https://spruked.com",
+      "local_url": "",
+      "health_url": "https://spruked.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "truemarkmint",
+      "instance_id": "dockstation-default",
+      "display_name": "TrueMark Mint",
+      "domain": "truemarkmint.com",
+      "public_url": "https://truemarkmint.com",
+      "local_url": "",
+      "health_url": "https://truemarkmint.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "shilohridgekatahdins",
+      "instance_id": "dockstation-default",
+      "display_name": "Shiloh Ridge Katahdins",
+      "domain": "shilohridgekatahdins.com",
+      "public_url": "https://shilohridgekatahdins.com",
+      "local_url": "",
+      "health_url": "https://shilohridgekatahdins.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "alphacertsig",
+      "instance_id": "dockstation-default",
+      "display_name": "AlphaCertSig",
+      "domain": "alphacertsig.com",
+      "public_url": "https://alphacertsig.com",
+      "local_url": "",
+      "health_url": "https://alphacertsig.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "dragonithome",
+      "instance_id": "dockstation-default",
+      "display_name": "DragonItHome",
+      "domain": "dragonithome.spruked.com",
+      "public_url": "https://dragonithome.spruked.com",
+      "local_url": "",
+      "health_url": "https://dragonithome.spruked.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    }
+  ]
+}

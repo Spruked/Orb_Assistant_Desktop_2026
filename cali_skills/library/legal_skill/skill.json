@@ -1,0 +1,12 @@
+{
+  "skill_id": "legal",
+  "name": "Legal and IP",
+  "version": "1.0.0",
+  "category": "legal",
+  "description": "Contracts, IP, compliance boundaries, and legal document workflows.",
+  "entry_class": "LegalSkill",
+  "triggers": ["legal", "contract", "ip", "copyright", "license", "compliance", "liability"],
+  "capabilities": ["explain", "route"],
+  "memory_scope": ["skills/legal"],
+  "dependencies": []
+}

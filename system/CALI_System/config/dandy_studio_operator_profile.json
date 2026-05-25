@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "dandy_studio_operator",
+  "created_at": "2026-04-16",
+  "authority": "local_first_operator_profile",
+  "workspace": {
+    "name": "Phil and Jim Dandy Show Studio",
+    "root_windows": "C:\\Users\\bryan\\Downloads\\dandy_merge\\Phil_and_Jim_Dandy_Show",
+    "root_wsl": "/mnt/c/Users/bryan/Downloads/dandy_merge/Phil_and_Jim_Dandy_Show",
+    "docs": [
+      "docs/USER_GUIDE_AND_OPERATOR_MANUAL.md",
+      "docs/ORB_OPERATOR_PROFILE.md",
+      "docs/DEPENDENCY_MAP.md",
+      "docs/PROJECT_STRUCTURE.md",
+      "docs/ENDPOINT_WIRING_AUDIT.md"
+    ]
+  },
+  "runtime_targets": {
+    "frontend_url": "http://127.0.0.1:5173",
+    "backend_url": "http://127.0.0.1:8010",
+    "backend_health_url": "http://127.0.0.1:8010/health",
+    "obs_executable": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+    "obs_websocket_url": "ws://127.0.0.1:4455"
+  },
+  "launch_commands": {
+    "backend": [
+      "cd C:\\Users\\bryan\\Downloads\\dandy_merge\\Phil_and_Jim_Dandy_Show\\backend",
+      "$env:PATH=\"C:\\Users\\bryan\\Downloads\\dandy_merge\\Phil_and_Jim_Dandy_Show\\staging\\ffmpeg\\ffmpeg-master-latest-win64-gpl\\bin;$env:PATH\"",
+      "python -m uvicorn app.main:app --host 0.0.0.0 --port 8010 --reload"
+    ],
+    "frontend": [
+      "cd C:\\Users\\bryan\\Downloads\\dandy_merge\\Phil_and_Jim_Dandy_Show\\frontend",
+      "npm run dev -- --host 0.0.0.0 --port 5173"
+    ],
+    "obs": [
+      "& \"C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe\""
+    ]
+  },
+  "operator_permissions": {
+    "filesystem_roots": [
+      "C:\\Users\\bryan\\Downloads\\dandy_merge\\Phil_and_Jim_Dandy_Show",
+      "R:\\Orb_Assistant_Desktop",
+      "R:\\orb_mesh"
+    ],
+    "network_targets": [
+      "http://127.0.0.1:8010",
+      "http://127.0.0.1:5173",
+      "ws://127.0.0.1:4455"
+    ],
+    "desktop_apps": [
+      "OBS Studio"
+    ]
+  },
+  "app_surface": {
+    "tabs": [
+      "episodes",
+      "ads",
+      "social",
+      "studio",
+      "system"
+    ],
+    "social_modes": [
+      "exports",
+      "slideshow",
+      "adcards"
+    ],
+    "studio_modes": [
+      "audio",
+      "obs",
+      "cams",
+      "automate"
+    ]
+  },
+  "backend_routes": {
+    "health": [
+      "GET /api/health",
+      "GET /api/voices"
+    ],
+    "episodes": [
+      "GET /api/episodes",
+      "POST /api/episodes/create",
+      "GET /api/episodes/{id}/script",
+      "POST /api/episodes/generate-script",
+      "POST /api/episodes/edit-script",
+      "POST /api/episodes/produce",
+      "GET /api/episodes/{id}/export"
+    ],
+    "episode_assets": [
+      "GET /api/episodes/{id}/assets",
+      "POST /api/episodes/{id}/assets",
+      "POST /api/episodes/{id}/media-cues"
+    ],
+    "ads": [
+      "GET /api/episodes/{id}/ads",
+      "POST /api/episodes/{id}/ads",
+      "POST /api/episodes/{id}/ads/{ad_id}/produce",
+      "POST /api/episodes/{id}/ads/{ad_id}/insert",
+      "GET /api/episodes/{id}/ads/{ad_id}/assets",
+      "POST /api/episodes/{id}/ads/{ad_id}/assets"
+    ],
+    "social": [
+      "GET /api/episodes/{id}/social",
+      "POST /api/social/generate",
+      "GET /api/social/slideshow/load",
+      "POST /api/social/slideshow/save",
+      "POST /api/social/slideshow/render",
+      "POST /api/social/slideshow/auto-generate",
+      "POST /api/social/slideshow/snap",
+      "GET /api/social/adcards/load",
+      "POST /api/social/adcards/save",
+      "POST /api/social/adcards/render"
+    ],
+    "obs": [
+      "GET /api/obs/status",
+      "GET /api/obs/scenes",
+      "POST /api/obs/scene",
+      "POST /api/obs/stream/toggle",
+      "POST /api/obs/record/toggle"
+    ],
+    "mixer": [
+      "GET /api/mixer/status",
+      "POST /api/mixer/channel",
+      "POST /api/mixer/master",
+      "POST /api/mixer/bus/{index}",
+      "POST /api/mixer/macro/{index}"
+    ]
+  },
+  "source_files": {
+    "frontend_root": "frontend/src",
+    "api_client": "frontend/src/lib/api.js",
+    "tabs": {
+      "episodes": "frontend/src/components/EpisodeTab.jsx",
+      "ads": "frontend/src/components/AdTab.jsx",
+      "social": "frontend/src/components/SocialTab.jsx",
+      "social_exports": "frontend/src/components/ExportsMode.jsx",
+      "slideshow": "frontend/src/components/SlideshowBuilder.jsx",
+      "adcards": "frontend/src/components/AdCardsBuilder.jsx",
+      "studio": "frontend/src/components/StudioTab.jsx",
+      "system": "frontend/src/components/SystemTab.jsx"
+    },
+    "backend": {
+      "production_routes": "backend/app/api/production.py",
+      "obs_routes": "backend/app/api/obs.py",
+      "mixer_routes": "backend/app/api/mixer.py"
+    }
+  }
+}

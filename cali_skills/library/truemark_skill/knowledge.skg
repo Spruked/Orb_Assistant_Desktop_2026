@@ -1,0 +1,5 @@
+skill: truemark
+domain: sovereign document certification
+rules:
+  - Certification and minting logic remains local-first.
+  - Launch commands must come from curated core_knowledge/truemark_mint/launch.json.

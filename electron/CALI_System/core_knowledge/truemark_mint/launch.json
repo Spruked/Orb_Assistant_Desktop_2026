@@ -1,0 +1,7 @@
+{
+  "name": "truemark_mint",
+  "type": "wsl_service",
+  "command": "",
+  "cwd": "",
+  "notes": "Set command/cwd after the local TrueMark Mint service path is confirmed."
+}

@@ -1,0 +1,200 @@
+{
+  "services": [
+    {
+      "service_id": "spruked",
+      "instance_id": "dockstation-default",
+      "display_name": "Spruked",
+      "domain": "spruked.com",
+      "public_url": "https://spruked.com",
+      "local_url": "",
+      "health_url": "https://spruked.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "truemarkmint",
+      "instance_id": "dockstation-default",
+      "display_name": "TrueMark Mint",
+      "domain": "truemarkmint.com",
+      "public_url": "https://truemarkmint.com",
+      "local_url": "",
+      "health_url": "https://truemarkmint.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "shilohridgekatahdins",
+      "instance_id": "dockstation-default",
+      "display_name": "Shiloh Ridge Katahdins",
+      "domain": "shilohridgekatahdins.com",
+      "public_url": "https://shilohridgekatahdins.com",
+      "local_url": "",
+      "health_url": "https://shilohridgekatahdins.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "alphacertsig",
+      "instance_id": "dockstation-default",
+      "display_name": "AlphaCertSig",
+      "domain": "alphacertsig.com",
+      "public_url": "https://alphacertsig.com",
+      "local_url": "",
+      "health_url": "https://alphacertsig.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "dragonithome",
+      "instance_id": "dockstation-default",
+      "display_name": "DragonItHome",
+      "domain": "dragonithome.spruked.com",
+      "public_url": "https://dragonithome.spruked.com",
+      "local_url": "",
+      "health_url": "https://dragonithome.spruked.com",
+      "working_directory": "",
+      "expected_ports": [],
+      "service_type": "website",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "ollama_qwen25_wsl",
+      "instance_id": "dockstation-local",
+      "display_name": "Ollama Qwen 2.5 3B",
+      "domain": "local-llm",
+      "public_url": "",
+      "local_url": "http://127.0.0.1:11434",
+      "health_url": "http://127.0.0.1:11434/api/tags",
+      "working_directory": "",
+      "expected_ports": [
+        11434
+      ],
+      "service_type": "llm",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "qwen_tts_bridge",
+      "instance_id": "dockstation-local",
+      "display_name": "Qwen TTS Bridge",
+      "domain": "local-voice",
+      "public_url": "",
+      "local_url": "http://127.0.0.1:8020",
+      "health_url": "http://127.0.0.1:8020/health",
+      "working_directory": "C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui",
+      "path_transition_note": "Current path is C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui; planned rename target is qwen_tts_service.",
+      "expected_ports": [
+        8020
+      ],
+      "service_type": "voice",
+      "enabled": true,
+      "start_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui\\scripts\\Start-QwenTTSBridge.ps1\"",
+      "stop_command": ""
+    },
+    {
+      "service_id": "qwen_tts_custom_model",
+      "instance_id": "dockstation-local",
+      "display_name": "Qwen TTS Custom Voice Model",
+      "domain": "local-voice-model",
+      "public_url": "",
+      "local_url": "http://127.0.0.1:8031",
+      "health_url": "http://127.0.0.1:8031/config",
+      "working_directory": "C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui",
+      "path_transition_note": "Current path is C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui; planned rename target is qwen_tts_service.",
+      "expected_ports": [
+        8031
+      ],
+      "service_type": "voice",
+      "enabled": true,
+      "start_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui\\scripts\\Start-QwenTTSMode.ps1\" -Mode custom",
+      "stop_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\dev\\Desktop\\PLATFORM\\dandy_qwen_tts_ui\\scripts\\Stop-QwenTTSModels.ps1\" -Ports 8031"
+    },
+    {
+      "service_id": "shiloh_orb_api_8001",
+      "instance_id": "shiloh-shep-butch",
+      "display_name": "Shiloh Website ORB API 8001",
+      "domain": "shilohridgekatahdins.com",
+      "public_url": "https://shilohridgekatahdins.com",
+      "local_url": "http://127.0.0.1:8001",
+      "health_url": "http://127.0.0.1:8001/api/health",
+      "working_directory": "/home/bryan/projects/shilohridgekatahdins.com/Shiloh-Ridge-Farm-II/backend",
+      "expected_ports": [
+        8001
+      ],
+      "service_type": "orb",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "shiloh_orb_api_8002",
+      "instance_id": "shiloh-shep-butch",
+      "display_name": "Shiloh Website ORB API 8002",
+      "domain": "shilohridgekatahdins.com",
+      "public_url": "https://shilohridgekatahdins.com",
+      "local_url": "http://127.0.0.1:8002",
+      "health_url": "http://127.0.0.1:8002/api/health",
+      "working_directory": "/home/bryan/projects/shilohridgekatahdins.com/Shiloh-Ridge-Farm-II/backend",
+      "expected_ports": [
+        8002
+      ],
+      "service_type": "orb",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "cali_x_one_governance",
+      "instance_id": "dockstation-local",
+      "display_name": "Cali X One Governance API",
+      "domain": "local-governance",
+      "public_url": "",
+      "local_url": "http://127.0.0.1:8003",
+      "health_url": "http://127.0.0.1:8003/health",
+      "working_directory": "C:\\dev\\Desktop\\PLATFORM\\Cali_X_One",
+      "expected_ports": [
+        8003
+      ],
+      "service_type": "governance",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "qwen_tts_wsl_proxy",
+      "instance_id": "dockstation-local",
+      "display_name": "Qwen TTS WSL Proxy",
+      "domain": "local-voice-proxy",
+      "public_url": "",
+      "local_url": "http://127.0.0.1:8021",
+      "health_url": "http://127.0.0.1:8021/health",
+      "working_directory": "R:\\R_Drive_Substrate\\Orb_Assistant_Desktop",
+      "expected_ports": [
+        8021
+      ],
+      "service_type": "voice",
+      "enabled": true,
+      "start_command": "wsl.exe bash -lc \"nohup python3 /mnt/r/R_Drive_Substrate/Orb_Assistant_Desktop/scripts/qwen_tts_wsl_proxy.py >/tmp/orb_qwen_tts_wsl_proxy.log 2>&1 &\"",
+      "stop_command": ""
+    }
+  ]
+}

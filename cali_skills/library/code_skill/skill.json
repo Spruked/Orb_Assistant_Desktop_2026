@@ -1,0 +1,12 @@
+{
+  "skill_id": "code",
+  "name": "Code Assistant",
+  "version": "1.0.0",
+  "category": "development",
+  "description": "Software development, review, debugging, and architecture support.",
+  "entry_class": "CodeSkill",
+  "triggers": ["code", "debug", "python", "javascript", "typescript", "react", "git", "repo"],
+  "capabilities": ["explain", "route"],
+  "memory_scope": ["skills/code"],
+  "dependencies": []
+}

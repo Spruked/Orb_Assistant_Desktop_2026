@@ -1,0 +1,182 @@
+/* FloatingOrb.css */
+.floating-orb {
+  position: fixed;
+  cursor: pointer;
+  will-change: transform, opacity;
+  backdrop-filter: blur(4px);
+}
+
+.orb-visual {
+  width: 160px;
+  height: 160px;
+  position: relative;
+}
+
+.orb-core {
+  width: 82px;
+  height: 82px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.88), #4A90E2 28%, rgba(13, 18, 34, 0.92) 72%);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 30px #4A90E2, inset 0 0 20px rgba(74, 144, 226, 0.5);
+  transition: box-shadow 180ms ease, opacity 180ms ease, transform 180ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.orb-core::before {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.72), transparent 28%),
+    radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.16), transparent 38%);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+.orb-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.24), rgba(74, 144, 226, 0.08) 45%, transparent 72%);
+  animation: orb-pulse 2s infinite;
+  transition: opacity 180ms ease, transform 180ms ease;
+  filter: blur(10px);
+}
+
+.floating-orb.logic-deductive .orb-core {
+  border-color: rgba(125, 210, 255, 0.28);
+}
+
+.floating-orb.logic-inductive .orb-core {
+  border-color: rgba(88, 214, 141, 0.28);
+}
+
+.floating-orb.logic-intuitive .orb-core {
+  border-color: rgba(244, 201, 93, 0.34);
+}
+
+.floating-orb.logic-deductive .orb-aura {
+  animation-duration: 2.3s;
+}
+
+.floating-orb.logic-inductive .orb-aura {
+  animation-duration: 3s;
+}
+
+.floating-orb.logic-intuitive .orb-aura {
+  animation-duration: 1.6s;
+}
+
+.floating-orb.blooming .orb-core {
+  animation: orb-bloom 900ms ease-out;
+}
+
+.floating-orb.blooming .orb-aura {
+  animation-name: orb-pulse, orb-breathe;
+  animation-duration: 2s, 1.1s;
+  animation-iteration-count: infinite, 2;
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+}
+
+@keyframes orb-bloom {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  40% { transform: translate(-50%, -50%) scale(1.12); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes orb-breathe {
+  0%, 100% { opacity: 0.45; filter: blur(0px); }
+  50% { opacity: 0.95; filter: blur(6px); }
+}
+
+.query-dialog {
+  position: absolute;
+  bottom: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #4A90E2;
+  border-radius: 8px;
+  padding: 15px;
+  width: 300px;
+  color: white;
+}
+
+.orb-substatus {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  opacity: 0.85;
+}
+
+.orb-cockpit {
+  position: absolute;
+  left: 50%;
+  bottom: -86px;
+  transform: translateX(-50%);
+  min-width: 190px;
+  max-width: 220px;
+  padding: 10px 12px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  color: rgba(239, 246, 255, 0.92);
+  text-align: left;
+  pointer-events: none;
+  background: rgba(10, 14, 24, 0.42);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+.orb-cockpit-kicker {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(214, 227, 255, 0.62);
+}
+
+.orb-cockpit-title {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(245, 249, 255, 0.96);
+}
+
+.orb-cockpit-row {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.orb-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.orb-cockpit-status {
+  font-size: 11px;
+  color: rgba(214, 227, 255, 0.76);
+}

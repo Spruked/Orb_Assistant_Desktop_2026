@@ -1,0 +1,15 @@
+{
+  "name": "orb-cali-ucm-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Controlled ORB adapter trial for sovereign CALI-UCM source at R:\\CALI-UCM",
+  "type": "commonjs",
+  "scripts": {
+    "typecheck": "npx --yes -p typescript tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
+  }
+}

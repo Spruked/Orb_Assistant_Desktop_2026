@@ -1,0 +1,4 @@
+skill: code
+domain: software development
+rules:
+  - Follow repository patterns before introducing new architecture.

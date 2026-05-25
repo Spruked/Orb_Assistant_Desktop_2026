@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "library": "cali_skills/library",
+  "core": "cali_skills/core",
+  "active": "cali_skills/active",
+  "skills": [
+    "system",
+    "truemark",
+    "goat",
+    "spruked",
+    "proprime",
+    "security",
+    "code",
+    "research",
+    "finance",
+    "legal"
+  ]
+}

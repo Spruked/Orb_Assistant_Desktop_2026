@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orb Dock Station</title>
+  <style>
+    html, body, #root {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background: #020712;
+    }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    #substrate-dock-extension {
+      flex: 0 0 auto;
+    }
+    #root {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="substrate-dock-extension"></div>
+  <div id="root"></div>
+  <script src="./orb-dock-station.bundle.js"></script>
+  <script src="./orb-dock-station-substrate.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "Paths that require explicit operator approval before any AI agent, script, or automated process may delete, overwrite, or restructure them.",
+    "hard_rule": "Protect the content. Protect the intent. Protect the architecture."
+  },
+  "protected": [
+    {
+      "path": "system/vault_system",
+      "reason": "CALI memory vault — irreplaceable reasoning history",
+      "policy": "read-allowed, write-requires-intent, delete-forbidden"
+    },
+    {
+      "path": "system/CALI_System",
+      "reason": "Core CALI system state, memory, notes, hearing SKG",
+      "policy": "read-allowed, write-requires-intent, delete-forbidden"
+    },
+    {
+      "path": "modules",
+      "reason": "Epistemic Gravity Field and other cognitive modules",
+      "policy": "read-allowed, write-requires-intent, delete-forbidden"
+    },
+    {
+      "path": "orb_mesh",
+      "reason": "Shared substrate mesh across all ORB shells",
+      "policy": "read-allowed, write-requires-intent, delete-forbidden"
+    },
+    {
+      "path": "electron/src/logic_seeds",
+      "reason": "Deductive / inductive / intuitive reasoning seeds",
+      "policy": "read-allowed, write-requires-intent, delete-forbidden"
+    },
+    {
+      "path": "electron/src/cognitive_inference.py",
+      "reason": "Alignment layer — must never be silently replaced",
+      "policy": "read-allowed, write-requires-review, delete-forbidden"
+    },
+    {
+      "path": "electron/src/primitive_response_cache.json",
+      "reason": "Canonical primitive cache — changes affect all ORB shells",
+      "policy": "read-allowed, write-requires-review, delete-forbidden"
+    },
+    {
+      "path": "orb-instance.windows.ps1",
+      "reason": "Default launch profile — drives all environment resolution",
+      "policy": "read-allowed, write-requires-review, delete-forbidden"
+    }
+  ],
+  "quarantine": "system/quarantine",
+  "audit_log": "system/sentinel_audit.jsonl",
+  "snapshot_dir": "system/snapshots"
+}

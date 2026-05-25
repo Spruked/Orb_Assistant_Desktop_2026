@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-03-22T03:52:00.070805+00:00",
+  "instance_id": "desktop",
+  "product_name": "Platinum ORB Desktop Assistant",
+  "app_id": "com.orbs.platinum.desktop",
+  "root": "/mnt/r/Orb_Assistant_Desktop",
+  "user_data_dir": "/mnt/r/Orb_Assistant_Desktop/.orb-assistant-desktop",
+  "system_root": "/mnt/r/Orb_Assistant_Desktop/system",
+  "shared_mesh_root": "/mnt/r/orb_mesh",
+  "launchers": {
+    "windows": "R:\\Orb_Assistant_Desktop\\launch_desktop_orb.ps1",
+    "wsl": "/mnt/r/Orb_Assistant_Desktop/launch_desktop_orb.sh"
+  },
+  "python_path": "/usr/bin/python3",
+  "operator_targets": [
+    {
+      "id": "dandy_studio",
+      "type": "local_workspace",
+      "root_windows": "C:\\Users\\bryan\\Downloads\\dandy_merge\\Phil_and_Jim_Dandy_Show",
+      "frontend_url": "http://127.0.0.1:5173",
+      "backend_url": "http://127.0.0.1:8010"
+    },
+    {
+      "id": "obs",
+      "type": "desktop_application",
+      "executable_windows": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+      "websocket_url": "ws://127.0.0.1:4455"
+    }
+  ]
+}

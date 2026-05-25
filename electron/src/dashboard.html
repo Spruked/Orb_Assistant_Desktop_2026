@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orb Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .setting { margin: 10px 0; }
+        label { display: inline-block; width: 150px; }
+        input { width: 100px; }
+        button { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Orb Master Dashboard</h1>
+    <div class="setting">
+        <label>Lerp Factor:</label>
+        <input type="number" id="lerp" step="0.01" value="0.08">
+    </div>
+    <div class="setting">
+        <label>Size (px):</label>
+        <input type="number" id="size" value="200">
+    </div>
+    <div class="setting">
+        <label>Avoidance Distance:</label>
+        <input type="number" id="avoidance" value="300">
+    </div>
+    <div class="setting">
+        <label>Follow Distance:</label>
+        <input type="number" id="follow" value="350">
+    </div>
+    <button onclick="applySettings()">Apply Settings</button>
+    <button onclick="closeDashboard()">Close</button>
+
+    <script>
+        function applySettings() {
+            const settings = {
+                lerp: parseFloat(document.getElementById('lerp').value),
+                size: parseInt(document.getElementById('size').value),
+                avoidance: parseInt(document.getElementById('avoidance').value),
+                follow: parseInt(document.getElementById('follow').value)
+            };
+            window.electronAPI.sendSettings(settings);
+        }
+
+        function closeDashboard() {
+            window.close();
+        }
+    </script>
+</body>
+</html>

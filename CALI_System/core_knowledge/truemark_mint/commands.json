@@ -1,0 +1,5 @@
+{
+  "start": "start truemark",
+  "open": "open truemark",
+  "status": "truemark status"
+}

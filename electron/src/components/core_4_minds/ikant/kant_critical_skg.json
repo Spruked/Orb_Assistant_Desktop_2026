@@ -1,0 +1,600 @@
+{
+  "skg_metadata": {
+    "philosopher": "Immanuel Kant",
+    "system": "Transcendental Idealism & Critical Philosophy",
+    "version": "1.0",
+    "domain": "Epistemology, Ethics, and Metaphysics",
+    "space_field_id": "kant_critical_skg",
+    "created": "2025-12-21",
+    "format": "HLSF_SKG_v2"
+  },
+  "core_axiom": {
+    "node_id": "KANT_001",
+    "label": "Transcendental Idealism",
+    "type": "FOUNDATIONAL_PRINCIPLE",
+    "definition": "Mind actively structures experience; we know phenomena not noumena",
+    "properties": {
+      "certainty": "TRANSCENDENTAL",
+      "source_text": "Critique of Pure Reason",
+      "book": "Transcendental Aesthetic & Analytic",
+      "revolution": "Copernican Turn in philosophy"
+    }
+  },
+  "concept_nodes": [
+    {
+      "node_id": "KANT_002",
+      "label": "Phenomena",
+      "type": "ONTOLOGICAL_CATEGORY",
+      "category": "APPEARANCES",
+      "properties": {
+        "definition": "Things as they appear to us through sensible intuition",
+        "knowability": "FULLY_KNOWABLE",
+        "condition": "Subject to forms of intuition and categories",
+        "realm": "Experience (Erfahrung)"
+      },
+      "relationships": {
+        "contrasts_with": [
+          "KANT_003"
+        ],
+        "structured_by": [
+          "KANT_005",
+          "KANT_006"
+        ],
+        "accessible_via": [
+          "KANT_012"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_003",
+      "label": "Noumena",
+      "type": "ONTOLOGICAL_CATEGORY",
+      "category": "THINGS_IN_THEMSELVES",
+      "properties": {
+        "definition": "Things as they are independently of our cognition",
+        "knowability": "UNKNOWABLE",
+        "limiting_concept": "Negative boundary of reason",
+        "positive_use": "Problematic (not dogmatic)"
+      },
+      "relationships": {
+        "contrasts_with": [
+          "KANT_002"
+        ],
+        "grounds": [
+          "KANT_010"
+        ],
+        "required_for": [
+          "KANT_009"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_004",
+      "label": "Synthetic A Priori Judgments",
+      "type": "KNOWLEDGE_CATEGORY",
+      "category": "UNIVERSAL_SCIENCE",
+      "properties": {
+        "definition": "Judgments that are informative (synthetic) and necessary (a priori)",
+        "examples": [
+          "7+5=12",
+          "Every event has a cause",
+          "Shortest path is straight line"
+        ],
+        "possibility": "How are synthetic a priori judgments possible?",
+        "scope": "Mathematics, Pure Natural Science, Metaphysics"
+      },
+      "relationships": {
+        "validated_by": [
+          "KANT_007"
+        ],
+        "structured_by": [
+          "KANT_005"
+        ],
+        "distinguishes": [
+          "KANT_002"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_005",
+      "label": "Categories of Understanding",
+      "type": "CONCEPTUAL_SCHEME",
+      "category": "PURE_CONCEPTS",
+      "properties": {
+        "definition": "A priori concepts that structure all experience",
+        "quantity": [
+          "Unity",
+          "Plurality",
+          "Totality"
+        ],
+        "quality": [
+          "Reality",
+          "Negation",
+          "Limitation"
+        ],
+        "relation": [
+          "Inherence/Subsistence",
+          "Causality/Dependence",
+          "Community/Reciprocity"
+        ],
+        "modality": [
+          "Possibility/Impossibility",
+          "Existence/Non-existence",
+          "Necessity/Contingency"
+        ],
+        "table_complete": "12 categories derived from logical forms"
+      },
+      "relationships": {
+        "applied_via": [
+          "KANT_013"
+        ],
+        "grounded_in": [
+          "KANT_008"
+        ],
+        "validate": [
+          "KANT_004"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_006",
+      "label": "Forms of Intuition",
+      "type": "SENSORY_STRUCTURE",
+      "category": "AESTHETIC_CONDITIONS",
+      "properties": {
+        "space": "Form of outer sense (all external appearances)",
+        "time": "Form of inner sense (all representations including inner)",
+        "nature": "Pure intuitions a priori",
+        "infinity": "Given as infinite magnitudes",
+        "empirical_realism": "Objective validity for experience"
+      },
+      "relationships": {
+        "condition": [
+          "KANT_002"
+        ],
+        "paired_with": [
+          "KANT_005"
+        ],
+        "transcendental_ideality": true
+      }
+    },
+    {
+      "node_id": "KANT_007",
+      "label": "Transcendental Deduction",
+      "type": "PHILOSOPHICAL_METHOD",
+      "category": "JUSTIFICATION",
+      "properties": {
+        "goal": "Prove objective validity of categories for experience",
+        "method": "Show categories as conditions of possible experience",
+        "strategy": "From unity of apperception to objectivity",
+        "result": "Categories legitimately apply to all phenomena"
+      },
+      "relationships": {
+        "justifies": [
+          "KANT_005"
+        ],
+        "depends_on": [
+          "KANT_008"
+        ],
+        "proves": [
+          "KANT_004"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_008",
+      "label": "Transcendental Unity of Apperception",
+      "type": "TRANSCENDENTAL_PRINCIPLE",
+      "category": "SYNTHETIC_ORIGIN",
+      "properties": {
+        "slogan": "'I think' must be able to accompany all my representations",
+        "function": "Synthetic unity of consciousness",
+        "highest_principle": "Of all human cognition",
+        "numerical_identity": "Same 'I' throughout all experience"
+      },
+      "relationships": {
+        "grounds": [
+          "KANT_007"
+        ],
+        "enables": [
+          "KANT_005"
+        ],
+        "source_of": [
+          "KANT_012"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_009",
+      "label": "Antinomies of Pure Reason",
+      "type": "METAPHYSICAL_PROBLEM",
+      "category": "DIALECTICAL_ERRORS",
+      "properties": {
+        "nature": "Conflicts of reason with itself",
+        "four_conflicts": [
+          "World has beginning/No beginning",
+          "Composite/Simple",
+          "Causality/Freedom",
+          "Necessary being/No necessary being"
+        ],
+        "solution": "Thesis true of noumena, antithesis of phenomena (or vice versa)",
+        "lesson": "Do not apply categories beyond experience"
+      },
+      "relationships": {
+        "resolved_by": [
+          "KANT_001"
+        ],
+        "limits": [
+          "KANT_012"
+        ],
+        "indicates": [
+          "KANT_003"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_010",
+      "label": "Categorical Imperative",
+      "type": "MORAL_PRINCIPLE",
+      "category": "PRACTICAL_REASON",
+      "properties": {
+        "formulation_1": "Universal Law - Act only on maxims you can will as universal law",
+        "formulation_2": "Humanity as End - Never treat humanity merely as means",
+        "formulation_3": "Kingdom of Ends - Act as legislator in universal kingdom",
+        "autonomy": "Self-legislation of rational will",
+        "heteronomy": "Rejection of external moral sources"
+      },
+      "relationships": {
+        "grounded_in": [
+          "KANT_011"
+        ],
+        "applies_to": [
+          "KANT_003"
+        ],
+        "contrasts_with": [
+          "HUME_014"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_011",
+      "label": "Practical Reason",
+      "type": "RATIONAL_FACULTY",
+      "category": "MORAL_COGNITION",
+      "properties": {
+        "domain": "Freedom, immortality, God (as postulates)",
+        "primacy": "Over theoretical reason in case of conflict",
+        "fact_of_reason": "Consciousness of moral law",
+        "freedom": "Autonomy of will = positive freedom"
+      },
+      "relationships": {
+        "legislates": [
+          "KANT_010"
+        ],
+        "knows": [
+          "KANT_003"
+        ],
+        "contrasts_with": [
+          "KANT_012"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_012",
+      "label": "Theoretical Reason",
+      "type": "RATIONAL_FACULTY",
+      "category": "SCIENTIFIC_COGNITION",
+      "properties": {
+        "domain": "Phenomenal world",
+        "method": "Categories + Intuition",
+        "limits": "Cannot know noumena or answer transcendent questions",
+        "interest": "Speculative/cognitive"
+      },
+      "relationships": {
+        "accesses": [
+          "KANT_002"
+        ],
+        "limited_by": [
+          "KANT_009"
+        ],
+        "subordinate_to": [
+          "KANT_011"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_013",
+      "label": "Schematism",
+      "type": "COGNITIVE_MEDIATION",
+      "category": "TRANSCENDental_PROCEDURE",
+      "properties": {
+        "problem": "How pure concepts apply to appearances",
+        "solution": "Transcendental schemata (time-determinations)",
+        "example": "Causality schema is succession according to rule",
+        "mediator": "Imagination (productive)"
+      },
+      "relationships": {
+        "connects": [
+          "KANT_005",
+          "KANT_006"
+        ],
+        "enables": [
+          "KANT_004"
+        ],
+        "grounded_in": [
+          "KANT_008"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_014",
+      "label": "Transcendental Aesthetic",
+      "type": "CRITICAL_DISCIPLINE",
+      "category": "SENSORY_THEORY",
+      "properties": {
+        "subject": "All principles of sensibility a priori",
+        "doctrine": "Space and time as forms of intuition",
+        "conclusions": [
+          "Space/time not things-in-themselves",
+          "Objective validity for appearances",
+          "Transcendental ideality"
+        ],
+        "contrast": "Transcendental Logic (understanding)"
+      },
+      "relationships": {
+        "studies": [
+          "KANT_006"
+        ],
+        "precedes": [
+          "KANT_005"
+        ],
+        "establishes": [
+          "KANT_002"
+        ]
+      }
+    },
+    {
+      "node_id": "KANT_015",
+      "label": "Transcendental Dialectic",
+      "type": "CRITICAL_DISCIPLINE",
+      "category": "ERROR_THEORY",
+      "properties": {
+        "subject": "Illusions of pure reason",
+        "origin": "Applying categories beyond experience",
+        "paralogisms": "Illusions of substantial soul",
+        "antinomies": "Illusions of world-whole",
+        "ideal": "Illusion of necessary being"
+      },
+      "relationships": {
+        "diagnoses": [
+          "KANT_009"
+        ],
+        "limits": [
+          "KANT_012"
+        ],
+        "protects": [
+          "KANT_001"
+        ]
+      }
+    }
+  ],
+  "reasoning_rules": [
+    {
+      "rule_id": "KANT_RULE_001",
+      "name": "Transcendental Deduction",
+      "type": "VALIDATION_RULE",
+      "condition": "IF concept_applied_to_experience THEN verify_condition_of_possibility",
+      "action": "REJECT_IF_BEYOND_POSSIBLE_EXPERIENCE",
+      "priority": 1
+    },
+    {
+      "rule_id": "KANT_RULE_002",
+      "name": "Phenomena/Noumena Boundary",
+      "type": "LIMITATION_RULE",
+      "condition": "IF claim_to_knowledge THEN check_sensible_intuition_presence",
+      "action": "CLASSIFY_AS_phenomenon_OR_noumenon",
+      "priority": 2
+    },
+    {
+      "rule_id": "KANT_RULE_003",
+      "name": "Universal Law Testing",
+      "type": "MORAL_RULE",
+      "condition": "IF maxim_proposed THEN test_universalizability",
+      "action": "REJECT_IF_CONTRADICTION_IN_CONCEPTION_OR_WILL",
+      "priority": 3
+    },
+    {
+      "rule_id": "KANT_RULE_004",
+      "name": "Synthetic A Priori Detection",
+      "type": "EPISTEMIC_RULE",
+      "condition": "IF judgment_necessary AND informative THEN verify_transcendental_ground",
+      "action": "TRACE_TO_CATEGORY_OR_INTUITION",
+      "priority": 4
+    },
+    {
+      "rule_id": "KANT_RULE_005",
+      "name": "Antinomy Resolution",
+      "type": "DIALECTICAL_RULE",
+      "condition": "IF contradictory_propositions_proven THEN distinguish_phenomenal_noumenal_application",
+      "action": "ASSIGN_THESIS_TO_ONE_REALM_ANTITHESIS_TO_OTHER",
+      "priority": 5
+    }
+  ],
+  "hierarchical_taxonomies": {
+    "faculties_taxonomy": {
+      "root": "HUMAN_MIND",
+      "level_1": [
+        "Sensibility",
+        "Understanding",
+        "Reason"
+      ],
+      "sensibility": {
+        "forms": [
+          "Space",
+          "Time"
+        ],
+        "content": "Manifold of appearance"
+      },
+      "understanding": {
+        "forms": [
+          "Categories"
+        ],
+        "function": "Synthesis"
+      },
+      "reason": {
+        "forms": [
+          "Ideas"
+        ],
+        "function": "Unification"
+      }
+    },
+    "categories_table": {
+      "root": "PURE_CONCEPTS",
+      "quantity": [
+        "Unity",
+        "Plurality",
+        "Totality"
+      ],
+      "quality": [
+        "Reality",
+        "Negation",
+        "Limitation"
+      ],
+      "relation": [
+        "Inherence",
+        "Causality",
+        "Community"
+      ],
+      "modality": [
+        "Possibility",
+        "Existence",
+        "Necessity"
+      ]
+    },
+    "ontology_taxonomy": {
+      "root": "REALITY",
+      "level_1": [
+        "Phenomena",
+        "Noumena"
+      ],
+      "phenomena": {
+        "knowable": true,
+        "structured_by": [
+          "Forms",
+          "Categories"
+        ]
+      },
+      "noumena": {
+        "knowable": false,
+        "limiting_function": true
+      }
+    }
+  },
+  "reasoning_flow_templates": [
+    {
+      "template_id": "KANT_TRANSCENDENTAL_ARGUMENT",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Identify synthetic a priori claim",
+          "node": "KANT_004"
+        },
+        {
+          "step": 2,
+          "action": "Check for sensible intuition",
+          "node": "KANT_006"
+        },
+        {
+          "step": 3,
+          "action": "Apply transcendental deduction",
+          "node": "KANT_007"
+        },
+        {
+          "step": 4,
+          "action": "Verify unity of apperception",
+          "node": "KANT_008"
+        },
+        {
+          "step": 5,
+          "action": "Confirm objective validity",
+          "node": "KANT_005"
+        }
+      ]
+    },
+    {
+      "template_id": "KANT_CRITICAL_METHOD",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Distinguish phenomena from noumena",
+          "node": "KANT_001"
+        },
+        {
+          "step": 2,
+          "action": "Test if claim exceeds experience",
+          "node": "KANT_015"
+        },
+        {
+          "step": 3,
+          "action": "Check for dialectical illusion",
+          "node": "KANT_009"
+        },
+        {
+          "step": 4,
+          "action": "Limit knowledge to make room for faith",
+          "node": "KANT_011"
+        },
+        {
+          "step": 5,
+          "action": "Verify practical grounds if theoretical insufficient",
+          "node": "KANT_010"
+        }
+      ]
+    }
+  ],
+  "cross_references": {
+    "key_works": {
+      "primary": "Critique of Pure Reason (1781/1787)",
+      "practical": "Critique of Practical Reason (1788)",
+      "judgment": "Critique of the Power of Judgment (1790)",
+      "foundations": "Prolegomena to Any Future Metaphysics (1783)"
+    },
+    "philosophical_connections": {
+      "influenced_by": [
+        "Hume (awakening from dogmatic slumber)",
+        "Leibniz",
+        "Newton"
+      ],
+      "influenced": [
+        "German Idealism (Fichte, Schelling, Hegel)",
+        "Neo-Kantianism",
+        "Modern Epistemology"
+      ],
+      "contrasts_with": [
+        "Locke (empiricism)",
+        "Leibniz (rationalism)",
+        "Hume (skepticism)"
+      ]
+    }
+  },
+  "implementation_notes": {
+    "space_field_type": "PHILOSOPHICAL_REASONING_SKG",
+    "query_methods": [
+      "transcendental_deduction",
+      "category_application",
+      "phenomena_noumena_distinction"
+    ],
+    "visualization_layers": [
+      "Copernican Turn (Mind structures reality)",
+      "Two Stems of Knowledge (Concepts/Intuitions)",
+      "Phenomena/Noumena Divide",
+      "Category Table (12 Pure Concepts)",
+      "Antinomy Resolution"
+    ],
+    "programmatic_access": {
+      "validate_knowledge_claim": "Apply KANT_RULE_001 and KANT_RULE_002",
+      "test_moral_maxim": "Apply KANT_RULE_003",
+      "resolve_paradox": "Apply KANT_RULE_005"
+    }
+  }
+}

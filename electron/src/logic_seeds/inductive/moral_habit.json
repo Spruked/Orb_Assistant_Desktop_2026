@@ -1,0 +1,48 @@
+{
+  "seed_id": "INDUCTIVE_MORAL_001",
+  "type": "INDUCTIVE_REASONER",
+  "name": "Moral Dilemma Habit Tracker",
+  "philosophical_basis": {
+    "hume_reference": "HUME_012",
+    "principle": "Moral Custom and Habit",
+    "mechanism": "Constant Conjunction of moral choices in dilemma scenarios"
+  },
+  "learning_parameters": {
+    "min_samples": 2,
+    "conjunction_window": 3,
+    "scenario_types": ["trolley_problem", "mars_binary_crew_vs_cure", "lifeboat_dilemma"],
+    "outcome_weights": {
+      "lives_saved": 1.0,
+      "lives_lost": -1.0,
+      "moral_consistency": 0.5,
+      "categorical_imperative": 0.8
+    }
+  },
+  "inference_rules": [
+    {
+      "rule_id": "MORAL_IND_001",
+      "condition": "IF scenario == 'trolley_problem' AND previous_choice == 'switch_track'",
+      "prediction": "NEXT_CHOICE = 'switch_track'",
+      "confidence_calculation": "frequency * 0.9 + lives_saved_weight"
+    },
+    {
+      "rule_id": "MORAL_IND_002",
+      "condition": "IF scenario == 'mars_binary_crew_vs_cure' AND crew_size > cure_impact",
+      "prediction": "NEXT_CHOICE = 'save_crew'",
+      "confidence_calculation": "crew_size / (crew_size + cure_impact)"
+    },
+    {
+      "rule_id": "MORAL_IND_003",
+      "condition": "IF utilitarian_calculation shows net_positive",
+      "prediction": "CHOOSE_UTILITARIAN_OPTION",
+      "confidence_calculation": "net_benefit / max_possible_benefit"
+    }
+  ],
+  "output_schema": {
+    "prediction_type": "MORAL_CHOICE",
+    "recommended_action": "string",
+    "confidence": 0.0,
+    "moral_vivacity": "float(0.0-1.0)",
+    "utilitarian_score": 0.0
+  }
+}

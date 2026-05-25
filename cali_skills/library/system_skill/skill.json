@@ -1,0 +1,31 @@
+{
+  "skill_id": "system",
+  "name": "System Operations",
+  "version": "1.0.0",
+  "category": "infrastructure",
+  "description": "File system, process management, system diagnostics, path resolution",
+  "entry_class": "SystemSkill",
+  "author": "CALI Core",
+  "triggers": ["file", "folder", "directory", "path", "process", "system", "exec", "read", "write", "list"],
+  "capabilities": [
+    "read_file",
+    "write_file",
+    "append_file",
+    "list_directory",
+    "exec_command",
+    "sys_info",
+    "path_exists",
+    "create_directory",
+    "delete_file",
+    "file_stats",
+    "process_list",
+    "kill_process",
+    "disk_usage",
+    "env_vars"
+  ],
+  "memory_scope": ["system_cache", "file_index", "process_history"],
+  "dependencies": [],
+  "priority": "critical",
+  "sandbox": false,
+  "allowed_commands": []
+}

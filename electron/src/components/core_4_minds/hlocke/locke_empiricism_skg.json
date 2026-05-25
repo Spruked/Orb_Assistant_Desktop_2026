@@ -1,0 +1,619 @@
+{
+  "skg_metadata": {
+    "philosopher": "John Locke",
+    "system": "Empiricism & Ideational Theory",
+    "version": "1.0",
+    "domain": "Epistemology and Political Philosophy",
+    "space_field_id": "locke_empiricism_skg",
+    "created": "2025-12-21",
+    "format": "HLSF_SKG_v2"
+  },
+  "core_axiom": {
+    "node_id": "LOCKE_001",
+    "label": "Tabula Rasa - Mind as Blank Slate",
+    "type": "FOUNDATIONAL_PRINCIPLE",
+    "definition": "All knowledge originates from experience; no innate ideas exist in the mind at birth",
+    "properties": {
+      "certainty": "ABSOLUTE",
+      "source_text": "An Essay Concerning Human Understanding",
+      "book": "Book I, Chapter I",
+      "target": "Cartesian/Rationalist innate ideas"
+    }
+  },
+  "concept_nodes": [
+    {
+      "node_id": "LOCKE_002",
+      "label": "Simple Ideas",
+      "type": "COGNITIVE_UNIT",
+      "category": "BASIC_CONTENT",
+      "properties": {
+        "definition": "Uncompounded appearances conveyed by sense or reflection",
+        "origin": [
+          "Sensation",
+          "Reflection"
+        ],
+        "divisible": false,
+        "examples": [
+          "solidity",
+          "extension",
+          "number",
+          "yellow",
+          "heat"
+        ],
+        "vivacity": "HIGH"
+      },
+      "relationships": {
+        "derived_from": [
+          "LOCKE_004",
+          "LOCKE_005"
+        ],
+        "combines_to_form": [
+          "LOCKE_003"
+        ],
+        "contrasts_with": [
+          "LOCKE_011"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_003",
+      "label": "Complex Ideas",
+      "type": "COGNITIVE_UNIT",
+      "category": "COMPOUND_CONTENT",
+      "properties": {
+        "definition": "Combinations of simple ideas united by mental operations",
+        "operations": [
+          "combining",
+          "comparing",
+          "abstracting"
+        ],
+        "types": [
+          "Modes",
+          "Substances",
+          "Relations"
+        ],
+        "examples": [
+          "beauty",
+          "gratitude",
+          "man",
+          "army",
+          "universe"
+        ]
+      },
+      "relationships": {
+        "composed_of": [
+          "LOCKE_002"
+        ],
+        "produced_by": [
+          "LOCKE_011"
+        ],
+        "contrasts_with": [
+          "LOCKE_002"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_004",
+      "label": "Sensation",
+      "type": "KNOWLEDGE_SOURCE",
+      "category": "EXTERNAL_SOURCE",
+      "properties": {
+        "definition": "External objects conveying ideas via senses",
+        "target": "External sensible objects",
+        "output": "Simple ideas of sense",
+        "modalities": [
+          "sight",
+          "hearing",
+          "touch",
+          "taste",
+          "smell"
+        ]
+      },
+      "relationships": {
+        "produces": [
+          "LOCKE_002"
+        ],
+        "paired_with": [
+          "LOCKE_005"
+        ],
+        "feeds_into": [
+          "LOCKE_010"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_005",
+      "label": "Reflection",
+      "type": "KNOWLEDGE_SOURCE",
+      "category": "INTERNAL_SOURCE",
+      "properties": {
+        "definition": "Internal sense observing mind's own operations",
+        "target": "Mind's operations on received ideas",
+        "output": "Simple ideas of reflection",
+        "examples": [
+          "thinking",
+          "doubting",
+          "willing"
+        ]
+      },
+      "relationships": {
+        "produces": [
+          "LOCKE_002"
+        ],
+        "paired_with": [
+          "LOCKE_004"
+        ],
+        "enables": [
+          "LOCKE_008"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_006",
+      "label": "Primary Qualities",
+      "type": "OBJECT_PROPERTY",
+      "category": "MIND_INDEPENDENT",
+      "properties": {
+        "definition": "Qualities inseparable from body in all states",
+        "examples": [
+          "solidity",
+          "extension",
+          "figure",
+          "motion",
+          "number"
+        ],
+        "resemblance": true,
+        "mechanism": "Bulk, figure, texture of insensible parts",
+        "inherence": "In the object itself"
+      },
+      "relationships": {
+        "contrasts_with": [
+          "LOCKE_007"
+        ],
+        "produce_ideas_of": [
+          "LOCKE_002"
+        ],
+        "resemble": [
+          "LOCKE_002"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_007",
+      "label": "Secondary Qualities",
+      "type": "OBJECT_PROPERTY",
+      "category": "MIND_DEPENDENT",
+      "properties": {
+        "definition": "Powers to produce sensations via primary qualities",
+        "examples": [
+          "color",
+          "sound",
+          "taste",
+          "odor",
+          "texture"
+        ],
+        "resemblance": false,
+        "mechanism": "Particle configurations causing sensory effects",
+        "subjectivity": "Dependent on perceiver"
+      },
+      "relationships": {
+        "contrasts_with": [
+          "LOCKE_006"
+        ],
+        "grounded_in": [
+          "LOCKE_006"
+        ],
+        "do_not_resemble": [
+          "LOCKE_002"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_008",
+      "label": "Intuitive Knowledge",
+      "type": "KNOWLEDGE_DEGREE",
+      "category": "HIGHEST_CERTAINTY",
+      "properties": {
+        "definition": "Immediate perception of agreement/disagreement of ideas",
+        "certainty": "ABSOLUTE",
+        "examples": [
+          "White is not black",
+          "Circle is not triangle"
+        ],
+        "immediacy": "No intermediate steps required"
+      },
+      "relationships": {
+        "superior_to": [
+          "LOCKE_009",
+          "LOCKE_010"
+        ],
+        "basis_for": [
+          "LOCKE_009"
+        ],
+        "contrasts_with": [
+          "LOCKE_010"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_009",
+      "label": "Demonstrative Knowledge",
+      "type": "KNOWLEDGE_DEGREE",
+      "category": "MEDIATED_CERTAINTY",
+      "properties": {
+        "definition": "Knowledge via intermediate ideas showing agreement/disagreement",
+        "method": "Syllogistic steps with intuitive certainty at each step",
+        "certainty": "HIGH",
+        "examples": [
+          "Mathematical proofs",
+          "Moral reasoning"
+        ],
+        "requirements": "Each step must be intuitively certain"
+      },
+      "relationships": {
+        "built_from": [
+          "LOCKE_008"
+        ],
+        "superior_to": [
+          "LOCKE_010"
+        ],
+        "contrasts_with": [
+          "LOCKE_008"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_010",
+      "label": "Sensitive Knowledge",
+      "type": "KNOWLEDGE_DEGREE",
+      "category": "SENSORY_CERTAINTY",
+      "properties": {
+        "definition": "Knowledge of external existence via senses",
+        "certainty": "LIMITED",
+        "scope": "Existence only, not essence",
+        "examples": [
+          "This stone exists",
+          "That fire is hot"
+        ],
+        "limitations": "Does not extend to hidden structures"
+      },
+      "relationships": {
+        "derived_from": [
+          "LOCKE_004"
+        ],
+        "inferior_to": [
+          "LOCKE_008",
+          "LOCKE_009"
+        ],
+        "subject_to": [
+          "LOCKE_014"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_011",
+      "label": "Abstract Ideas",
+      "type": "COGNITIVE_OPERATION",
+      "category": "GENERALIZATION",
+      "properties": {
+        "definition": "Ideas separated from particular circumstances of time/place",
+        "operation": "Partial consideration of complex ideas",
+        "function": "Enables general terms and universal knowledge",
+        "examples": [
+          "Man abstracted from Peter and James"
+        ],
+        "risk": "Leads to confusion if over-abstracted"
+      },
+      "relationships": {
+        "produces": [
+          "LOCKE_003"
+        ],
+        "enabled_by": [
+          "LOCKE_002"
+        ],
+        "requires": [
+          "LOCKE_002"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_012",
+      "label": "Real vs Nominal Essence",
+      "type": "ONTOLOGICAL_DISTINCTION",
+      "category": "ESSENCE_THEORY",
+      "properties": {
+        "real_essence": "Unknown internal constitution producing qualities",
+        "nominal_essence": "Abstract idea we attach to name",
+        "knowability": "Real essence unknown (microstructure), nominal known",
+        "implication": "Species classification is conventional not natural"
+      },
+      "relationships": {
+        "grounds": [
+          "LOCKE_003"
+        ],
+        "limits": [
+          "LOCKE_009"
+        ],
+        "contrasts_with": [
+          "SPINOZA_002"
+        ]
+      }
+    },
+    {
+      "node_id": "LOCKE_013",
+      "label": "Property Rights",
+      "type": "POLITICAL_PRINCIPLE",
+      "category": "NATURAL_LAW",
+      "properties": {
+        "origin": "Labor mixing with unowned resources",
+        "limitation": "Spoilage proviso and enough-and-as-good",
+        "transfer": "Consent-based exchange or gift",
+        "foundation": "Self-ownership extends to world via labor"
+      },
+      "relationships": {
+        "derived_from": [
+          "LOCKE_002"
+        ],
+        "enables": [
+          "LOCKE_014"
+        ],
+        "source": "Second Treatise of Government"
+      }
+    },
+    {
+      "node_id": "LOCKE_014",
+      "label": "Government by Consent",
+      "type": "POLITICAL_PRINCIPLE",
+      "category": "SOCIAL_CONTRACT",
+      "properties": {
+        "legitimacy": "Derived from consent of governed",
+        "purpose": "Protection of natural rights (life, liberty, property)",
+        "dissolution": "When government violates trust",
+        "sovereignty": "Limited by natural law"
+      },
+      "relationships": {
+        "requires": [
+          "LOCKE_013"
+        ],
+        "contrasts_with": [
+          "HUME_015"
+        ],
+        "source": "Second Treatise of Government"
+      }
+    },
+    {
+      "node_id": "LOCKE_015",
+      "label": "Erroneous Judgment",
+      "type": "EPISTEMIC_FAILURE",
+      "category": "COGNITIVE_ERROR",
+      "properties": {
+        "source": "Wrongly joining ideas not meant to be joined",
+        "types": [
+          "Passion",
+          "Custom",
+          "Education",
+          "False principles"
+        ],
+        "remedy": "Examination and suspension of judgment",
+        "probability_assessment": "Degree of agreement based on evidence"
+      },
+      "relationships": {
+        "targets": [
+          "LOCKE_003"
+        ],
+        "prevented_by": [
+          "LOCKE_008"
+        ],
+        "subject_to": [
+          "LOCKE_014"
+        ]
+      }
+    }
+  ],
+  "reasoning_rules": [
+    {
+      "rule_id": "LOCKE_RULE_001",
+      "name": "Innate Idea Rejection",
+      "type": "VALIDATION_RULE",
+      "condition": "IF idea_claimed_universal THEN search_experiential_origin",
+      "action": "REJECT_IF_NO_SENSORY_OR_REFLECTIVE_SOURCE",
+      "priority": 1
+    },
+    {
+      "rule_id": "LOCKE_RULE_002",
+      "name": "Idea Decomposition",
+      "type": "ANALYTIC_RULE",
+      "condition": "IF complex_idea_presented THEN trace_to_simple_components",
+      "action": "VERIFY_COMPOSITION_CHAIN",
+      "priority": 2
+    },
+    {
+      "rule_id": "LOCKE_RULE_003",
+      "name": "Quality Classification",
+      "type": "PERCEPTUAL_RULE",
+      "condition": "IF quality_observed THEN test_resemblance_to_idea",
+      "action": "CLASSIFY_AS_primary_OR_secondary",
+      "priority": 3
+    },
+    {
+      "rule_id": "LOCKE_RULE_004",
+      "name": "Knowledge Degree Assessment",
+      "type": "EPISTEMIC_RULE",
+      "condition": "IF proposition_evaluated THEN check_intermediate_steps",
+      "action": "GRADE_AS_intuitive_demonstrative_OR_sensitive",
+      "priority": 4
+    },
+    {
+      "rule_id": "LOCKE_RULE_005",
+      "name": "Abstraction Validation",
+      "type": "SEMANTIC_RULE",
+      "condition": "IF general_term_used THEN verify_nominal_essence",
+      "action": "CHECK_AGAINST_REAL_EXISTENTS",
+      "priority": 5
+    }
+  ],
+  "hierarchical_taxonomies": {
+    "knowledge_taxonomy": {
+      "root": "HUMAN_UNDERSTANDING",
+      "level_1": [
+        "Intuitive",
+        "Demonstrative",
+        "Sensitive"
+      ],
+      "certainty_levels": {
+        "Intuitive": "ABSOLUTE_IMMEDIATE",
+        "Demonstrative": "ABSOLUTE_MEDIATED",
+        "Sensitive": "PROBABLE_EXISTENTIAL"
+      }
+    },
+    "ideas_taxonomy": {
+      "root": "MENTAL_CONTENT",
+      "level_1": [
+        "Simple",
+        "Complex"
+      ],
+      "level_2": {
+        "Simple": [
+          "Sensation",
+          "Reflection"
+        ],
+        "Complex": [
+          "Modes",
+          "Substances",
+          "Relations"
+        ]
+      },
+      "origin": "All from Experience"
+    },
+    "qualities_taxonomy": {
+      "root": "OBJECTUAL_PROPERTIES",
+      "level_1": [
+        "Primary",
+        "Secondary"
+      ],
+      "primary_examples": [
+        "Solidity",
+        "Figure",
+        "Motion"
+      ],
+      "secondary_examples": [
+        "Color",
+        "Sound",
+        "Taste"
+      ],
+      "resemblance": {
+        "Primary": true,
+        "Secondary": false
+      }
+    }
+  },
+  "reasoning_flow_templates": [
+    {
+      "template_id": "LOCKE_EMPIRICAL_INVESTIGATION",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Receive simple ideas via sensation",
+          "node": "LOCKE_004"
+        },
+        {
+          "step": 2,
+          "action": "Receive simple ideas via reflection",
+          "node": "LOCKE_005"
+        },
+        {
+          "step": 3,
+          "action": "Combine into complex ideas",
+          "node": "LOCKE_003"
+        },
+        {
+          "step": 4,
+          "action": "Abstract general notions",
+          "node": "LOCKE_011"
+        },
+        {
+          "step": 5,
+          "action": "Assess knowledge degree",
+          "node": "LOCKE_008"
+        }
+      ]
+    },
+    {
+      "template_id": "LOCKE_IDEA_ANALYSIS",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Identify complex idea",
+          "node": "LOCKE_003"
+        },
+        {
+          "step": 2,
+          "action": "Decompose to simple components",
+          "node": "LOCKE_002"
+        },
+        {
+          "step": 3,
+          "action": "Trace to experiential origin",
+          "node": "LOCKE_004"
+        },
+        {
+          "step": 4,
+          "action": "Verify no innate content",
+          "node": "LOCKE_001"
+        },
+        {
+          "step": 5,
+          "action": "Assess certainty level",
+          "node": "LOCKE_009"
+        }
+      ]
+    }
+  ],
+  "cross_references": {
+    "key_works": {
+      "primary": "An Essay Concerning Human Understanding (1689)",
+      "political": [
+        "Two Treatises of Government (1689)",
+        "Letter Concerning Toleration"
+      ],
+      "economic": [
+        "Some Considerations on the Consequences of the Lowering of Interest"
+      ]
+    },
+    "philosophical_connections": {
+      "influenced_by": [
+        "Descartes (reacting against)",
+        "Gassendi"
+      ],
+      "influenced": [
+        "Hume",
+        "Berkeley",
+        "French Enlightenment",
+        "American Founders"
+      ],
+      "contrasts_with": [
+        "Leibniz (innate ideas)",
+        "Hobbes (absolute sovereignty)"
+      ]
+    }
+  },
+  "implementation_notes": {
+    "space_field_type": "PHILOSOPHICAL_REASONING_SKG",
+    "query_methods": [
+      "idea_tracing",
+      "quality_classification",
+      "knowledge_gradation"
+    ],
+    "visualization_layers": [
+      "Tabula Rasa State",
+      "Simple-to-Complex Idea Formation",
+      "Primary/Secondary Quality Division",
+      "Knowledge Pyramid (Intuitive→Sensitive)"
+    ],
+    "programmatic_access": {
+      "verify_origin": "Apply LOCKE_RULE_001 and LOCKE_RULE_002",
+      "classify_quality": "Apply LOCKE_RULE_003",
+      "assess_certainty": "Apply LOCKE_RULE_004"
+    }
+  }
+}

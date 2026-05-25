@@ -1,0 +1,40 @@
+{
+  "seed_id": "INDUCTIVE_CURSOR_001",
+  "type": "INDUCTIVE_REASONER",
+  "name": "Cursor Habit Tracker",
+  "philosophical_basis": {
+    "hume_reference": "HUME_007",
+    "principle": "Custom or Habit",
+    "mechanism": "Constant Conjunction of cursor coordinates over time"
+  },
+  "learning_parameters": {
+    "min_samples": 3,
+    "conjunction_window": 5,
+    "velocity_threshold": 0.5,
+    "quadrant_grid": {
+      "x_divisions": 2,
+      "y_divisions": 2,
+      "labels": ["NW", "NE", "SW", "SE"]
+    }
+  },
+  "inference_rules": [
+    {
+      "rule_id": "IND_001",
+      "condition": "IF quadrant_sequence == [Q1, Q2, Q3] AND frequency > 0.75",
+      "prediction": "NEXT_QUADRANT = Q4",
+      "confidence_calculation": "frequency * temporal_decay"
+    },
+    {
+      "rule_id": "IND_002",
+      "condition": "IF velocity_vector consistent over n=3 samples",
+      "prediction": "EXTEND_VECTOR by 1.5x magnitude",
+      "confidence_calculation": "vector_magnitude / max_recorded"
+    }
+  ],
+  "output_schema": {
+    "prediction_type": "QUADRANT_TRANSITION|VECTOR_EXTENSION",
+    "target_coordinates": [0, 0],
+    "confidence": 0.0,
+    "hume_vivacity": "float(0.0-1.0)"
+  }
+}

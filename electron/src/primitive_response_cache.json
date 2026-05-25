@@ -1,0 +1,111 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "Deterministic social/presence responses. Resolved before any routing, tool call, provider, SKG, or governance layer.",
+    "hard_rule": "Cache tiny known social returns. Route real work. Govern deep judgment."
+  },
+  "entries": [
+    {
+      "id": "greeting_hello",
+      "response": "Hey — I'm here.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "greeting_hey",
+      "response": "Hey.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "greeting_hi",
+      "response": "Hi.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "presence_check_there",
+      "response": "I'm here.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "presence_check_listening",
+      "response": "Yes — listening.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "presence_check_hear",
+      "response": "Yes, I can hear you.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "acknowledgement_ok",
+      "response": "Got it.",
+      "emotion": "neutral_confirm",
+      "route_class": "primitive"
+    },
+    {
+      "id": "acknowledgement_thanks",
+      "response": "Of course.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "acknowledgement_thank_you",
+      "response": "You're welcome.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "acknowledgement_cool",
+      "response": "Good.",
+      "emotion": "neutral_confirm",
+      "route_class": "primitive"
+    },
+    {
+      "id": "acknowledgement_got_it",
+      "response": "Noted.",
+      "emotion": "neutral_confirm",
+      "route_class": "primitive"
+    },
+    {
+      "id": "acknowledgement_sounds_good",
+      "response": "Good.",
+      "emotion": "neutral_confirm",
+      "route_class": "primitive"
+    },
+    {
+      "id": "farewell_bye",
+      "response": "See you.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "farewell_goodbye",
+      "response": "Goodbye.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "farewell_later",
+      "response": "Later.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "presence_check_awake",
+      "response": "I'm awake.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    },
+    {
+      "id": "presence_check_ready",
+      "response": "Ready.",
+      "emotion": "warm_present",
+      "route_class": "primitive"
+    }
+  ]
+}

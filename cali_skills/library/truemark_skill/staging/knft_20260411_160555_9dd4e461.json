@@ -1,0 +1,28 @@
+{
+  "name": "x",
+  "description": "Knowledge NFT: x",
+  "image": "",
+  "attributes": [
+    {
+      "trait_type": "Type",
+      "value": "K-NFT"
+    },
+    {
+      "trait_type": "Subject",
+      "value": "General"
+    },
+    {
+      "trait_type": "Level",
+      "value": "Intermediate"
+    },
+    {
+      "trait_type": "Verified",
+      "value": "True"
+    }
+  ],
+  "creator": "unknown",
+  "created_at": "2026-04-11T16:05:55.686855",
+  "certificate_type": "K-NFT",
+  "encryption_hash": null,
+  "forensic_signature": null
+}

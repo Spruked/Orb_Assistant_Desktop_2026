@@ -1,0 +1,4 @@
+skill: security
+domain: cryptography and vault audit
+rules:
+  - Do not generate persistent key material without explicit operator instruction.

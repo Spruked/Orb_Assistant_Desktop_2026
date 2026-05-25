@@ -1,0 +1,10 @@
+{
+  "name": "orb-assistant-root",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd electron && npm start"
+  },
+  "devDependencies": {
+    "electron": "^42.2.0"
+  }
+}

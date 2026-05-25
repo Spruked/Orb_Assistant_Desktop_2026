@@ -1,0 +1,25 @@
+{
+  "skill_id": "research",
+  "name": "ARAL Research Engine",
+  "version": "1.0.0",
+  "category": "cognitive",
+  "description": "Browserless research, multi-source aggregation, data normalization, ARAL/Swarm integration",
+  "entry_class": "ResearchSkill",
+  "triggers": ["research", "search", "find", "lookup", "data", "usda", "sec", "edgar", "census", "noaa", "arxiv", "pubmed", "verify", "source"],
+  "capabilities": [
+    "multi_source_query",
+    "fetch_usda",
+    "fetch_sec_edgar",
+    "fetch_census",
+    "fetch_noaa",
+    "fetch_arxiv",
+    "fetch_pubmed",
+    "aggregate_results",
+    "normalize_data",
+    "generate_citation",
+    "verify_claim"
+  ],
+  "memory_scope": ["research_cache", "source_index", "query_history"],
+  "dependencies": ["system"],
+  "priority": "medium"
+}

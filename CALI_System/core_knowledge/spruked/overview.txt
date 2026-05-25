@@ -1,0 +1,2 @@
+Spruked is the operator ecosystem around the Orb assistant and related websites/services.
+Known website surfaces include spruked.com, truemarkmint.com, shilohridgekatahdins.com, alphacertsig.com, and dragonithome.spruked.com.

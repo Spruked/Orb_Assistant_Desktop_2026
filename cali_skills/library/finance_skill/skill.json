@@ -1,0 +1,12 @@
+{
+  "skill_id": "finance",
+  "name": "Finance Operations",
+  "version": "1.0.0",
+  "category": "finance",
+  "description": "Accounting, crypto, market analysis, and financial workflow support.",
+  "entry_class": "FinanceSkill",
+  "triggers": ["finance", "accounting", "crypto", "wallet", "trading", "budget", "tax", "market"],
+  "capabilities": ["explain", "route"],
+  "memory_scope": ["skills/finance"],
+  "dependencies": []
+}

@@ -1,0 +1,34 @@
+{
+  "nodes": [
+    {
+      "id": "file_operation",
+      "type": "capability",
+      "attributes": {
+        "risk_level": "medium",
+        "requires_confirmation": ["delete", "write", "exec"]
+      }
+    },
+    {
+      "id": "path_resolution",
+      "type": "concept",
+      "attributes": {
+        "supports_glob": true,
+        "supports_relative": true,
+        "home_expansion": "~"
+      }
+    },
+    {
+      "id": "process_management",
+      "type": "capability",
+      "attributes": {
+        "risk_level": "high",
+        "timeout_default": 30,
+        "shell": true
+      }
+    }
+  ],
+  "edges": [
+    {"source": "file_operation", "target": "path_resolution", "relation": "depends_on"},
+    {"source": "process_management", "target": "file_operation", "relation": "can_trigger"}
+  ]
+}

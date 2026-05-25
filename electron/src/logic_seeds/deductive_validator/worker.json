@@ -1,0 +1,14 @@
+{
+  "worker_id": "deductive_validator",
+  "version": "1.0.0-final",
+  "interface_frozen": true,
+  "observational_only": true,
+  "no_core_imports": true,
+  "logic_path": "logic/deductive_validation.py",
+  "cognitive_path": "logic/validation_state.py",
+  "entry_point": "job/validate.py",
+  "role": "final_validation",
+  "blocking": false,
+  "observational": true,
+  "hlsf_integration": true
+}

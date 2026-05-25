@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "types": [
+      "node"
+    ],
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@cali-ucm": [
+        "R:/CALI-UCM/index.ts"
+      ],
+      "@cali-ucm/*": [
+        "R:/CALI-UCM/*"
+      ]
+    }
+  },
+  "include": [
+    "./index.ts"
+  ]
+}

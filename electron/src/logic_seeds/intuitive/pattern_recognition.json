@@ -1,0 +1,33 @@
+{
+  "seed_id": "INTUITIVE_JUMP_001",
+  "type": "INTUITIVE_GRASP",
+  "name": "Spinozan Necessity Recognition",
+  "philosophical_basis": {
+    "spinoza_reference": "SPINOZA_011",
+    "principle": "Intellectual Love of God",
+    "mechanism": "Immediate comprehension of necessity through Substance unity",
+    "attribute": "Thought-Extension Parallelism"
+  },
+  "trigger_conditions": {
+    "hlsf_field_density_threshold": 50,
+    "bilateral_symmetry_detected": true,
+    "cross_path_shadow_alignment": 0.85,
+    "mode_convergence": {
+      "min_modes": 3,
+      "attribute_consensus": ["Thought", "Extension"]
+    }
+  },
+  "bypass_logic": {
+    "description": "When Substance reveals itself through self-similar density, bypass sequential traversal",
+    "deterministic_rule": "IF field_density > 50 AND symmetry_score > 0.9 THEN thought_vector = immediate_necessity",
+    "conatus_preservation": true,
+    "vivacity_override": "absolute_certainty"
+  },
+  "output_schema": {
+    "jump_triggered": false,
+    "necessity_vector": [0.0, 0.0],
+    "substance_unity_score": 0.0,
+    "bypass_steps": 0,
+    "spinozan_certainty": 0.0
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "title": "ORB Core Standard",
+    "hard_rule": "The ORB is one system. The shell is only where it lives."
+  },
+
+  "shells": [
+    "desktop",
+    "browser",
+    "website",
+    "dock_station",
+    "goat",
+    "truemark",
+    "microsoft_store"
+  ],
+
+  "allowed_to_differ_per_shell": [
+    "location",
+    "available_permissions",
+    "available_tools",
+    "branding",
+    "persona_name",
+    "shell_ui",
+    "distribution_restrictions",
+    "voice_provider"
+  ],
+
+  "must_not_differ": {
+    "primitive_behavior": "All shells use the same primitive_response_cache.json and primitive_normalization_aliases.json",
+    "intent_classification": "Intent classes and routing priority are fixed: primitive → tool → normal → governance",
+    "provider_fallback_law": "Fallback must not change the intent class",
+    "display_voice_equivalence": "displayed_response === spoken_response at all times",
+    "governance_activation_rule": "CALISKG is the judgment chamber, not the default mouth",
+    "response_metadata_schema": "Every response carries _route_meta conforming to orb_routing_meta.py",
+    "heartbeat_contract": "Every running ORB shell emits heartbeat conforming to OrbHeartbeat.snapshot()",
+    "alignment_layer": "Every input passes through AlignmentLayer.filter() before cognitive execution",
+    "manifest_injection_contract": "orb_standard_version reported in every heartbeat"
+  },
+
+  "routing_priority_order": [
+    "primitive_cache",
+    "tool_router",
+    "current_info_router",
+    "normal_cognition",
+    "governance_deep_reasoning"
+  ],
+
+  "heartbeat_schema": {
+    "orb_standard_version": "string",
+    "orb_id": "string",
+    "orb_shell": "string",
+    "heartbeat": "ok | degraded | offline",
+    "uptime_s": "number",
+    "router_version": "string",
+    "provider_status": "string",
+    "cognition_mode": "string",
+    "last_route": "string | null",
+    "last_error": "string | null",
+    "active_permissions": "array",
+    "timestamp": "number"
+  },
+
+  "response_meta_schema": {
+    "provider_selected": "string",
+    "provider_used": "string",
+    "fallback_reason": "string | null",
+    "cognition_mode": "string",
+    "intent": "string",
+    "bypassed_provider": "boolean",
+    "bypassed_governance": "boolean",
+    "route_class": "primitive | tool | normal | governance",
+    "ts": "number"
+  },
+
+  "restricted_shell_profiles": {
+    "microsoft_store": {
+      "allowed": [
+        "windows_tts",
+        "typed_input",
+        "optional_mic_with_consent",
+        "local_settings",
+        "safe_assistant_loop",
+        "local_logging",
+        "standard_primitive_cache",
+        "standard_display_voice_equivalence"
+      ],
+      "gated_or_excluded": [
+        "custom_voice_cloning",
+        "undisclosed_model_training",
+        "unsafe_local_background_services",
+        "unapproved_always_on_mic",
+        "experimental_substrate_access_without_disclosure"
+      ]
+    }
+  },
+
+  "retest_suite": {
+    "categories": [
+      "primitive_greeting",
+      "presence_check",
+      "typo_spacing_primitive",
+      "acknowledgement",
+      "weather_current_info",
+      "tool_route",
+      "normal_assistant_chat",
+      "deep_cognition",
+      "provider_fallback",
+      "voice_display_equivalence",
+      "stale_build_detection",
+      "frontend_endpoint_tracing"
+    ],
+    "required_phrases": [
+      "hello",
+      "are you there?",
+      "Areyou listening now?",
+      "thank you",
+      "ok",
+      "what is the weather now?",
+      "check NOAA now",
+      "can you use the substrate and check NOAA for weather in Hawaii?",
+      "what can you help me with?",
+      "explain Kant categorical imperative"
+    ]
+  }
+}

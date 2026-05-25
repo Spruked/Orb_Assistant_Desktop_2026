@@ -1,0 +1,24 @@
+{
+  "skill_id": "security",
+  "name": "Security & Cryptography",
+  "version": "1.0.0",
+  "category": "infrastructure",
+  "description": "Encryption, hashing, vault access, integrity verification, secure key management",
+  "entry_class": "SecuritySkill",
+  "triggers": ["encrypt", "decrypt", "hash", "sha256", "chacha", "vault", "key", "certificate", "verify", "sign"],
+  "capabilities": [
+    "chacha20_encrypt",
+    "chacha20_decrypt",
+    "sha256_hash",
+    "hmac_sign",
+    "verify_integrity",
+    "generate_key",
+    "vault_store",
+    "vault_retrieve",
+    "file_sign",
+    "file_verify"
+  ],
+  "memory_scope": ["vault_keys", "certificates", "audit_logs"],
+  "dependencies": ["system"],
+  "priority": "critical"
+}

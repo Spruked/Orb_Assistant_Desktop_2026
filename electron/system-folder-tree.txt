@@ -1,0 +1,48 @@
+Orb_Assistant/electron/
+├── .orb-assistant/
+│   └── skins/
+│       └── metadata/
+├── audio_cache/
+├── main/
+├── src/
+│   ├── components/
+│   │   └── core_4_minds/
+│   │       ├── bspinoza/
+│   │       ├── hhume/
+│   │       ├── hlocke/
+│   │       └── ikant/
+│   ├── core-bridges/
+│   ├── hlsf_geometry/
+│   ├── interface/
+│   ├── logic_seeds/
+│   │   ├── deductive_SKG/
+│   │   │   ├── job/
+│   │   │   ├── jobs/
+│   │   │   └── logic/
+│   │   ├── deductive_validator/
+│   │   │   ├── job/
+│   │   │   ├── logic/
+│   │   │   └── vault/
+│   │   ├── inductive/
+│   │   ├── inductive_skg/
+│   │   │   └── logic/
+│   │   ├── inductive_validator/
+│   │   │   └── logic/
+│   │   ├── intuitive/
+│   │   ├── intuitive_skg/
+│   │   │   └── logic/
+│   │   └── intuitive_validator/
+│   │       └── logic/
+│   ├── ui/
+│   └── vault_system/
+│       ├── apriori/
+│       └── posteriori/
+└── vault_system/
+    └── posteriori/
+
+Excluded from this structure-only tree:
+- node_modules/
+- venv/
+- dist/
+- __pycache__/
+- runtime cache folders under .orb-assistant/

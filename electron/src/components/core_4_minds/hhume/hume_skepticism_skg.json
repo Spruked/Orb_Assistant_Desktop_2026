@@ -1,0 +1,418 @@
+{
+  "skg_metadata": {
+    "philosopher": "David Hume",
+    "system": "Empirical Skepticism & Associationism",
+    "version": "1.0",
+    "domain": "Epistemology and Causal Philosophy",
+    "space_field_id": "hume_skepticism_skg",
+    "created": "2025-12-21",
+    "format": "HLSF_SKG_v2"
+  },
+  
+  "core_axiom": {
+    "node_id": "HUME_001",
+    "label": "All Ideas Derive From Impressions",
+    "type": "FOUNDATIONAL_PRINCIPLE",
+    "definition": "All mental content originates from preceding sense impressions; no innate ideas exist",
+    "properties": {
+      "certainty": "ABSOLUTE",
+      "source_text": "A Treatise of Human Nature",
+      "book": "Book I, Part I, Section I"
+    }
+  },
+
+  "concept_nodes": [
+    {
+      "node_id": "HUME_002",
+      "label": "Impressions",
+      "type": "PERCEPTUAL_UNIT",
+      "category": "ORIGINAL_EXPERIENCE",
+      "properties": {
+        "vivacity": "HIGH",
+        "origin": "Direct sensory experience",
+        "divisions": ["Impressions of Sensation", "Impressions of Reflection"],
+        "examples": ["seeing red", "feeling anger", "hearing a tone"]
+      },
+      "relationships": {
+        "precedes": ["HUME_003"],
+        "copies_to": ["HUME_003"],
+        "more_vivid_than": ["HUME_003"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_003",
+      "label": "Ideas",
+      "type": "PERCEPTUAL_UNIT",
+      "category": "DERIVATIVE_MENTAL_CONTENT",
+      "properties": {
+        "vivacity": "LOW",
+        "origin": "Copies of impressions",
+        "divisions": ["Simple Ideas", "Complex Ideas"],
+        "copy_principle": "All ideas are faint copies of impressions"
+      },
+      "relationships": {
+        "derived_from": ["HUME_002"],
+        "less_vivid_than": ["HUME_002"],
+        "combines_via": ["HUME_004"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_004",
+      "label": "Principles of Association",
+      "type": "COGNITIVE_MECHANISM",
+      "category": "MENTAL_CONNECTIVITY",
+      "properties": {
+        "primary_principles": {
+          "resemblance": "Similarity between objects",
+          "contiguity": "Spatial/temporal nearness",
+          "cause_effect": "Causal connection"
+        },
+        "function": "Link ideas in imagination"
+      },
+      "relationships": {
+        "connects": ["HUME_003"],
+        "creates_belief_via": ["HUME_005"],
+        "fundamental_to": ["HUME_009"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_005",
+      "label": "Belief",
+      "type": "COGNITIVE_STATE",
+      "category": "ASSENT",
+      "properties": {
+        "definition": "Lively idea related to present impression",
+        "mechanism": "Association produces feeling of conviction",
+        "vivacity_transfer": "From impression to idea",
+        "slogan": "Belief is a lively idea"
+      },
+      "relationships": {
+        "produced_by": ["HUME_004"],
+        "enhances": ["HUME_003"],
+        "differs_from": ["HUME_003"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_006",
+      "label": "Causation",
+      "type": "METAPHYSICAL_CONCEPT",
+      "category": "PROBLEMATIC_INFERENCE",
+      "properties": {
+        "empirical_basis": "Constant conjunction",
+        "problem": "No impression of necessary connection",
+        "origin": "Custom/Habit of mind",
+        "logical_validity": "INVALID (inductive leap)",
+        "examples": ["A always followed by B"]
+      },
+      "relationships": {
+        "association_type": ["HUME_004"],
+        "produces_expectation": ["HUME_007"],
+        "cannot_be_proven": ["HUME_012"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_007",
+      "label": "Custom or Habit",
+      "type": "PSYCHOLOGICAL_PRINCIPLE",
+      "category": "EXPERIENTIAL_LEARNING",
+      "properties": {
+        "function": "Automatic inference from repeated experience",
+        "mechanism": "Mind's tendency to expect similar patterns",
+        "necessity": "Foundation of causal inference",
+        "book_reference": "Treatise Book I, Part III"
+      },
+      "relationships": {
+        "produces": ["HUME_005"],
+        "substitutes_for": ["HUME_006"],
+        "enables": ["HUME_009"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_008",
+      "label": "The Problem of Induction",
+      "type": "EPISTEMIC_PROBLEM",
+      "category": "SKEPTICAL_CHALLENGE",
+      "properties": {
+        "formulation": "Cannot justify future predictions from past experience",
+        "circular_reasoning": "Using induction to prove induction",
+        "solution": "None - must accept as psychological necessity",
+        "implication": "No certain knowledge of matters of fact"
+      },
+      "relationships": {
+        "targets": ["HUME_006"],
+        "reinforced_by": ["HUME_012"],
+        "leads_to": ["HUME_015"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_009",
+      "label": "Relations of Ideas",
+      "type": "KNOWLEDGE_CATEGORY",
+      "category": "DEMONSTRATIVE_TRUTH",
+      "properties": {
+        "nature": "Discoverable by thought alone",
+        "examples": ["Mathematics", "Logic", "Definitions"],
+        "certainty": "ABSOLUTE",
+        "falsifiability": "Contradiction if false",
+        "truth_type": "Necessary truth"
+      },
+      "relationships": {
+        "contrasts_with": ["HUME_010"],
+        "produces_certainty": true,
+        "scope": "Limited to abstract relations"
+      }
+    },
+    
+    {
+      "node_id": "HUME_010",
+      "label": "Matters of Fact",
+      "type": "KNOWLEDGE_CATEGORY",
+      "category": "CONTINGENT_TRUTH",
+      "properties": {
+        "nature": "Based on experience and causation",
+        "examples": ["Sun will rise tomorrow", "Fire causes heat"],
+        "certainty": "PROBABILISTIC_ONLY",
+        "falsifiability": "Possible without contradiction",
+        "truth_type": "Contingent truth",
+        "skeptical_status": "Problematic"
+      },
+      "relationships": {
+        "contrasts_with": ["HUME_009"],
+        "subject_to": ["HUME_008"],
+        "produces_uncertainty": true
+      }
+    },
+    
+    {
+      "node_id": "HUME_011",
+      "label": "The Self",
+      "type": "METAPHYSICAL_ENTITY",
+      "category": "BUNDLE_THEORY",
+      "properties": {
+        "composition": "Bundle of perceptions",
+        "impression_status": "No impression of unified self",
+        "existence": "Fictitious unity",
+        "mechanism": "Memory and association create illusion of identity",
+        "slogan": "Self is a bundle"
+      },
+      "relationships": {
+        "composed_of": ["HUME_003"],
+        "challenges": ["HUME_013"],
+        "connected_by": ["HUME_004"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_012",
+      "label": "Is-Ought Problem",
+      "type": "LOGICAL_GULF",
+      "category": "METAETHICAL_PROBLEM",
+      "properties": {
+        "formulation": "Cannot derive value from facts",
+        "logical_fallacy": "Prescriptive from descriptive",
+        "implication": "Moral judgments not rationally justifiable",
+        "source": "Treatise Book III, Part I, Section I"
+      },
+      "relationships": {
+        "applies_to": ["HUME_010"],
+        "challenges": ["HUME_014"],
+        "reinforces": ["HUME_015"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_013",
+      "label": "Personal Identity",
+      "type": "METAPHYSICAL_PROBLEM",
+      "category": "UNITY_QUESTION",
+      "properties": {
+        "hume_position": "Fictitious continuity",
+        "basis": "Memory and resemblance",
+        "problem": "No connecting impression",
+        "implication": "No enduring metaphysical self"
+      },
+      "relationships": {
+        "challenged_by": ["HUME_011"],
+        "analyzed_via": ["HUME_004"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_014",
+      "label": "Moral Sentiments",
+      "type": "ETHICAL_FOUNDATION",
+      "category": "EMOTIONAL_BASIS",
+      "properties": {
+        "basis": "Feeling of approval/disapproval",
+        "rational_status": "Not derived from reason",
+        "mechanism": "Sympathy and utility",
+        "imperatives": "Psychological not logical",
+        "book_reference": "Treatise Book III"
+      },
+      "relationships": {
+        "subject_to": ["HUME_012"],
+        "produced_by": ["HUME_002"],
+        "guides_via": ["HUME_004"]
+      }
+    },
+    
+    {
+      "node_id": "HUME_015",
+      "label": "Mitigated Skepticism",
+      "type": "EPISTEMIC_STANCE",
+      "category": "PRACTICAL_PHILOSOPHY",
+      "properties": {
+        "attitude": "Acknowledge limits but act on custom",
+        "balance": "Reject speculation, accept experience",
+        "method": "Naturalism and common life",
+        "solution_to": ["HUME_008", "HUME_012"],
+        "practical_rationale": "Nature compels belief despite philosophical doubts"
+      },
+      "relationships": {
+        "summarizes": ["HUME_001", "HUME_006", "HUME_008"],
+        "grounds": ["HUME_005"],
+        "reconciles": ["HUME_009", "HUME_010"]
+      }
+    }
+  ],
+
+  "reasoning_rules": [
+    {
+      "rule_id": "HUME_RULE_001",
+      "name": "Copy Principle Verification",
+      "type": "VALIDATION_RULE",
+      "condition": "IF idea_presented THEN search_corresponding_impression",
+      "action": "REJECT_IF_NO_ORIGINAL_IMPRESSION",
+      "priority": 1
+    },
+    
+    {
+      "rule_id": "HUME_RULE_002",
+      "name": "Causal Inference Check",
+      "type": "SKEPTICAL_RULE",
+      "condition": "IF claim_causal_connection THEN verify_necessary_connection_impression",
+      "action": "EXPOSE_AS_CUSTOM_NOT_LOGIC",
+      "priority": 2
+    },
+    
+    {
+      "rule_id": "HUME_RULE_003",
+      "name": "Inductive Skepticism",
+      "type": "LIMITATION_RULE",
+      "condition": "IF prediction_about_future THEN question_basis",
+      "action": "HIGHLIGHT_CIRCULAR_JUSTIFICATION",
+      "priority": 3
+    },
+    
+    {
+      "rule_id": "HUME_RULE_004",
+      "name": "Is-Ought Boundary",
+      "type": "LOGICAL_RULE",
+      "condition": "IF premises_descriptive THEN conclusions_prescriptive",
+      "action": "FLAG_INVALID_INFERENCE",
+      "priority": 2
+    },
+    
+    {
+      "rule_id": "HUME_RULE_005",
+      "name": "Belief Formation",
+      "type": "PSYCHOLOGICAL_RULE",
+      "condition": "IF idea_associated_with_impression THEN transfer_vivacity",
+      "action": "GENERATE_BELIEF_FEELING",
+      "priority": 4
+    }
+  ],
+
+  "hierarchical_taxonomies": {
+    "perception_taxonomy": {
+      "root": "MENTAL_CONTENT",
+      "level_1": ["Impressions", "Ideas"],
+      "level_2": {
+        "Impressions": ["Sensation", "Reflection"],
+        "Ideas": ["Simple Ideas", "Complex Ideas"]
+      },
+      "vivacity_scale": {
+        "Impressions": 1.0,
+        "Beliefs": 0.8,
+        "Ideas": 0.4,
+        "Fictions": 0.2
+      }
+    },
+    
+    "knowledge_fork": {
+      "root": "ALL_PROPOSITIONS",
+      "division": {
+        "Relations of Ideas": {
+          "certainty": "Necessary",
+          "method": "A priori reasoning",
+          "examples": ["Mathematics", "Logic"]
+        },
+        "Matters of Fact": {
+          "certainty": "Contingent",
+          "method": "Experience",
+          "examples": ["Causation", "Existence"],
+          "skeptical_status": "Problematic"
+        }
+      }
+    }
+  },
+
+  "reasoning_flow_templates": [
+    {
+      "template_id": "HUME_ASSOCIATION",
+      "steps": [
+        {"step": 1, "action": "Receive impression", "node": "HUME_002"},
+        {"step": 2, "action": "Form associated ideas", "node": "HUME_004"},
+        {"step": 3, "action": "Transfer vivacity", "node": "HUME_005"},
+        {"step": 4, "action": "Generate belief", "node": "HUME_005"}
+      ]
+    },
+    
+    {
+      "template_id": "HUME_CAUSAL_SKEPTICISM",
+      "steps": [
+        {"step": 1, "action": "Observe constant conjunction", "node": "HUME_010"},
+        {"step": 2, "action": "Form custom/habit", "node": "HUME_007"},
+        {"step": 3, "action": "Expect future instances", "node": "HUME_005"},
+        {"step": 4, "action": "Recognize logical gap", "node": "HUME_008"},
+        {"step": 5, "action": "Accept psychological necessity", "node": "HUME_015"}
+      ]
+    }
+  ],
+
+  "cross_references": {
+    "key_works": {
+      "primary": "A Treatise of Human Nature (1739-40)",
+      "secondary": ["An Enquiry Concerning Human Understanding", "An Enquiry Concerning the Principles of Morals", "Dialogues Concerning Natural Religion"]
+    },
+    
+    "philosophical_connections": {
+      "influenced_by": ["John Locke", "George Berkeley"],
+      "influenced": ["Kant", "Logical Positivism", "Modern Skepticism"],
+      "contrasts_with": ["Rationalists", "Moral Realists"]
+    }
+  },
+
+  "implementation_notes": {
+    "space_field_type": "PHILOSOPHICAL_REASONING_SKG",
+    "query_methods": ["impression_idea_trace", "association_path", "vivacity_assessment"],
+    "visualization_layers": [
+      "Impression-Idea Flow",
+      "Association Network",
+      "Knowledge Fork",
+      "Causal Skepticism"
+    ],
+    "programmatic_access": {
+      "trace_idea_origin": "Apply HUME_RULE_001",
+      "assess_belief": "Check vivacity transfer via HUME_RULE_005",
+      "test_causal_claim": "Execute HUME_RULE_002 and HUME_RULE_003"
+    }
+  }
+}

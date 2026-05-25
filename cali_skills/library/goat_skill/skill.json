@@ -1,0 +1,23 @@
+{
+  "skill_id": "goat",
+  "name": "GOAT Content Engine",
+  "version": "2.1.0",
+  "category": "commercial",
+  "description": "Audiobook production, voice synthesis, content parsing, TTS pipeline management",
+  "entry_class": "GoatSkill",
+  "triggers": ["audiobook", "tts", "voice", "narration", "goat", "content", "parse", "phil", "jim", "bryan", "podcast", "script"],
+  "capabilities": [
+    "parse_content",
+    "create_voice_profile",
+    "generate_narration",
+    "create_audiobook_pipeline",
+    "manage_voice_profiles",
+    "chunk_content",
+    "apply_gravity_field",
+    "export_audio",
+    "create_podcast_script"
+  ],
+  "memory_scope": ["voice_profiles", "content_cache", "production_history"],
+  "dependencies": ["system"],
+  "priority": "high"
+}

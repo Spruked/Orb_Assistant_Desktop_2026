@@ -1,0 +1,29 @@
+# Core scientific computing
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Machine learning and AI
+torch>=2.0.0
+sentence-transformers>=3.0.0
+TTS>=0.22.0
+
+# Web and networking
+aiohttp>=3.10.0
+fastapi>=0.100.0
+uvicorn>=0.23.0
+websockets>=11.0.0
+pydantic>=2.0.0
+
+# Audio processing
+sounddevice>=0.4.0
+soundfile>=0.10.0
+pyttsx3
+openai-whisper>=20231117
+
+# System and utilities
+psutil>=5.9.0
+Pillow>=9.3.0
+networkx>=3.2.0
+
+# GUI
+PySide6

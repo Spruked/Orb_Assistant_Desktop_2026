@@ -1,0 +1,251 @@
+{
+  "category": "Advanced API Imports",
+  "version": "1.0",
+  "updated": "2026-03-21",
+  "apis": [
+    {
+      "name": "NIH RePORTER",
+      "category": "Biomedical Research",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "projects_search": "https://api.reporter.nih.gov/v2/projects/search",
+        "publications_search": "https://api.reporter.nih.gov/v2/publications/search",
+        "clinical_trials_search": "https://api.reporter.nih.gov/v2/clinical_trials/search"
+      }
+    },
+    {
+      "name": "ClinicalTrials.gov",
+      "category": "Biomedical Research",
+      "auth": "none",
+      "rate_limit": "low",
+      "endpoints": {
+        "study_fields": "https://clinicaltrials.gov/api/query/study_fields",
+        "full_studies": "https://clinicaltrials.gov/api/query/full_studies",
+        "field_values": "https://clinicaltrials.gov/api/query/field_values"
+      }
+    },
+    {
+      "name": "NCBI Entrez",
+      "category": "Biomedical Research",
+      "auth": "api_key_optional",
+      "rate_limit": "strict",
+      "endpoints": {
+        "esearch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi",
+        "efetch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
+        "esummary": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+      }
+    },
+    {
+      "name": "PubChem",
+      "category": "Chemistry",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "by_name": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/JSON",
+        "by_cid": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/JSON",
+        "by_smiles": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/{smiles}/JSON"
+      }
+    },
+    {
+      "name": "Ensembl",
+      "category": "Genomics",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "lookup": "https://rest.ensembl.org/lookup/id/{id}",
+        "sequence": "https://rest.ensembl.org/sequence/id/{id}",
+        "overlap": "https://rest.ensembl.org/overlap/id/{id}"
+      }
+    },
+    {
+      "name": "UniProt",
+      "category": "Proteomics",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "search": "https://rest.uniprot.org/uniprotkb/search?query={query}",
+        "entry": "https://rest.uniprot.org/uniprotkb/{accession}"
+      }
+    },
+    {
+      "name": "Protein Data Bank (PDB)",
+      "category": "Structural Biology",
+      "auth": "none",
+      "rate_limit": "low",
+      "endpoints": {
+        "entry": "https://data.rcsb.org/rest/v1/core/entry/{pdb_id}",
+        "assembly": "https://data.rcsb.org/rest/v1/core/assembly/{pdb_id}"
+      }
+    },
+    {
+      "name": "NASA Earthdata CMR",
+      "category": "Earth Systems",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "granules": "https://cmr.earthdata.nasa.gov/search/granules.json",
+        "collections": "https://cmr.earthdata.nasa.gov/search/collections.json"
+      }
+    },
+    {
+      "name": "NOAA Climate Data Online",
+      "category": "Climate",
+      "auth": "api_key_required",
+      "rate_limit": "strict",
+      "endpoints": {
+        "data": "https://www.ncei.noaa.gov/cdo-web/api/v2/data",
+        "datasets": "https://www.ncei.noaa.gov/cdo-web/api/v2/datasets",
+        "stations": "https://www.ncei.noaa.gov/cdo-web/api/v2/stations"
+      }
+    },
+    {
+      "name": "OpenAQ",
+      "category": "Air Quality",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "latest": "https://api.openaq.org/v2/latest",
+        "measurements": "https://api.openaq.org/v2/measurements"
+      }
+    },
+    {
+      "name": "Materials Project",
+      "category": "Materials Science",
+      "auth": "api_key_required",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "materials": "https://api.materialsproject.org/materials/{mpid}",
+        "summary": "https://api.materialsproject.org/summary/{mpid}"
+      }
+    },
+    {
+      "name": "ChemSpider",
+      "category": "Chemistry",
+      "auth": "api_key_required",
+      "rate_limit": "strict",
+      "endpoints": {
+        "filter": "https://api.rsc.org/compounds/v1/filter",
+        "record": "https://api.rsc.org/compounds/v1/records/{csid}"
+      }
+    },
+    {
+      "name": "NOMAD",
+      "category": "Materials Science",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "entries": "https://nomad-lab.eu/prod/v1/api/entries",
+        "materials": "https://nomad-lab.eu/prod/v1/api/materials"
+      }
+    },
+    {
+      "name": "Semantic Scholar Graph",
+      "category": "Academic Research",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "paper_search": "https://api.semanticscholar.org/graph/v1/paper/search?query={query}",
+        "author": "https://api.semanticscholar.org/graph/v1/author/{id}",
+        "paper": "https://api.semanticscholar.org/graph/v1/paper/{paperId}"
+      }
+    },
+    {
+      "name": "OpenAlex",
+      "category": "Academic Research",
+      "auth": "none",
+      "rate_limit": "low",
+      "endpoints": {
+        "works": "https://api.openalex.org/works?filter={filters}",
+        "authors": "https://api.openalex.org/authors/{id}",
+        "institutions": "https://api.openalex.org/institutions/{id}"
+      }
+    },
+    {
+      "name": "Wikidata",
+      "category": "Knowledge Graph",
+      "auth": "none",
+      "rate_limit": "low",
+      "endpoints": {
+        "entities": "https://www.wikidata.org/w/api.php?action=wbgetentities&ids={id}&format=json",
+        "sparql": "https://query.wikidata.org/sparql?query={sparql}"
+      }
+    },
+    {
+      "name": "USGS Earthquake API",
+      "category": "Geospatial",
+      "auth": "none",
+      "rate_limit": "low",
+      "endpoints": {
+        "query": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson"
+      }
+    },
+    {
+      "name": "USGS National Map",
+      "category": "Geospatial",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "products": "https://tnmaccess.nationalmap.gov/api/v1/products",
+        "datasets": "https://tnmaccess.nationalmap.gov/api/v1/datasets"
+      }
+    },
+    {
+      "name": "OpenStreetMap Overpass",
+      "category": "Geospatial",
+      "auth": "none",
+      "rate_limit": "strict",
+      "endpoints": {
+        "interpreter": "https://overpass-api.de/api/interpreter"
+      }
+    },
+    {
+      "name": "SEC EDGAR",
+      "category": "Finance",
+      "auth": "none",
+      "rate_limit": "strict",
+      "endpoints": {
+        "search": "https://efts.sec.gov/LATEST/search-index",
+        "company_facts": "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
+      }
+    },
+    {
+      "name": "World Bank",
+      "category": "Economics",
+      "auth": "none",
+      "rate_limit": "low",
+      "endpoints": {
+        "indicator": "https://api.worldbank.org/v2/country/{code}/indicator/{indicator}?format=json"
+      }
+    },
+    {
+      "name": "IMF Data",
+      "category": "Economics",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "dataset": "https://dataservices.imf.org/REST/SDMX_JSON.svc/{dataset}"
+      }
+    },
+    {
+      "name": "HuggingFace Hub",
+      "category": "Machine Learning",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "models": "https://huggingface.co/api/models",
+        "datasets": "https://huggingface.co/api/datasets"
+      }
+    },
+    {
+      "name": "Papers With Code",
+      "category": "Machine Learning",
+      "auth": "none",
+      "rate_limit": "moderate",
+      "endpoints": {
+        "papers": "https://paperswithcode.com/api/v1/papers/?q={query}",
+        "sota": "https://paperswithcode.com/api/v1/sota?task={task}"
+      }
+    }
+  ]
+}

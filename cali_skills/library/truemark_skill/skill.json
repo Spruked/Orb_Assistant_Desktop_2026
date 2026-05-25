@@ -1,0 +1,25 @@
+{
+  "skill_id": "truemark",
+  "name": "TrueMark Mint Engine",
+  "version": "2.0.0",
+  "category": "commercial",
+  "description": "NFT minting, certificate generation, K-NFT/H-NFT/L-NFT/C-NFT operations, blockchain preparation",
+  "entry_class": "TrueMarkSkill",
+  "triggers": ["mint", "nft", "certificate", "truemark", "k-nft", "h-nft", "blockchain", "polygon", "ethereum", "metadata", "forensic"],
+  "capabilities": [
+    "prepare_knft",
+    "prepare_hnft",
+    "prepare_lnft",
+    "prepare_cnft",
+    "generate_metadata",
+    "create_forensic_cert",
+    "validate_certificate",
+    "encrypt_assets",
+    "prepare_arweave_bundle",
+    "estimate_minting_cost",
+    "check_nft_status"
+  ],
+  "memory_scope": ["minting_history", "certificate_registry", "blockchain_cache"],
+  "dependencies": ["system", "security"],
+  "priority": "high"
+}

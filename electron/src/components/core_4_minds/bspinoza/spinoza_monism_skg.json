@@ -1,0 +1,447 @@
+{
+  "skg_metadata": {
+    "philosopher": "Baruch Spinoza",
+    "system": "Geometric Rationalism & Substance Monism",
+    "version": "1.0",
+    "domain": "Metaphysics and Ethics",
+    "space_field_id": "spinoza_monism_skg",
+    "created": "2025-12-21",
+    "format": "HLSF_SKG_v2"
+  },
+  
+  "core_axiom": {
+    "node_id": "SPINOZA_001",
+    "label": "Substance Monism",
+    "type": "FOUNDATIONAL_PRINCIPLE",
+    "definition": "Only one substance exists (God/Nature); all else is modes of this substance",
+    "properties": {
+      "certainty": "DEMONSTRATED_GEOMETRICALLY",
+      "source_text": "Ethics",
+      "book": "Part I, Propositions 1-15",
+      "method": "More geometrico"
+    }
+  },
+
+  "concept_nodes": [
+    {
+      "node_id": "SPINOZA_002",
+      "label": "Substance",
+      "type": "ONTOLOGICAL_ENTITY",
+      "category": "BASIC_ONTOLOGY",
+      "properties": {
+        "definition": "That which is in itself and conceived through itself",
+        "attributes": "Infinite attributes",
+        "number": 1,
+        "identity": "Deus sive Natura (God or Nature)",
+        "causality": "Cause of itself (causa sui)",
+        "freedom": "Absolutely free (necessity)"
+      },
+      "relationships": {
+        "manifests_as": ["SPINOZA_003"],
+        "produces": ["SPINOZA_004"],
+        "contrasts_with": ["SPINOZA_007"],
+        "identified_as": ["SPINOZA_001"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_003",
+      "label": "Attributes",
+      "type": "ONTOLOGICAL_ENTITY",
+      "category": "ESSENTIAL_PROPERTIES",
+      "properties": {
+        "definition": "What intellect perceives as constituting essence of substance",
+        "infinite_number": true,
+        "known_to_humans": 2,
+        "known_attributes": ["Thought", "Extension"],
+        "equality": "Each attribute expresses infinite essence",
+        "parallelism": "Order of ideas = Order of things"
+      },
+      "relationships": {
+        "belongs_to": ["SPINOZA_002"],
+        "expressed_through": ["SPINOZA_004"],
+        "parallel": ["SPINOZA_003"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_004",
+      "label": "Modes",
+      "type": "ONTOLOGICAL_ENTITY",
+      "category": "PARTICULAR_EXPRESSIONS",
+      "properties": {
+        "definition": "Affections of substance or that which is in another",
+        "dependence": "Cannot exist without substance",
+        "conception": "Conceived through substance",
+        "examples": ["Individual bodies", "Individual minds", "Emotions"],
+        "infinity": ["Infinite modes", "Finite modes"]
+      },
+      "relationships": {
+        "expressed_by": ["SPINOZA_003"],
+        "inheres_in": ["SPINOZA_002"],
+        "determined_by": ["SPINOZA_002"],
+        "affects": ["SPINOZA_006"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_005",
+      "label": "Determinism",
+      "type": "METAPHYSICAL_PRINCIPLE",
+      "category": "STRICT_NECESSITY",
+      "properties": {
+        "scope": "Absolute (no contingency)",
+        "slogan": "From given cause, effect necessarily follows",
+        "freedom_definition": "Acting from own nature only",
+        "human_freedom": "Illusory (ignorance of causes)",
+        "rejection": ["Free will", "Chance"]
+      },
+      "relationships": {
+        "governs": ["SPINOZA_002", "SPINOZA_004"],
+        "grounds": ["SPINOZA_008"],
+        "challenges": ["SPINOZA_013"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_006",
+      "label": "Conatus",
+      "type": "DYNAMIC_PRINCIPLE",
+      "category": "STRIVING",
+      "properties": {
+        "definition": "Essential striving to persevere in being",
+        "applies_to": "All modes",
+        "human_manifestation": "Wille zur Macht (will to power)",
+        "emotion_basis": "Desire and aversion",
+        "ethics_foundation": true
+      },
+      "relationships": {
+        "drives": ["SPINOZA_004"],
+        "produces": ["SPINOZA_009"],
+        "explains": ["SPINOZA_011"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_007",
+      "label": "Cartesian Dualism",
+      "type": "REJECTED_SYSTEM",
+      "category": "TARGET_OF_CRITIQUE",
+      "properties": {
+        "position": "Mind and body separate substances",
+        "spinoza_rejection": "Would make interaction impossible",
+        "alternative": "One substance, two attributes",
+        "interaction_solution": "Parallelism"
+      },
+      "relationships": {
+        "rejected_by": ["SPINOZA_001"],
+        "replaced_by": ["SPINOZA_002", "SPINOZA_003"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_008",
+      "label": "Parallelism",
+      "type": "METAPHYSICAL_PRINCIPLE",
+      "category": "MIND_BODY_RELATION",
+      "properties": {
+        "slogan": "Order and connection of ideas = Order and connection of things",
+        "no_interaction": "No causal mind-body interaction",
+        "correlation": "Corresponding series",
+        "explanation": "Both are modes of same substance",
+        "attributes": "Thought and Extension parallel"
+      },
+      "relationships": {
+        "explains": ["SPINOZA_004"],
+        "replaces": ["SPINOZA_007"],
+        "follows_from": ["SPINOZA_002"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_009",
+      "label": "Affects (Emotions)",
+      "type": "MODAL_EXPRESSION",
+      "category": "EMOTIONAL_STATES",
+      "properties": {
+        "definition": "Modes of Thought expressing affection of body",
+        "basic_affects": ["Joy", "Sadness", "Desire"],
+        "derivation": "All emotions from basic three",
+        "control": "Through understanding",
+        "ethical_relevance": "Key to freedom"
+      },
+      "relationships": {
+        "produced_by": ["SPINOZA_006"],
+        "influenced_by": ["SPINOZA_004"],
+        "controlled_by": ["SPINOZA_012"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_010",
+      "label": "Kinds of Knowledge",
+      "type": "EPISTEMIC_HIERARCHY",
+      "category": "THREE_GRADES",
+      "properties": {
+        "imagination": {
+          "level": 1,
+          "source": "Random experience",
+          "certainty": "LOW",
+          "adequacy": "Inadequate"
+        },
+        "reason": {
+          "level": 2,
+          "source": "Common notions",
+          "certainty": "MEDIUM",
+          "adequacy": "Partial"
+        },
+        "intuition": {
+          "level": 3,
+          "ource": "God's perspective (scientia intuitiva)",
+          "certainty": "ABSOLUTE",
+          "adequacy": "Adequate"
+        }
+      },
+      "relationships": {
+        "hierarchy": ["SPINOZA_010"],
+        "highest": ["SPINOZA_010"],
+        "aim": ["SPINOZA_012"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_011",
+      "label": "Passive Affects",
+      "type": "ENSLAVING_STATES",
+      "category": "BONDAGE",
+      "properties": {
+        "origin": "External causes determining action",
+        "state": "Human bondage",
+        "ignorance": "Inadequate ideas of causes",
+        "examples": ["Hatred", "Fear", "Envy"],
+        "ethical_status": "Evil (decrease power)"
+      },
+      "relationships": {
+        "opposed_to": ["SPINOZA_012"],
+        "produced_by": ["SPINOZA_006"],
+        "reduced_by": ["SPINOZA_010"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_012",
+      "label": "Active Affects",
+      "type": "LIBERATING_STATES",
+      "category": "FREEDOM",
+      "properties": {
+        "origin": "Internal nature determining action",
+        "state": "Human freedom",
+        "understanding": "Adequate ideas of causes",
+        "examples": ["Rational love", "Generosity", "Nobility"],
+        "ethical_status": "Good (increase power)"
+      },
+      "relationships": {
+        "opposed_to": ["SPINOZA_011"],
+        "produced_by": ["SPINOZA_010"],
+        "achieved_by": ["SPINOZA_014"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_013",
+      "label": "Free Will",
+      "type": "REJECTED_CONCEPT",
+      "category": "ILLUSION",
+      "properties": {
+        "common_belief": "Humans have free choice",
+        "spinoza_rejection": "Contradicts determinism",
+        "true_freedom": "Understanding necessity",
+        "illusion_source": "Ignorance of causes",
+        "solution": "Intellectual love of God"
+      },
+      "relationships": {
+        "rejected_by": ["SPINOZA_005"],
+        "replaced_by": ["SPINOZA_012"],
+        "explained_by": ["SPINOZA_006"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_014",
+      "label": "Intellectual Love of God",
+      "type": "ETHICAL_GOAL",
+      "category": "HIGHEST_GOOD",
+      "properties": {
+        "definition": "Understanding God/Nature as necessary",
+        "emotion": "Joy from adequate ideas",
+        "blessedness": "Highest human achievement",
+        "eternity": "Partakes in eternal perspective",
+        "salvation": "Freedom from passive affects"
+      },
+      "relationships": {
+        "produced_by": ["SPINOZA_010"],
+        "produces": ["SPINOZA_012"],
+        "understands": ["SPINOZA_002"],
+        "achieves": ["SPINOZA_013"]
+      }
+    },
+    
+    {
+      "node_id": "SPINOZA_015",
+      "label": "More Geometrico",
+      "type": "METHODOLOGICAL_PRINCIPLE",
+      "category": "AXIOMATIC_METHOD",
+      "properties": {
+        "method": "Definitions → Axioms → Propositions → Demonstrations",
+        "model": "Euclidean geometry",
+        "rationale": "Certain deductive knowledge",
+        "structure": "Ethics as logical system",
+        "certainty": "Highest possible"
+      },
+      "relationships": {
+        "structures": ["SPINOZA_001"],
+        "generates": ["SPINOZA_010"],
+        "demonstrates": ["SPINOZA_002"]
+      }
+    }
+  ],
+
+  "reasoning_rules": [
+    {
+      "rule_id": "SPINOZA_RULE_001",
+      "name": "Substance Uniqueness",
+      "type": "ONTOLOGICAL_RULE",
+      "condition": "IF substance_claimed_multiple THEN demonstrate_shared_attribute",
+      "action": "PROVE_IDENTITY_AS_SAME_SUBSTANCE",
+      "priority": 1
+    },
+    
+    {
+      "rule_id": "SPINOZA_RULE_002",
+      "name": "Causal Determinism",
+      "type": "DEDUCTIVE_RULE",
+      "condition": "IF cause_given THEN effect_necessarily_follows",
+      "action": "REJECT_CONTINGENCY",
+      "priority": 2
+    },
+    
+    {
+      "rule_id": "SPINOZA_RULE_003",
+      "name": "Parallelism Mapping",
+      "type": "CORRELATION_RULE",
+      "condition": "IF change_in_extension_mode THEN corresponding_change_in_thought_mode",
+      "action": "LOCATE_ISOMORPHIC_RELATION",
+      "priority": 3
+    },
+    
+    {
+      "rule_id": "SPINOZA_RULE_004",
+      "name": "Conatus Assessment",
+      "type": "ETHICAL_RULE",
+      "condition": "IF action_evaluated THEN determine_internal_vs_external_causation",
+      "action": "CLASSIFY_AS_active_OR_passive",
+      "priority": 4
+    },
+    
+    {
+      "rule_id": "SPINOZA_RULE_005",
+      "name": "Adequate Idea Standard",
+      "type": "EPISTEMIC_RULE",
+      "condition": "IF idea_claims_truth THEN verify_conception_through_substance",
+      "action": "GRADE_AS_imagination_reason_OR_intuition",
+      "priority": 5
+    }
+  ],
+
+  "hierarchical_taxonomies": {
+    "ontological_taxonomy": {
+      "root": "SUBSTANCE",
+      "level_1": ["Attributes"],
+      "level_2": ["Modes"],
+      "level_3": ["Finite Modes", "Infinite Modes"],
+      "principle": "One substance, infinite attributes, infinite modes"
+    },
+    
+    "knowledge_taxonomy": {
+      "root": "KNOWLEDGE_GRADES",
+      "level_1": ["Imagination", "Reason", "Intuition"],
+      "adequacy": {
+        "Imagination": "INADEQUATE",
+        "Reason": "PARTIALLY_ADEQUATE",
+        "Intuition": "FULLY_ADEQUATE"
+      }
+    },
+    
+    "affective_taxonomy": {
+      "root": "CONATUS_EXPRESSION",
+      "level_1": ["Passive Affects", "Active Affects"],
+      "ethical_direction": {
+        "Passive": "BONDAGE",
+        "Active": "FREEDOM"
+      }
+    }
+  },
+
+  "reasoning_flow_templates": [
+    {
+      "template_id": "SPINOZA_GEOMETRIC_DEMONSTRATION",
+      "steps": [
+        {"step": 1, "action": "State definition from substance", "node": "SPINOZA_002"},
+        {"step": 2, "action": "Apply axioms of nature", "node": "SPINOZA_015"},
+        {"step": 3, "action": "Deduce proposition", "node": "SPINOZA_015"},
+        {"step": 4, "action": "Demonstrate via previous propositions", "node": "SPINOZA_015"}
+      ]
+    },
+    
+    {
+      "template_id": "SPINOZA_ETHICAL_PROGRESSION",
+      "steps": [
+        {"step": 1, "action": "Recognize passive affects", "node": "SPINOZA_011"},
+        {"step": 2, "action": "Understand external causes", "node": "SPINOZA_010"},
+        {"step": 3, "action": "Form adequate ideas", "node": "SPINOZA_010"},
+        {"step": 4, "action": "Transform to active affects", "node": "SPINOZA_012"},
+        {"step": 5, "action": "Achieve intellectual love of God", "node": "SPINOZA_014"}
+      ]
+    },
+    
+    {
+      "template_id": "SPINOZA_MIND_BODY_MAPPING",
+      "steps": [
+        {"step": 1, "action": "Identify physical mode", "node": "SPINOZA_004"},
+        {"step": 2, "action": "Apply parallelism principle", "node": "SPINOZA_008"},
+        {"step": 3, "action": "Locate corresponding mental mode", "node": "SPINOZA_004"},
+        {"step": 4, "action": "Verify isomorphic relation", "node": "SPINOZA_008"}
+      ]
+    }
+  ],
+
+  "cross_references": {
+    "key_works": {
+      "primary": "Ethics (1677)",
+      "secondary": ["Treatise on the Emendation of the Intellect", "Theological-Political Treatise", "Principles of Cartesian Philosophy"]
+    },
+    
+    "philosophical_connections": {
+      "influenced_by": ["Descartes", "Hobbes", "Stoics", "Maimonides"],
+      "influenced": ["Leibniz", "German Idealism", "Nietzsche", "Modern Stoicism"],
+      "contrasts_with": ["Cartesian Dualism", "Libertarian Free Will", "Theistic Personalism"]
+    }
+  },
+
+  "implementation_notes": {
+    "space_field_type": "PHILOSOPHICAL_REASONING_SKG",
+    "query_methods": ["geometric_deduction", "parallelism_mapping", "conatus_analysis"],
+    "visualization_layers": [
+      "Substance-Attribute-Mode Hierarchy",
+      "Parallelism Correlation",
+      "Knowledge Grades Pyramid",
+      "Affective Transformation Path",
+      "Geometric Deduction Tree"
+    ],
+    "programmatic_access": {
+      "execute_demonstration": "Follow SPINOZA_GEOMETRIC_DEMONSTRATION",
+      "map_mind_body": "Apply SPINOZA_RULE_003",
+      "assess_freedom": "Execute SPINOZA_RULE_004"
+    }
+  }
+}

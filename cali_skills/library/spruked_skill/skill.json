@@ -1,0 +1,12 @@
+{
+  "skill_id": "spruked",
+  "name": "Spruked Ecosystem",
+  "version": "1.0.0",
+  "category": "web",
+  "description": "Spruked website and ecosystem operations.",
+  "entry_class": "SprukedSkill",
+  "triggers": ["spruked", "website", "commerce", "dragonit", "alphacertsig", "shiloh ridge"],
+  "capabilities": ["explain", "list_sites"],
+  "memory_scope": ["skills/spruked"],
+  "dependencies": []
+}
