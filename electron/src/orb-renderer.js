@@ -89,6 +89,9 @@ const ORB_CURSOR_ATTRACTION_STRENGTH = parseEnvFloat('ORB_CURSOR_ATTRACTION_STRE
 const ORB_CURSOR_ASSIST_MODE_ONLY = process?.env?.ORB_CURSOR_ASSIST_MODE_ONLY !== '0';
 const ORB_CURSOR_FOLLOW = ORB_CURSOR_FOLLOW_ENABLED && ORB_CURSOR_ATTRACTION_STRENGTH > 0;
 const ORB_DESKTOP_CURSOR_BEHAVIOR = process?.env?.ORB_DESKTOP_CURSOR_BEHAVIOR !== '0';
+const ORB_CURSOR_AVAILABILITY_ENABLED = process?.env?.ORB_CURSOR_AVAILABILITY_ENABLED !== '0';
+const ORB_CURSOR_AVAILABILITY_DISTANCE = parseEnvInt('ORB_CURSOR_AVAILABILITY_DISTANCE', 1700, 600, 5000);
+const ORB_CURSOR_AVAILABILITY_COOLDOWN_MS = parseEnvInt('ORB_CURSOR_AVAILABILITY_COOLDOWN_MS', 8000, 2500, 60000);
 const ORB_CURSOR_FOLLOW_OFFSET_X = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_X', 18, -500, 500);
 const ORB_CURSOR_FOLLOW_OFFSET_Y = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_Y', 16, -500, 500);
 const ORB_CURSOR_FOLLOW_LERP = parseEnvFloat('ORB_CURSOR_FOLLOW_LERP', 0.026, 0.008, 0.08);
@@ -719,6 +722,23 @@ function choosePlayfulIdleTarget(current, cursor, rects) {
   return constrainPositionToCursorDisplay(playful, cursor, rects);
 }
 
+function chooseCursorAvailabilityTarget(cursor, rects = []) {
+  if (!cursor) {
+    return getHomePosition();
+  }
+
+  const rect = getMonitorRectForPoint(cursor, rects);
+  if (!rect) {
+    return getCursorDisplayAnchor(cursor, rects);
+  }
+
+  const preferred = {
+    x: rect.x + rect.width * ORB_SCREEN_ANCHOR_X_RATIO + rand(-120, 120),
+    y: rect.y + rect.height * ORB_SCREEN_ANCHOR_Y_RATIO + rand(-90, 90),
+  };
+  return avoidInputZone(clampPositionToRect(preferred, rect), cursor);
+}
+
 function chooseMultiDisplayPatrolTarget(rects, patrolIndex) {
   if (!rects.length) {
     return getHomePosition();
@@ -1000,6 +1020,36 @@ function buildSteeringVector(current, target, cursor, presenceProfile, fallbackD
   return normalizeDirection(sx, sy, targetDirection);
 }
 
+function buildAutonomousMotionProfile(baseProfile, current, target, isGuidedInteractionActive = false) {
+  const profile = { ...(baseProfile || {}) };
+  const distance = current && target
+    ? Math.hypot(target.x - current.x, target.y - current.y)
+    : 0;
+
+  if (isGuidedInteractionActive) {
+    profile.maxSpeed = Math.max(profile.maxSpeed || 0, 1.15);
+    profile.accel = Math.max(profile.accel || 0, 0.09);
+    profile.steerMul = Math.max(profile.steerMul || 0, 0.96);
+    return profile;
+  }
+
+  if (distance > 540) {
+    const travelBoost = clamp(distance / 1200, 0.35, 1.45);
+    profile.maxSpeed = Math.max(
+      profile.maxSpeed || 0,
+      ORB_AUTONOMOUS_BASE_SPEED + ORB_MULTI_DISPLAY_PATROL_SPEED_BONUS + travelBoost
+    );
+    profile.accel = Math.max(profile.accel || 0, 0.13);
+    profile.damping = Math.max(profile.damping || 0, 0.99);
+    profile.steerMul = Math.max(profile.steerMul || 0, 1.08);
+  } else if (distance > 180) {
+    profile.maxSpeed = Math.max(profile.maxSpeed || 0, 1.15);
+    profile.accel = Math.max(profile.accel || 0, 0.08);
+  }
+
+  return profile;
+}
+
 function toPlayableAudioUrl(audioPath) {
   if (!audioPath || typeof audioPath !== 'string') {
     return null;
@@ -1117,6 +1167,7 @@ function FloatingOrb() {
   const monitorRectsRef = useRef([]);
   const patrolIndexRef = useRef(0);
   const lastPatrolAtRef = useRef(0);
+  const lastCursorAvailabilityAtRef = useRef(0);
   const pendingSwarmMissionsRef = useRef([]);
   const lastUserInputAtRef = useRef(Date.now());
   const companionIntentRef = useRef(new CompanionIntent({ playfulnessEnabled: ORB_PLAYFUL_IDLE_ENABLED }));
@@ -1511,10 +1562,11 @@ function FloatingOrb() {
             commandOpen
           );
           const cursorInfluenceAllowed = Boolean(
-            ORB_DESKTOP_CURSOR_BEHAVIOR ||
-            isGuidedInteractionActive ||
-            interactionStateRef.current === 'point_target' ||
-            cueTargetRef.current
+            ORB_CURSOR_FOLLOW &&
+            cursor &&
+            !isInputFocused &&
+            !isSpeakingHold &&
+            (!ORB_CURSOR_ASSIST_MODE_ONLY || isGuidedInteractionActive)
           );
           const intent = companionIntentRef.current.update({
             displayActive: displayActiveRef.current,
@@ -1523,8 +1575,8 @@ function FloatingOrb() {
             swarmPendingCount,
             isUserActive,
             presenceProfile: profile,
-            cursorDistance: cursorInfluenceAllowed ? cursorDistance : 0,
-            returnDistance: ORB_COMPANION_RETURN_DISTANCE,
+            cursorDistance: ORB_CURSOR_AVAILABILITY_ENABLED ? cursorDistance : 0,
+            returnDistance: Math.max(ORB_COMPANION_RETURN_DISTANCE, ORB_CURSOR_AVAILABILITY_DISTANCE),
           });
 
           if (isDocked) {
@@ -1605,6 +1657,24 @@ function FloatingOrb() {
               x: lerp(targetCursorPositionRef.current.x, anchored.x, ORB_CURSOR_ATTRACTION_STRENGTH),
               y: lerp(targetCursorPositionRef.current.y, anchored.y, ORB_CURSOR_ATTRACTION_STRENGTH),
             };
+          }
+
+          if (
+            ORB_CURSOR_AVAILABILITY_ENABLED &&
+            ORB_DESKTOP_CURSOR_BEHAVIOR &&
+            cursor &&
+            monitorRects.length &&
+            !isGuidedInteractionActive &&
+            !isInputFocused &&
+            !isSpeakingHold &&
+            cursorDistance >= ORB_CURSOR_AVAILABILITY_DISTANCE &&
+            now - lastCursorAvailabilityAtRef.current >= ORB_CURSOR_AVAILABILITY_COOLDOWN_MS
+          ) {
+            targetCursorPositionRef.current = chooseCursorAvailabilityTarget(cursor, monitorRects);
+            lastCursorAvailabilityAtRef.current = now;
+            lastForcedRetargetAtRef.current = now;
+            lastRetargetAtRef.current = now;
+            setMovementStateWithLog('returning_home', 'cursor_availability');
           }
 
           if (isInputFocused && cursor && isGuidedInteractionActive) {
@@ -1693,13 +1763,17 @@ function FloatingOrb() {
           }
 
           const target = targetCursorPositionRef.current;
-          const motionBounds = cursorInfluenceAllowed
-            ? getMotionBounds(cursor, monitorRects)
-            : getFullMotionBounds();
+          const motionBounds = getFullMotionBounds();
+          const motionProfile = buildAutonomousMotionProfile(
+            intent.motionProfile,
+            current,
+            target,
+            isGuidedInteractionActive
+          );
           const motionStep = fieldMotionRef.current.update({
             currentPosition: current,
             targetZone: target,
-            intentProfile: intent.motionProfile,
+            intentProfile: motionProfile,
             screenBounds: motionBounds,
             maxAcceleration: ORB_MAX_ACCELERATION,
           });
@@ -2023,7 +2097,7 @@ function FloatingOrb() {
         }
         lastCursorPointRef.current = cursorPoint;
           if (!displayActiveRef.current) {
-          const resetPosition = ORB_CURSOR_FOLLOW
+          const resetPosition = ORB_CURSOR_FOLLOW && (!ORB_CURSOR_ASSIST_MODE_ONLY || cursorMotionCanGuide)
             ? getCursorFollowTarget(cursorPoint, monitorRectsRef.current)
             : ensureCursorClearance(
                 cursorPositionRef.current,
@@ -2035,7 +2109,13 @@ function FloatingOrb() {
         }
         displayActiveRef.current = true;
         setDisplayActive(true);
-        if (ORB_CURSOR_FOLLOW && ORB_DESKTOP_CURSOR_BEHAVIOR && !orbDockedRef.current && orbVisible) {
+        if (
+          ORB_CURSOR_FOLLOW &&
+          ORB_DESKTOP_CURSOR_BEHAVIOR &&
+          (!ORB_CURSOR_ASSIST_MODE_ONLY || cursorMotionCanGuide) &&
+          !orbDockedRef.current &&
+          orbVisible
+        ) {
           targetCursorPositionRef.current = getCursorFollowTarget(cursorPoint, monitorRectsRef.current);
         }
       }),
