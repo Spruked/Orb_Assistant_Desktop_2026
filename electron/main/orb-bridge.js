@@ -30,7 +30,6 @@ function resolvePythonPath() {
 const pythonPath = resolvePythonPath();
 const scriptPath = process.env.ORB_PYTHON_SCRIPT || path.join(__dirname, '../src/floating_assistant_orb.py');
 const instanceId = process.env.ORB_INSTANCE_ID || (process.platform === 'win32' ? 'desktop' : 'wsl');
-const defaultCp3Root = process.platform === 'win32' ? 'R:\\cochlear_processor_3.0' : '/mnt/r/cochlear_processor_3.0';
 let orbProcess = null;
 const orbEvents = new EventEmitter();
 const pendingRequests = new Map();
@@ -329,7 +328,6 @@ function resolveSpawnTarget(pyPath, sPath) {
 function getWslBridgeEnvArgs() {
     const prefixes = [
         'ORB_',
-        'CP3_',
         'KOKORO_',
         'ONNX_',
     ];
@@ -363,7 +361,9 @@ function startOrb() {
         env: {
             ...process.env,
             ORB_INSTANCE_ID: instanceId,
-            CP3_ROOT: process.env.CP3_ROOT || defaultCp3Root,
+            ORB_SHARED_MESH_ROOT: process.env.ORB_SHARED_MESH_ROOT || 'R:\\R_Drive_Substrate\\orb_mesh',
+            ORB_MESH_ROOT: process.env.ORB_MESH_ROOT || process.env.ORB_SHARED_MESH_ROOT || 'R:\\R_Drive_Substrate\\orb_mesh',
+            ORB_IDENTITY_PATH: process.env.ORB_IDENTITY_PATH || path.join(process.env.ORB_SHARED_MESH_ROOT || 'R:\\R_Drive_Substrate\\orb_mesh', 'identity', 'bryan_spruk_identity.json'),
         }
     });
 
@@ -418,7 +418,7 @@ function setListening(enabled) {
     return sendOrbRequest(
         { type: 'set_listening', enabled: Boolean(enabled) },
         'listening_mode',
-        15000
+        Number(process.env.ORB_SET_LISTENING_TIMEOUT_MS || 180000)
     );
 }
 

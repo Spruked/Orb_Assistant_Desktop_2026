@@ -101,13 +101,19 @@ const INITIAL_TELEMETRY = {
   llmConnected: false,
   voiceProviderReady: false,
   voiceProvider: "unknown",
-  orbVisible: true,
+  orbVisible: false,
+  orbDocked: true,
+  orbReadinessOk: false,
+  orbApiUrl: "http://127.0.0.1:21100/api/v1",
+  statusReason: "",
   fourMind: { caleon: 0.5, kaygee: 0.5, cali_x_one: 0.5, empirical: 0.5 },
   fieldDensity: 0,
   epistemicAlignment: 0,
   spatialCoord: null,
   driftDetected: false,
   hlsfSnapshot: INITIAL_HLSF_SNAPSHOT,
+  egfState: { ok: false, mode: "unknown", error: "" },
+  siteOrbStatus: {},
   events: [],
 };
 
@@ -184,7 +190,7 @@ function useTelemetry() {
       if (status.pending && !runtimeSnapshot) {
         setT((prev) => ({
           ...prev,
-          dockChannelConnected: true,
+          dockChannelConnected: false,
           lastEvent: String(status.error || "backend status pending"),
         }));
         pushEvent("WARN", "Backend status pending");
@@ -217,25 +223,18 @@ function useTelemetry() {
         ? Math.max(0, toNumberOr(presenceSnapshot.idle_seconds, 0))
         : Math.max(0, toNumberOr(presence.idle_seconds, 0));
       const caliStatus = status.cali_status || {};
+      const localLlm = status.local_llm || {};
       const activeModel =
         runtimeSnapshot?.active_llm ||
-        caliStatus.identity ||
+        localLlm.model ||
+        caliStatus?.orb_state?.llm_local_model ||
         status.active_llm ||
         "unknown";
-      const localLlm = status.local_llm || {};
       const llmRuntime = localLlm.last_runtime || {};
       const llmRoute = String(localLlm.route || "").toLowerCase();
       const localLlmHealthy = runtimeSnapshot
         ? Boolean(runtimeSnapshot.llm_connected)
-        : Boolean(
-            localLlm.ready === true ||
-            (
-              localLlm.endpoint &&
-              localLlm.model &&
-              llmRuntime &&
-              llmRuntime.error == null
-            )
-          );
+        : Boolean(localLlm.connected === true || localLlm.ready === true);
       const cp3Audio = status?.cp3_io?.audio_runtime_status || {};
       const qwenTts = status?.qwen_tts || {};
       const voiceProvider = String(
@@ -248,13 +247,14 @@ function useTelemetry() {
               (status?.cp3_io?.voice_runtime_ready ? "cp3" : "unknown")
             )
       );
+      const qwenHealthy = Boolean(qwenTts.ready === true);
+      const cp3VoiceReady = Boolean(
+        status?.cp3_io?.voice_runtime_ready ||
+        ["online", "ready", "active"].includes(String(cp3Audio.voice || "").toLowerCase())
+      );
       const voiceProviderReady = runtimeSnapshot
         ? Boolean(runtimeSnapshot.voice_ready)
-        : Boolean(
-            qwenTts.ready === true ||
-            status?.cp3_io?.voice_runtime_ready ||
-            ["online", "ready", "active"].includes(String(cp3Audio.voice || "").toLowerCase())
-          );
+        : Boolean(qwenHealthy || cp3VoiceReady);
       const confidenceRaw = runtimeSnapshot
         ? toNumberOr(runtimeSnapshot.confidence, 0)
         : presenceSnapshot
@@ -263,6 +263,11 @@ function useTelemetry() {
       const autonomyRaw = presenceSnapshot
         ? toNumberOr(presenceSnapshot.autonomy_level, 0)
         : 0;
+      const listeningActive = Boolean(
+        runtimeSnapshot?.listening ||
+        status?.listening_enabled ||
+        status?.cp3_io?.listening_enabled
+      );
 
       setT((prev) => ({
         ...prev,
@@ -270,13 +275,13 @@ function useTelemetry() {
         coreIntegrity: controllerReady ? 100 : running ? 70 : 0,
         activeLLM: String(activeModel),
         orbRuntimeActive: running,
-        dockChannelConnected: Boolean(runtimeSnapshot?.dock_channel_connected ?? true),
+        dockChannelConnected: Boolean(runtimeSnapshot?.dock_channel_connected ?? false),
         llmConnected:
           runtimeSnapshot
             ? Boolean(runtimeSnapshot.llm_connected)
             : llmRoute === "local"
             ? localLlmHealthy
-            : String(activeModel || "").toLowerCase() !== "unknown",
+            : Boolean(status.active_llm && String(status.active_llm).toLowerCase() !== "unknown"),
         voiceProviderReady,
         voiceProvider,
         governanceIntegrity:
@@ -290,7 +295,7 @@ function useTelemetry() {
         networkActivity: prev.networkActivity,
         instanceId: String(status.instance_id || prev.instanceId || "unknown"),
         controllerStatus,
-        listeningEnabled: Boolean(runtimeSnapshot?.listening ?? status.listening_enabled),
+        listeningEnabled: listeningActive,
         autoListen: Boolean(runtimeSnapshot?.auto_listen ?? status.auto_listen),
         presenceRunning: runtimeSnapshot
           ? String(runtimeSnapshot.presence_state || "").toLowerCase() !== "offline"
@@ -356,6 +361,19 @@ function useTelemetry() {
           status.shared_mesh_root || prev.sharedMeshRoot || "n/a"
         ),
         swarmRunning: Boolean(status?.swarm_extension?.running),
+        egfState:
+          status?.egf_state && typeof status.egf_state === "object"
+            ? {
+                ok: status.egf_state.ok !== false,
+                mode: String(status.egf_state.mode || "active"),
+                error: String(status.egf_state.error || ""),
+              }
+            : prev.egfState,
+        siteOrbStatus:
+          status?.site_orb_status && typeof status.site_orb_status === "object"
+            ? status.site_orb_status
+            : prev.siteOrbStatus,
+        statusReason: String(status.error || ""),
       }));
 
       if (lastRunningRef.current === null || lastRunningRef.current !== running) {
@@ -404,6 +422,14 @@ function useTelemetry() {
       const spatialCoord = pulse.spatial_coordinate !== undefined
         ? pulse.spatial_coordinate : undefined;
       const driftDetected = Boolean(pulse.drift_detected);
+      const egfState =
+        pulse.egf_state && typeof pulse.egf_state === "object"
+          ? {
+              ok: pulse.egf_state.ok !== false,
+              mode: String(pulse.egf_state.mode || "active"),
+              error: String(pulse.egf_state.error || ""),
+            }
+          : null;
 
       setT((prev) => ({
         ...prev,
@@ -417,6 +443,7 @@ function useTelemetry() {
         ...(fieldDensity >= 0 ? { fieldDensity } : {}),
         ...(epistemicAlignment >= 0 ? { epistemicAlignment } : {}),
         ...(spatialCoord !== undefined ? { spatialCoord } : {}),
+        ...(egfState ? { egfState } : {}),
       }));
       pushEvent(
         tension ? "WARN" : "PASS",
@@ -581,6 +608,7 @@ function useTelemetry() {
       }
 
       if (type === "ready") {
+        setT((prev) => ({ ...prev, orbRuntimeActive: true, dockChannelConnected: true, statusReason: "" }));
         pushEvent("PASS", "Python bridge ready");
         return;
       }
@@ -589,6 +617,7 @@ function useTelemetry() {
         return;
       }
       if (type === "presence_update" || type === "presence_pulse") {
+        setT((prev) => ({ ...prev, orbRuntimeActive: true, dockChannelConnected: true, statusReason: "" }));
         applyPresenceUpdate(message);
         return;
       }
@@ -597,6 +626,7 @@ function useTelemetry() {
         return;
       }
       if (type === "hlsf_snapshot") {
+        setT((prev) => ({ ...prev, orbRuntimeActive: true, dockChannelConnected: true, statusReason: "" }));
         applyHLSFSnapshot(message.data || {}, "hlsf");
         return;
       }
@@ -607,9 +637,18 @@ function useTelemetry() {
       }
       if (type === "query_result" || type === "research_result" || type === "speak_result") {
         markSuccess();
+        const data = message?.data && typeof message.data === "object" ? message.data : {};
+        const hasAudio = Boolean(data.audio_url || data.audio_path);
+        const playbackConfirmed = data.audio_played === true;
+        const provider = String(data.tts_provider || "").toLowerCase() || null;
+        const providerReady =
+          playbackConfirmed ||
+          hasAudio ||
+          provider === "qwen" ||
+          provider === "kokoro";
         const reportedLatency = toNumberOr(
-          message?.data?.latency_ms,
-          toNumberOr(message?.data?.latency, NaN)
+          data.latency_ms,
+          toNumberOr(data.latency, NaN)
         );
         setT((prev) => ({
           ...prev,
@@ -619,7 +658,19 @@ function useTelemetry() {
             1200
           ),
           networkActivity: prev.networkActivity + 1,
+          voiceProvider: provider || prev.voiceProvider,
+          voiceProviderReady: providerReady || prev.voiceProviderReady,
+          lastEvent: playbackConfirmed
+            ? "voice playback confirmed"
+            : hasAudio
+            ? "voice payload ready"
+            : data.audio_error
+            ? `voice pending: ${String(data.audio_error)}`
+            : prev.lastEvent,
         }));
+        if (data.audio_error) {
+          pushEvent("WARN", `Voice path: ${String(data.audio_error)}`);
+        }
         pushEvent("PASS", `${type.replace("_", " ")} received`);
         return;
       }
@@ -680,16 +731,53 @@ function useTelemetry() {
     }
 
     let active = true;
+    let resolvedOrbApiUrl = "http://127.0.0.1:21100/api/v1";
+    const resolveOrbApiUrl = async () => {
+      try {
+        if (typeof api.getMeshRegistry === "function") {
+          const mesh = await api.getMeshRegistry();
+          const meshUrl = String(mesh?.services?.desktop_orb?.api_url || "").trim();
+          if (meshUrl) {
+            resolvedOrbApiUrl = meshUrl.replace(/\/+$/, "");
+          }
+        }
+      } catch (_error) {}
+      if (active) {
+        setT((prev) => ({ ...prev, orbApiUrl: resolvedOrbApiUrl }));
+      }
+      return resolvedOrbApiUrl;
+    };
+    const checkReadiness = async () => {
+      const base = await resolveOrbApiUrl();
+      const url = `${base}/readiness`;
+      try {
+        const res = await fetch(url, { method: "GET" });
+        const ok = Boolean(res?.ok);
+        if (active) {
+          setT((prev) => ({
+            ...prev,
+            orbReadinessOk: ok,
+            orbRuntimeActive: ok ? true : prev.orbRuntimeActive,
+          }));
+        }
+      } catch (_error) {
+        if (active) {
+          setT((prev) => ({ ...prev, orbReadinessOk: false }));
+        }
+      }
+    };
     const refreshStatus = async (source = "poll") => {
       try {
         const status = await api.getOrbStatus();
         if (active) {
           applyStatus(status, source);
         }
+        await checkReadiness();
         if (typeof api.getOrbVisibility === "function") {
           const visibility = await api.getOrbVisibility();
           if (active) {
-            setT((prev) => ({ ...prev, orbVisible: Boolean(visibility?.visible) }));
+            const visible = Boolean(visibility?.visible);
+            setT((prev) => ({ ...prev, orbVisible: visible, orbDocked: !visible }));
           }
         }
       } catch (error) {
@@ -706,8 +794,18 @@ function useTelemetry() {
         .then((state) => {
           if (!active) return;
           const visible = Boolean(state?.visible);
-          setT((prev) => ({ ...prev, orbVisible: visible }));
+          setT((prev) => ({ ...prev, orbVisible: visible, orbDocked: !visible }));
           pushEvent("INFO", visible ? "Orb launched" : "Orb docked");
+        })
+        .catch(() => {});
+    }
+    if (typeof api.getOrbDockedState === "function") {
+      api.getOrbDockedState()
+        .then((state) => {
+          if (!active) return;
+          const docked = Boolean(state?.docked);
+          setT((prev) => ({ ...prev, orbDocked: docked, orbVisible: docked ? false : prev.orbVisible }));
+          pushEvent("INFO", docked ? "Docked state confirmed." : "Dock released.");
         })
         .catch(() => {});
     }
@@ -718,8 +816,13 @@ function useTelemetry() {
       api.onOrbStatusChange((_event, status) => applyStatus(status, "status_change")),
       api.onOrbVisibilityChanged((_event, payload) => {
         const visible = Boolean(payload?.visible);
-        setT((prev) => ({ ...prev, orbVisible: visible }));
+        setT((prev) => ({ ...prev, orbVisible: visible, orbDocked: !visible }));
         pushEvent("INFO", visible ? "Orb launched" : "Orb docked");
+      }),
+      api.onOrbDockedState?.((_event, payload) => {
+        const docked = Boolean(payload?.docked);
+        setT((prev) => ({ ...prev, orbDocked: docked }));
+        pushEvent("INFO", docked ? "Docked state confirmed." : "Dock released.");
       }),
       api.onHysteresis((_event, data) => {
         pushEvent("WARN", `Hysteresis ${data?.triggerThreshold} -> ${data?.releaseThreshold}`);
@@ -951,6 +1054,9 @@ function DockedOrbMirror({ telemetry, accent = "#00e5ff" }) {
   const confidence = clamp(toNumberOr(telemetry?.confidenceState, 0.6), 0, 1);
   const cpu = clamp(toNumberOr(telemetry?.cpuLoad, 0), 0, 100);
   const mode = String(telemetry?.cognitiveMode || "UNKNOWN");
+  const docked = Boolean(telemetry?.orbDocked);
+  const orbActive = Boolean(telemetry?.orbRuntimeActive);
+  const ringColor = docked ? accent : "rgba(255,255,255,.45)";
   return (
     <div
       style={{
@@ -967,16 +1073,135 @@ function DockedOrbMirror({ telemetry, accent = "#00e5ff" }) {
             width: 44,
             height: 44,
             borderRadius: "50%",
-            background: `radial-gradient(circle at 35% 30%, #ffffffaa 0%, ${accent}aa 35%, #05101f 100%)`,
-            border: `1px solid ${accent}66`,
-            boxShadow: `0 0 ${8 + confidence * 12}px ${accent}66`,
+            background: `radial-gradient(circle at 35% 30%, #ffffffcc 0%, ${ringColor} 35%, #05101f 100%)`,
+            border: `1px solid ${ringColor}`,
+            boxShadow: `0 0 ${8 + confidence * 12}px ${ringColor}`,
           }}
         />
         <div style={{ display: "grid", gap: 2, flex: 1 }}>
           <span style={{ fontSize: 10, color: accent }}>DOCKED ORB MIRROR</span>
           <span style={{ fontSize: 9, color: "rgba(255,255,255,.7)" }}>
-            Mode {mode} | Confidence {(confidence * 100).toFixed(0)}% | CPU {cpu.toFixed(0)}%
+            {docked ? "DOCKED" : "NOT DOCKED"} | Runtime {orbActive ? "ACTIVE" : "OFFLINE"} | Mode {mode} | Confidence {(confidence * 100).toFixed(0)}% | CPU {cpu.toFixed(0)}%
           </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DockedOrbStage({ telemetry, accent = "#00e5ff", isDocked = false }) {
+  const mode = String(telemetry?.cognitiveMode || "DEDUCTIVE").toUpperCase();
+  const confidence = clamp(toNumberOr(telemetry?.confidenceState, 0.6), 0, 1);
+  const liveSize = Math.round(140 + confidence * 48);
+  const modeColor = mode.includes("INTUITION")
+    ? "#f5c96a"
+    : mode.includes("HABIT")
+      ? "#63e6a6"
+      : "#67c6ff";
+  const pulseColor = isDocked ? modeColor : "rgba(255,255,255,.45)";
+  const orbNodeStyle = {
+    width: liveSize,
+    height: liveSize,
+    borderRadius: "50%",
+    background: `radial-gradient(circle at 35% 30%, #ffffffc2 0%, ${pulseColor} 35%, #021022 100%)`,
+    border: `1px solid ${pulseColor}`,
+    boxShadow: `0 0 ${20 + confidence * 24}px ${pulseColor}`,
+    position: "relative",
+    animation: "orbDockBreathNode 3200ms ease-in-out infinite",
+    flexShrink: 0,
+  };
+
+  return (
+    <div style={{
+      border: "1px solid rgba(174,220,232,.2)",
+      borderRadius: 8,
+      padding: 10,
+      minHeight: 460,
+      background: "rgba(2,10,18,.55)",
+      display: "grid",
+      gridTemplateRows: "auto 1fr",
+      gap: 10,
+    }}>
+      <style>{`
+        @keyframes orbDockBreathNode {
+          0%, 100% { transform: scale(0.985); opacity: 0.88; }
+          50% { transform: scale(1.03); opacity: 1; }
+        }
+      `}</style>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+        <Pill label="DOCK STATE" value={isDocked ? "DOCKED" : "LAUNCHED"} ok={isDocked} />
+        <Pill label="RUNTIME" value={telemetry?.orbRuntimeActive ? "ACTIVE" : "INACTIVE"} ok={telemetry?.orbRuntimeActive} />
+        <Pill label="MODE" value={mode} ok={true} />
+        <Pill label="LLM" value={telemetry?.llmConnected ? "CONNECTED" : "OFFLINE"} ok={telemetry?.llmConnected} />
+      </div>
+      <div style={{ display: "grid", placeItems: "center", overflow: "hidden" }}>
+        <div style={orbNodeStyle}>
+          <div style={{
+            position: "absolute", inset: -14, borderRadius: "50%",
+            border: `1px solid ${pulseColor}`, borderRightColor: "transparent",
+            boxShadow: `0 0 26px ${pulseColor}`, transform: "rotate(24deg)",
+          }} />
+          <div style={{
+            position: "absolute", inset: -28, borderRadius: "50%",
+            border: "1px solid rgba(103,198,255,.32)", borderLeftColor: "transparent",
+            transform: "rotate(-36deg)",
+          }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HLSFMirrorPanel({ telemetry, accent = "#00e5ff" }) {
+  const hlsfTag = String(telemetry?.hlsfSnapshot?.semantic_tag || "idle").toUpperCase();
+  const hlsfDensity = Math.round(toNumberOr(telemetry?.hlsfSnapshot?.field_density, toNumberOr(telemetry?.fieldDensity, 0)));
+  const hlsfEdgeActive = Boolean(telemetry?.hlsfSnapshot?.hysteresis?.active);
+  const trigger = toNumberOr(telemetry?.hlsfSnapshot?.hysteresis?.trigger, 0);
+  const release = toNumberOr(telemetry?.hlsfSnapshot?.hysteresis?.release, 0);
+  return (
+    <div style={{ border: "1px solid rgba(174,220,232,.2)", borderRadius: 8, padding: 10, background: "rgba(2,10,18,.55)", minHeight: 460, display: "grid", gridTemplateRows: "auto 1fr", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+        <Pill label="HLSF DENSITY" value={hlsfDensity} ok={hlsfDensity > 0} />
+        <Pill label="HLSF EDGE" value={hlsfEdgeActive ? "ACTIVE" : "CLEAR"} ok={!hlsfEdgeActive} />
+        <Pill label="HLSF TAG" value={hlsfTag} ok={hlsfTag !== "IDLE"} />
+        <Pill label="REL/TRIG" value={`${release}/${trigger}`} ok={trigger > 0 || release > 0} />
+      </div>
+      <div style={{ display: "grid", placeItems: "center", overflow: "hidden" }}>
+        <HLSFFieldView telemetry={telemetry} accent={accent} />
+      </div>
+    </div>
+  );
+}
+
+function EGFMirrorPanel({ telemetry }) {
+  const egfMode = String(telemetry?.egfState?.mode || "unknown").toUpperCase();
+  const egfOk = telemetry?.egfState?.ok !== false;
+  const egfError = String(telemetry?.egfState?.error || "");
+  return (
+    <div style={{ border: "1px solid rgba(174,220,232,.2)", borderRadius: 8, padding: 10, background: "rgba(2,10,18,.55)", minHeight: 460, display: "grid", gridTemplateRows: "auto 1fr", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 6 }}>
+        <Pill label="EGF STATUS" value={egfMode} ok={egfOk} />
+        <Pill label="EGF AVAIL" value={egfOk ? "AVAILABLE" : "UNAVAILABLE"} ok={egfOk} />
+        <Pill label="EGF ERROR" value={egfError || "NONE"} ok={!egfError} />
+      </div>
+      <div style={{ display: "grid", placeItems: "center", overflow: "hidden" }}>
+        <div style={{
+          width: 250,
+          height: 250,
+          borderRadius: "50%",
+          border: `1px solid ${egfOk ? "rgba(99,239,158,.72)" : "rgba(255,191,71,.65)"}`,
+          boxShadow: `0 0 26px ${egfOk ? "rgba(99,239,158,.45)" : "rgba(255,191,71,.35)"}`,
+          background: egfOk
+            ? "radial-gradient(circle at 34% 28%, rgba(255,255,255,.88), rgba(99,239,158,.44) 38%, rgba(2,20,16,.95) 100%)"
+            : "radial-gradient(circle at 34% 28%, rgba(255,255,255,.6), rgba(255,191,71,.28) 38%, rgba(20,10,2,.95) 100%)",
+          display: "grid",
+          placeItems: "center",
+          color: egfOk ? "#63ef9e" : "#ffbf47",
+          fontSize: 12,
+          fontFamily: "monospace",
+          letterSpacing: 0.8,
+        }}>
+          {egfOk ? "EGF ACTIVE" : "EGF UNAVAILABLE"}
         </div>
       </div>
     </div>
@@ -1071,12 +1296,12 @@ function HLSFFieldView({ telemetry, accent = "#00e5ff" }) {
         ctx.shadowBlur = 0;
 
         ctx.fillStyle = color;
-        ctx.font = "bold 7px monospace";
+        ctx.font = "bold 9px monospace";
         ctx.textAlign = px >= cx ? "left" : "right";
         ctx.textBaseline = "middle";
         ctx.fillText(`N${dim.n} K${dim.k}`, px + (px >= cx ? 8 : -8), py - 5);
         ctx.fillStyle = "rgba(255,255,255,.55)";
-        ctx.font = "6px monospace";
+        ctx.font = "8px monospace";
         ctx.fillText(`${Math.round(energy * 100)}%`, px + (px >= cx ? 8 : -8), py + 5);
       });
 
@@ -1096,7 +1321,7 @@ function HLSFFieldView({ telemetry, accent = "#00e5ff" }) {
 
       // Semantic tag
       ctx.fillStyle = accent;
-      ctx.font = "bold 7px monospace";
+      ctx.font = "bold 10px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(semanticTag.slice(0, 12), cx, cy);
@@ -1119,14 +1344,14 @@ function HLSFFieldView({ telemetry, accent = "#00e5ff" }) {
 
       if (!activeDims.length) {
         ctx.fillStyle = "rgba(255,255,255,.3)";
-        ctx.font = "7px monospace";
+        ctx.font = "9px monospace";
         ctx.textAlign = "center";
         ctx.fillText("NO ACTIVE DIMENSIONS", cx, cy + 52);
       }
 
       // Readout
       ctx.fillStyle = "rgba(255,255,255,.35)";
-      ctx.font = "6px monospace";
+      ctx.font = "8px monospace";
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.fillText(`DENSITY ${density}`, 6, 6);
@@ -1288,15 +1513,16 @@ function ChatPanel({ accent = "#00e5ff" }) {
     const api = window.electronAPI;
     if (!api || typeof api.onChatMessage !== "function") return undefined;
     const unsub = api.onChatMessage((_event, msg) => {
-      const key = `${msg.role || ""}|${msg.text || ""}|${msg.audioPath || ""}`;
+      const key = `${msg.role || ""}|${msg.text || ""}|${msg.audioPath || ""}|${msg.audioUrl || ""}`;
       if (lastMessageKeyRef.current === key) return;
       lastMessageKeyRef.current = key;
       window.setTimeout(() => {
         if (lastMessageKeyRef.current === key) lastMessageKeyRef.current = "";
       }, 1200);
       setMessages((prev) => [...prev, msg]);
-      if (msg.role === "orb" && msg.audioPath) {
-        playAudioNow(msg.audioPath);
+      const orbAudio = msg.audioUrl || msg.audioPath || null;
+      if (msg.role === "orb" && orbAudio) {
+        playAudioNow(orbAudio);
       }
     });
     return () => {
@@ -1309,9 +1535,9 @@ function ChatPanel({ accent = "#00e5ff" }) {
     if (!api || typeof api.onOrbBridgeMessage !== "function") return undefined;
     const unsub = api.onOrbBridgeMessage((_event, message) => {
       if (!message || message.type !== "speak_result") return;
-      const audioPath = message?.data?.audio_path || null;
-      if (audioPath) {
-        playAudioNow(audioPath);
+      const audioSource = message?.data?.audio_url || message?.data?.audio_path || null;
+      if (audioSource) {
+        playAudioNow(audioSource);
       }
     });
     return () => {
@@ -1415,7 +1641,7 @@ function ChatPanel({ accent = "#00e5ff" }) {
                 {msg.text}
               </div>
               <span style={{ fontSize: 10, color: "rgba(211,236,243,.42)", marginTop: 3, fontFamily: "monospace" }}>
-                {msg.role === "orb" ? (msg.audioPath ? "ORB VOICE" : "ORB") : "YOU"} · {msg.time}
+                {msg.role === "orb" ? ((msg.audioUrl || msg.audioPath) ? "ORB VOICE" : "ORB") : "YOU"} · {msg.time}
               </span>
             </div>
           ))
@@ -1495,10 +1721,15 @@ function OrbDockStation() {
       apiBase: persisted.apiBase || "",
       apiModel: persisted.apiModel || "",
       apiKey: persisted.apiKey || "",
-      localEndpoint: persisted.localEndpoint || "http://wsl.localhost:11434",
-      localModel: persisted.localModel || "qwen2.5:3b",
-      governanceWrapper: persisted.governanceWrapper !== false,
+      localEndpoint: persisted.localEndpoint || "http://127.0.0.1:11434",
+      localModel: persisted.localModel || "llama3.2:1b",
+      governanceWrapper: false,
       retainVoice: persisted.retainVoice !== false,
+      startOnBoot: persisted.startOnBoot !== false,
+      showStartupSplash: persisted.showStartupSplash !== false,
+      startDocked: persisted.startDocked === true,
+      startupVoiceGreeting: persisted.startupVoiceGreeting === true,
+      desktopMcpActionsEnabled: persisted.desktopMcpActionsEnabled === true,
     };
   });
   const [skinId, setSkinId] = useState(stationConfig.skinId);
@@ -1510,17 +1741,26 @@ function OrbDockStation() {
   const [manualContext, setManualContext] = useState("");
   const [manualMorbCount, setManualMorbCount] = useState(5);
   const [manualDeployZone, setManualDeployZone] = useState("around");
+  const [bootPhase, setBootPhase] = useState("login");
+  const [loginUser, setLoginUser] = useState("");
+  const [loginPass, setLoginPass] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [latestOrbOutput, setLatestOrbOutput] = useState("");
   const [orbConversation, setOrbConversation] = useState([]);
   const [deployingSwarm, setDeployingSwarm] = useState(false);
   const startupConnectRef = useRef(false);
+  const listeningBootstrapRef = useRef({ lastTryAt: 0 });
   const [swarmStatusFeed, setSwarmStatusFeed] = useState(() => [
     { id: 0, text: "Prime ORB idle.", level: "INFO" },
   ]);
   const skin = useMemo(() => SKINS.find((s) => s.id === skinId) || SKINS[0], [skinId]);
   const accent = skin.accent;
-  const isDocked = !tel.orbVisible;
-  const governanceEnabled = stationConfig.llmRoute !== "cali" && stationConfig.governanceWrapper;
+  const isDocked = Boolean(tel.orbDocked);
+  const isDockReady = bootPhase === "ready";
+  const governanceEnabled = stationConfig.governanceWrapper;
+  const desktopMcpActionsEnabled = stationConfig.desktopMcpActionsEnabled === true;
   const llm =
     (tel.activeLLM && String(tel.activeLLM).trim() && String(tel.activeLLM).toLowerCase() !== "unknown")
       ? String(tel.activeLLM)
@@ -1543,7 +1783,7 @@ function OrbDockStation() {
             setLatestOrbOutput(text);
             setOrbConversation((prev) => {
               const next = [...prev, { text, time: msg?.time || new Date().toTimeString().slice(0, 8) }];
-              return next.slice(-8);
+              return next.slice(-24);
             });
           }
         })
@@ -1562,7 +1802,7 @@ function OrbDockStation() {
             setLatestOrbOutput(text);
             setOrbConversation((prev) => {
               const next = [...prev, { text, time: new Date().toTimeString().slice(0, 8) }];
-              return next.slice(-8);
+              return next.slice(-24);
             });
           }
         })
@@ -1580,8 +1820,15 @@ function OrbDockStation() {
   const cognitiveModeLabel = String(tel.cognitiveMode || "DEDUCTIVE").toUpperCase();
   const TABS = [
     { id: "orb", label: "ORB" },
-    ...(tier >= 2 ? [{ id: "runtime", label: "RUNTIME" }, { id: "settings", label: "SETTINGS" }] : []),
+    ...(tier >= 2 ? [{ id: "runtime", label: "RUNTIME" }, { id: "skills", label: "SKILLS" }, { id: "settings", label: "SETTINGS" }] : []),
   ];
+
+  useEffect(() => {
+    const api = window.electronAPI;
+    if (!api || typeof api.setOrbVisibility !== "function") return;
+    if (bootPhase === "ready") return;
+    api.setOrbVisibility(false).catch(() => {});
+  }, [bootPhase]);
 
   useEffect(() => {
     setStationConfig((prev) => {
@@ -1615,6 +1862,12 @@ function OrbDockStation() {
       return next.slice(0, 8);
     });
   }, []);
+
+  useEffect(() => {
+    const api = window.electronAPI;
+    if (!api || typeof api.setDesktopMcpActionsEnabled !== "function") return;
+    api.setDesktopMcpActionsEnabled(desktopMcpActionsEnabled).catch(() => {});
+  }, [desktopMcpActionsEnabled]);
 
   const discoverLocalLlm = useCallback(async ({ autoApply = false } = {}) => {
     const api = window.electronAPI;
@@ -1651,7 +1904,7 @@ function OrbDockStation() {
           api.setOrbState("llm_route", "local"),
           api.setOrbState("llm_local_endpoint", discovery.endpoint),
           api.setOrbState("llm_local_model", discovery.model),
-          api.setOrbState("llm_governance_wrapper", next.governanceWrapper !== false),
+          api.setOrbState("llm_governance_wrapper", false),
           api.setOrbState("llm_retain_voice", Boolean(next.retainVoice)),
         ]);
         pushSwarmStatus("Local LLM route applied.", "PASS");
@@ -1685,7 +1938,7 @@ function OrbDockStation() {
         api.setOrbState("llm_api_key", stationConfig.apiKey || ""),
         api.setOrbState("llm_local_endpoint", stationConfig.localEndpoint || ""),
         api.setOrbState("llm_local_model", stationConfig.localModel || ""),
-        api.setOrbState("llm_governance_wrapper", governanceEnabled),
+        api.setOrbState("llm_governance_wrapper", false),
         api.setOrbState("llm_retain_voice", Boolean(stationConfig.retainVoice)),
       ];
       const results = await Promise.allSettled(writes);
@@ -1705,24 +1958,101 @@ function OrbDockStation() {
     }
   }, [governanceEnabled, pushSwarmStatus, stationConfig]);
 
+  const ensureRealtimeListening = useCallback(async (reason = "startup", attempts = 6, delayMs = 1200) => {
+    const api = window.electronAPI;
+    if (!api || typeof api.setListening !== "function") return false;
+    for (let i = 0; i < attempts; i += 1) {
+      if (i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+      try {
+        const response = await api.setListening(true);
+        const enabled = Boolean(
+          response?.data?.enabled ??
+          response?.enabled ??
+          response?.data?.ok ??
+          response?.ok
+        );
+        if (enabled) {
+          pushSwarmStatus(`Realtime listening armed (${reason}).`, "PASS");
+          return true;
+        }
+      } catch (_error) {
+        // Runtime may still be initializing mic/voice; retry until attempts exhausted.
+      }
+    }
+    pushSwarmStatus(`Listening arm pending (${reason}).`, "INFO");
+    return false;
+  }, [pushSwarmStatus]);
+
   const handleActivatePrimeOrb = useCallback(async () => {
+    if (!isDockReady) return;
     const api = window.electronAPI;
     if (!api) return;
-    try {
-      if (typeof api.setOrbVisibility === "function") {
-        await api.setOrbVisibility(true);
+    let launched = false;
+    const notes = [];
+    if (typeof api.launchOrbFromDock === "function") {
+      try {
+        const result = await api.launchOrbFromDock();
+        launched = Boolean(result?.visible ?? true);
+      } catch (error) {
+        notes.push(`launch:${error?.message || String(error)}`);
       }
-      if (typeof api.dispatchPrimeOrbCommand === "function") {
-        await api.dispatchPrimeOrbCommand({ command: "activate", source: "dock_station" });
-      }
-      if (stationConfig.llmRoute === "local") {
-        await discoverLocalLlm({ autoApply: true });
-      }
-      pushSwarmStatus("Prime ORB activated.", "PASS");
-    } catch (error) {
-      pushSwarmStatus(`Activate failed: ${error?.message || String(error)}`, "ERR");
     }
-  }, [discoverLocalLlm, pushSwarmStatus, stationConfig.llmRoute]);
+    if (typeof api.dispatchPrimeOrbCommand === "function") {
+      try {
+        const result = await api.dispatchPrimeOrbCommand({ command: "activate", source: "dock_station" });
+        if (result?.ok === false) {
+          notes.push(`dispatch:${result?.error || "not delivered"}`);
+        }
+      } catch (error) {
+        notes.push(`dispatch:${error?.message || String(error)}`);
+      }
+    }
+    try {
+      await ensureRealtimeListening("activate");
+    } catch (error) {
+      notes.push(`listening:${error?.message || String(error)}`);
+    }
+    try {
+      await applyLlmConfig();
+    } catch (error) {
+      notes.push(`routing:${error?.message || String(error)}`);
+    }
+    if (stationConfig.llmRoute === "local") {
+      try {
+        await discoverLocalLlm({ autoApply: true });
+      } catch (error) {
+        notes.push(`llm:${error?.message || String(error)}`);
+      }
+    } else if (stationConfig.llmRoute === "cali") {
+      pushSwarmStatus("CALI local cognitive core routing active.", "PASS");
+    }
+    if (launched) {
+      pushSwarmStatus("Prime ORB activated.", "PASS");
+      if (notes.length) {
+        pushSwarmStatus(`Activate degraded: ${notes.join(" | ")}`, "INFO");
+      }
+    } else {
+      pushSwarmStatus(`Activate failed: ${notes.join(" | ") || "unable to set visibility"}`, "ERR");
+    }
+  }, [applyLlmConfig, discoverLocalLlm, ensureRealtimeListening, isDockReady, pushSwarmStatus, stationConfig.llmRoute]);
+
+  const handleDockLogin = useCallback(() => {
+    const user = String(loginUser || "").trim();
+    const pass = String(loginPass || "").trim();
+    if (!user || !pass) {
+      setLoginError("Enter username and password.");
+      return;
+    }
+    if (!privacyAccepted || !termsAccepted) {
+      setLoginError("Accept Privacy Notice and Terms of Service to continue.");
+      return;
+    }
+    setLoginError("");
+    setBootPhase("ready");
+    pushSwarmStatus("DockStation authenticated. Activate ORB to launch.", "PASS");
+  }, [loginPass, loginUser, privacyAccepted, termsAccepted, pushSwarmStatus]);
 
   useEffect(() => {
     if (startupConnectRef.current) return;
@@ -1731,21 +2061,31 @@ function OrbDockStation() {
     if (!api) return;
     (async () => {
       try {
-        if (typeof api.setOrbVisibility === "function") {
-          await api.setOrbVisibility(true);
-        }
-        if (typeof api.dispatchPrimeOrbCommand === "function") {
-          await api.dispatchPrimeOrbCommand({ command: "activate", source: "dock_startup" });
-        }
+        await ensureRealtimeListening("startup");
+        await applyLlmConfig();
         if (stationConfig.llmRoute === "local") {
           await discoverLocalLlm({ autoApply: true });
+        } else if (stationConfig.llmRoute === "cali") {
+          pushSwarmStatus("Startup CALI cognitive core routing applied.", "PASS");
         }
-        pushSwarmStatus("Startup connect complete.", "PASS");
+        pushSwarmStatus("Startup connect complete (docked standby).", "PASS");
       } catch (error) {
         pushSwarmStatus(`Startup connect failed: ${error?.message || String(error)}`, "ERR");
       }
     })();
-  }, [discoverLocalLlm, pushSwarmStatus, stationConfig.llmRoute]);
+  }, [applyLlmConfig, discoverLocalLlm, ensureRealtimeListening, pushSwarmStatus, stationConfig.llmRoute]);
+
+  useEffect(() => {
+    if (!tel.dockChannelConnected || tel.listeningEnabled) {
+      return;
+    }
+    const now = Date.now();
+    if (now - listeningBootstrapRef.current.lastTryAt < 8000) {
+      return;
+    }
+    listeningBootstrapRef.current.lastTryAt = now;
+    ensureRealtimeListening("reconnect", 4, 1500);
+  }, [ensureRealtimeListening, tel.dockChannelConnected, tel.listeningEnabled]);
 
   const handleDockPrimeOrb = useCallback(async () => {
     const api = window.electronAPI;
@@ -1760,9 +2100,9 @@ function OrbDockStation() {
 
   const handleLaunchPrimeOrb = useCallback(async () => {
     const api = window.electronAPI;
-    if (!api || typeof api.setOrbVisibility !== "function") return;
+    if (!api || typeof api.launchOrbFromDock !== "function") return;
     try {
-      await api.setOrbVisibility(true);
+      await api.launchOrbFromDock();
       pushSwarmStatus("Prime ORB launched.", "PASS");
     } catch (error) {
       pushSwarmStatus(`Launch failed: ${error?.message || String(error)}`, "ERR");
@@ -1837,10 +2177,18 @@ function OrbDockStation() {
   const channelStateLabel = tel.dockChannelConnected
     ? (tel.listeningEnabled ? "CHANNEL CONNECTED / LISTENING" : "CHANNEL CONNECTED / LISTENING OFF")
     : "CHANNEL DISCONNECTED";
+  const hlsfTag = String(tel?.hlsfSnapshot?.semantic_tag || "idle").toUpperCase();
+  const hlsfDensity = Math.round(toNumberOr(tel?.hlsfSnapshot?.field_density, toNumberOr(tel.fieldDensity, 0)));
+  const hlsfEdgeActive = Boolean(tel?.hlsfSnapshot?.hysteresis?.active);
+  const egfMode = String(tel?.egfState?.mode || "unknown").toUpperCase();
+  const egfOk = tel?.egfState?.ok !== false;
+  const egfError = String(tel?.egfState?.error || "");
+  const siteStatusEntries = Object.entries(tel?.siteOrbStatus || {});
 
   return (
     <div style={{
       display: "flex", flexDirection: "column", height: "100%", overflow: "hidden",
+      position: "relative",
       background: "radial-gradient(ellipse at 30% 20%, rgba(9,24,35,1) 0%, rgba(4,12,20,1) 58%, rgba(2,6,12,1) 100%)",
       color: "#edfaff", fontFamily: "'Courier New', monospace",
     }}>
@@ -1874,6 +2222,20 @@ function OrbDockStation() {
         </div>
         <div style={{ marginLeft: "auto", display: "grid", gap: 6, minWidth: 0, width: "100%", maxWidth: 980 }}>
           <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", alignItems: "center", flexWrap: "wrap" }}>
+            <span
+              style={{
+                padding: "6px 10px",
+                borderRadius: 4,
+                fontSize: 11,
+                fontFamily: "monospace",
+                letterSpacing: 0.8,
+                border: `1px solid ${isDocked ? "rgba(0,230,118,.6)" : "rgba(0,229,255,.45)"}`,
+                background: isDocked ? "rgba(0,230,118,.14)" : "rgba(0,229,255,.12)",
+                color: isDocked ? "#00e676" : "#00e5ff",
+              }}
+            >
+              {isDocked ? "DOCKED" : "LAUNCHED"}
+            </span>
             {tier >= 3 && (
               <button
                 onClick={() => window.electronAPI?.openStudio?.()}
@@ -1893,7 +2255,7 @@ function OrbDockStation() {
                 background: "rgba(0,230,118,.16)",
                 color: "#00e676", letterSpacing: 0.8,
               }}
-            >{isDocked ? "Launch Orb" : "Activate"}</button>
+            >{isDocked ? "Activate / Launch ORB" : "Activate ORB"}</button>
             <button
               onClick={isDocked ? handleLaunchPrimeOrb : handleDockPrimeOrb}
               style={{
@@ -1902,7 +2264,7 @@ function OrbDockStation() {
                 background: isDocked ? "rgba(0,230,118,.16)" : "rgba(179,136,255,.16)",
                 color: isDocked ? "#00e676" : "#d1b2ff", letterSpacing: 0.8,
               }}
-            >{isDocked ? "Launch" : "Dock"}</button>
+            >{isDocked ? "Launch ORB" : "Dock ORB"}</button>
             <button
               onClick={handleSpawnMicroOrb}
               style={{
@@ -2026,82 +2388,40 @@ function OrbDockStation() {
       <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 12 }}>
 
         {activeTab === "orb" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 12, minHeight: 0 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, minHeight: 0 }}>
-              <Panel title="Connected Orbs" accent={accent} badge="MESH">
-                <OrbRegistryPanel accent={accent} activeInstanceId={tel.instanceId} />
-              </Panel>
-              <ChatPanel accent={accent} />
-            </div>
-            <Panel title="Orb Mirror" accent={accent} badge={isDocked ? "DOCKED" : "LIVE"}>
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
-                <div
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(320px, 1fr))", gap: 12, minHeight: 0, alignItems: "stretch" }}>
+            <Panel title="HLSF Mirror" accent={accent} badge="LEFT">
+              <HLSFMirrorPanel telemetry={tel} accent={accent} />
+            </Panel>
+            <Panel title="Docked ORB" accent={accent} badge={isDocked ? "DOCKED" : "LAUNCHED"}>
+              <DockedOrbStage telemetry={tel} accent={accent} isDocked={isDocked} />
+              <div style={{ display: "flex", justifyContent: "center", paddingTop: 10 }}>
+                <button
+                  onClick={isDocked ? handleLaunchPrimeOrb : handleDockPrimeOrb}
                   style={{
-                    width: "100%",
-                    maxWidth: 420,
-                    padding: "10px 12px",
-                    borderRadius: 6,
-                    border: "1px solid rgba(0,229,255,.35)",
-                    background: "rgba(2,18,28,.7)",
-                    color: "rgba(211,236,243,.92)",
-                    fontSize: 14,
+                    padding: "7px 14px",
+                    borderRadius: 4,
+                    border: isDocked ? "1px solid rgba(0,230,118,.65)" : "1px solid rgba(125,211,255,.65)",
+                    background: isDocked ? "rgba(0,230,118,.16)" : "rgba(125,211,255,.16)",
+                    color: isDocked ? "#00e676" : "#7dd3ff",
+                    cursor: "pointer",
+                    fontSize: 11,
                     fontFamily: "monospace",
-                    lineHeight: 1.55,
-                    textAlign: "left",
-                    maxHeight: 210,
-                    overflowY: "auto",
+                    letterSpacing: 0.8,
                   }}
                 >
-                  {orbConversation.length ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {orbConversation.map((item, idx) => (
-                        <div key={`${item.time}-${idx}`} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                          <div style={{ fontSize: 10, color: "rgba(125,211,255,.85)", letterSpacing: 0.5 }}>ORB · {item.time}</div>
-                          <div>{item.text}</div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    latestOrbOutput || "Awaiting ORB output..."
-                  )}
-                </div>
+                  {isDocked ? "Launch ORB" : "Dock ORB"}
+                </button>
               </div>
-              <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
-                <Pill label="RUNTIME" value={tel.orbRuntimeActive ? "ACTIVE" : "INACTIVE"} ok={tel.orbRuntimeActive} />
-                <Pill label="LLM CONNECTED" value={tel.llmConnected ? "TRUE" : "FALSE"} ok={tel.llmConnected} />
-                <Pill label="VOICE" value={voiceStateLabel} ok={tel.voiceProviderReady} />
-              </div>
-              <DockedOrbMirror telemetry={tel} accent={accent} />
-              {isDocked && (
-                <div style={{ display: "flex", justifyContent: "center", paddingTop: 10 }}>
-                  <button
-                    onClick={handleLaunchPrimeOrb}
-                    style={{
-                      padding: "7px 14px",
-                      borderRadius: 4,
-                      border: "1px solid rgba(0,230,118,.65)",
-                      background: "rgba(0,230,118,.16)",
-                      color: "#00e676",
-                      cursor: "pointer",
-                      fontSize: 11,
-                      fontFamily: "monospace",
-                      letterSpacing: 0.8,
-                    }}
-                  >
-                    Launch Floating Orb
-                  </button>
-                </div>
-              )}
-              <div style={{ display: "flex", gap: 12, justifyContent: "center", padding: "10px 0 0", flexWrap: "wrap" }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                  <div style={{ fontSize: 10, color: "rgba(255,255,255,.58)", fontFamily: "monospace", letterSpacing: 1 }}>PRESENCE</div>
-                  <OrbDiagram telemetry={tel} accent={accent} />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                  <div style={{ fontSize: 10, color: "rgba(255,255,255,.58)", fontFamily: "monospace", letterSpacing: 1 }}>HLSF FIELD</div>
-                  <HLSFFieldView telemetry={tel} accent={accent} />
-                </div>
-              </div>
+            </Panel>
+            <Panel title="EGF Mirror" accent={accent} badge="RIGHT">
+              <EGFMirrorPanel telemetry={tel} />
+            </Panel>
+          </div>
+        )}
+{activeTab === "skills" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, minHeight: 0 }}>
+            <Panel title="Talk To Orb" accent={accent} badge="SKILLS">
+              <ChatPanel accent={accent} />
             </Panel>
           </div>
         )}
@@ -2179,7 +2499,14 @@ function OrbDockStation() {
             <Panel title="LLM Connector" accent="#b388ff">
               <select
                 value={stationConfig.llmRoute}
-                onChange={(e) => persistConfig({ ...stationConfig, llmRoute: e.target.value })}
+                onChange={(e) => {
+                  const nextRoute = e.target.value;
+                  persistConfig({
+                    ...stationConfig,
+                    llmRoute: nextRoute,
+                    governanceWrapper: false,
+                  });
+                }}
                 style={{ background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.2)", borderRadius: 4, padding: "4px 6px", fontSize: 10, marginBottom: 6, width: "100%" }}
               >
                 <option value="cali">CALI (local cognitive core)</option>
@@ -2230,12 +2557,6 @@ function OrbDockStation() {
                   </div>
                 </>
               )}
-              <label style={{ fontSize: 9, color: "rgba(255,255,255,.75)", display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
-                <input type="checkbox" checked={stationConfig.governanceWrapper}
-                  disabled={stationConfig.llmRoute === "cali"}
-                  onChange={(e) => persistConfig({ ...stationConfig, governanceWrapper: e.target.checked })} />
-                Governance wrapper
-              </label>
               <label style={{ fontSize: 9, color: "rgba(255,255,255,.75)", display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
                 <input type="checkbox" checked={stationConfig.retainVoice}
                   onChange={(e) => persistConfig({ ...stationConfig, retainVoice: e.target.checked })} />
@@ -2247,6 +2568,24 @@ function OrbDockStation() {
                   fontSize: 10, fontFamily: "monospace" }}>
                 {savingLlmConfig ? "Applying..." : "Apply LLM Routing"}
               </button>
+            </Panel>
+
+            <Panel title="Desktop MCP" accent="#ffcc66">
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <Pill
+                  label="DESKTOP ACTIONS"
+                  value={desktopMcpActionsEnabled ? "ENABLED" : "DISABLED"}
+                  ok={desktopMcpActionsEnabled}
+                />
+                <label style={{ fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={desktopMcpActionsEnabled}
+                    onChange={(e) => persistConfig({ ...stationConfig, desktopMcpActionsEnabled: e.target.checked })}
+                  />
+                  Desktop actions
+                </label>
+              </div>
             </Panel>
 
             <Panel title="Orb Skin" accent={accent}>
@@ -2287,9 +2626,111 @@ function OrbDockStation() {
                 </button>
               </div>
             </Panel>
+
+            <Panel title="Startup" accent="#4dd0e1">
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={stationConfig.startOnBoot}
+                    onChange={(e) => persistConfig({ ...stationConfig, startOnBoot: e.target.checked })}
+                  />
+                  Start CALI ORB when Windows starts
+                </label>
+                <label style={{ fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={stationConfig.showStartupSplash}
+                    onChange={(e) => persistConfig({ ...stationConfig, showStartupSplash: e.target.checked })}
+                  />
+                  Show startup animation
+                </label>
+                <label style={{ fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={stationConfig.startDocked}
+                    onChange={(e) => persistConfig({ ...stationConfig, startDocked: e.target.checked })}
+                  />
+                  Start minimized/docked
+                </label>
+                <label style={{ fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={stationConfig.startupVoiceGreeting}
+                    onChange={(e) => persistConfig({ ...stationConfig, startupVoiceGreeting: e.target.checked })}
+                  />
+                  Startup voice greeting
+                </label>
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,.52)", marginTop: 4 }}>
+                  Startup preferences saved locally. Env/runtime startup flags remain authoritative.
+                </div>
+              </div>
+            </Panel>
           </>
         )}
       </div>
+
+      {bootPhase !== "ready" && (
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(2,10,18,.68)",
+          backdropFilter: "blur(1px)",
+          display: "grid",
+          placeItems: "center",
+          zIndex: 9999,
+        }}>
+          <div style={{
+            width: 420,
+            border: "1px solid rgba(139,223,240,.34)",
+            borderRadius: 8,
+            background: "rgba(4,18,30,.94)",
+            padding: 18,
+            color: "#edfaff",
+            fontFamily: "monospace",
+            display: "grid",
+            gap: 10,
+          }}>
+            <div style={{ fontSize: 18, letterSpacing: 1 }}>DockStation Login</div>
+            <input
+              value={loginUser}
+              onChange={(e) => setLoginUser(e.target.value)}
+              placeholder="Username"
+              style={{ background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.22)", borderRadius: 4, padding: "8px 10px", fontSize: 12 }}
+            />
+            <input
+              type="password"
+              value={loginPass}
+              onChange={(e) => setLoginPass(e.target.value)}
+              placeholder="Password"
+              style={{ background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.22)", borderRadius: 4, padding: "8px 10px", fontSize: 12 }}
+            />
+            <label style={{ fontSize: 11, color: "rgba(220,245,255,.9)", display: "flex", gap: 8, alignItems: "center" }}>
+              <input
+                type="checkbox"
+                checked={privacyAccepted}
+                onChange={(e) => setPrivacyAccepted(e.target.checked)}
+              />
+              I agree to the Privacy Notice.
+            </label>
+            <label style={{ fontSize: 11, color: "rgba(220,245,255,.9)", display: "flex", gap: 8, alignItems: "center" }}>
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
+              I agree to the Terms of Service.
+            </label>
+            {loginError ? <div style={{ color: "#ff9f9f", fontSize: 11 }}>{loginError}</div> : null}
+            <button
+              onClick={handleDockLogin}
+              style={{ padding: "8px 10px", borderRadius: 4, border: "1px solid rgba(0,230,118,.65)", background: "rgba(0,230,118,.16)", color: "#00e676", fontSize: 12, cursor: "pointer" }}
+            >
+              Login & Continue
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── Status Bar ── */}
       <div style={{

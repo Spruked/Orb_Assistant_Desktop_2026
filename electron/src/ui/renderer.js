@@ -108,12 +108,76 @@ function CALIDashboard() {
     initializing: 'gray'
   }[getSystemHealth()];
 
+
+  // Helper for status badge
+  const statusBadge = (label, status, error) => {
+    let color = 'gray';
+    let icon = '⏳';
+    if (status === true || status === 'online' || status === 'running') { color = 'green'; icon = '✅'; }
+    else if (status === false || status === 'error' || status === 'unavailable' || status === 'crashed') { color = 'red'; icon = '❌'; }
+    else if (status === 'loading' || status === 'starting') { color = 'yellow'; icon = '⏳'; }
+    return React.createElement(Badge, { colorScheme: color, px: 2, py: 1, mr: 2 }, `${icon} ${label}${error ? `: ${error}` : ''}`);
+  };
+
+  // Extract new status fields
+  const llmStatus = systemStatus?.llm_status;
+  const voiceStatus = systemStatus?.voice_engine_manager;
+  const audioStatus = systemStatus?.audio_runtime;
+
+
+  // Voice engine health
+  let voiceEngineBadge = null;
+  if (voiceStatus && voiceStatus.engines) {
+    const active = voiceStatus.active_engine;
+    const activeObj = voiceStatus.engines[active] || {};
+    voiceEngineBadge = statusBadge('Voice', activeObj.status, activeObj.message || activeObj.error);
+  }
+
+  // Audio runtime health
+  let audioRuntimeBadge = null;
+  if (audioStatus) {
+    const vstat = audioStatus.voice;
+    audioRuntimeBadge = statusBadge('Audio', vstat, audioStatus.adapter_import_error);
+  }
+
+  // LLM health
+  let llmBadge = null;
+  if (llmStatus) {
+    llmBadge = statusBadge('LLM', llmStatus.connected, llmStatus.error);
+  }
+
+  // Listening/mic/channel indicators
+  let listeningBadge = null;
+  let channelBadge = null;
+  // Use orb_state only for listening
+  const orbState = systemStatus?.orb_state || {};
+  const listening = orbState.listening;
+  if (listening === true) {
+    listeningBadge = React.createElement(Badge, { colorScheme: 'green', px: 2, py: 1, mr: 2 }, '🎤 Listening ON');
+  } else if (listening === false) {
+    listeningBadge = React.createElement(Badge, { colorScheme: 'red', px: 2, py: 1, mr: 2 }, '🔇 Listening OFF');
+  } else {
+    listeningBadge = React.createElement(Badge, { colorScheme: 'gray', px: 2, py: 1, mr: 2 }, '⏳ Listening...');
+  }
+  // Channel: connected/disconnected
+  const channelConnected = orbState.channel_connected ?? false;
+  if (channelConnected) {
+    channelBadge = React.createElement(Badge, { colorScheme: 'green', px: 2, py: 1, mr: 2 }, '🟢 Channel Connected');
+  } else {
+    channelBadge = React.createElement(Badge, { colorScheme: 'red', px: 2, py: 1, mr: 2 }, '🔴 Channel Disconnected');
+  }
+
   return React.createElement(ChakraProvider, null,
     React.createElement(Box, { p: 6, bg: 'gray.900', minH: '100vh' },
       React.createElement(Flex, { justify: 'space-between', align: 'center', mb: 6 },
         React.createElement(Heading, { size: 'xl', color: 'cyan.400' }, 'CALI UCM_4_Core v2.1'),
         React.createElement(HStack, null,
           React.createElement(Badge, { colorScheme: healthColor, fontSize: 'lg', px: 3, py: 1 }, getSystemHealth().toUpperCase()),
+          llmBadge,
+          voiceEngineBadge,
+          audioRuntimeBadge,
+          listeningBadge,
+          channelBadge,
           React.createElement(Button, { colorScheme: 'red', size: 'sm', onClick: handleEmergencyStop, isDisabled: shutdownInitiated }, 'Emergency Stop')
         )
       ),

@@ -52,8 +52,8 @@ const ORB_AUTONOMOUS_FORCE_RETARGET_BASE_MS = 7200;
 const ORB_AUTONOMOUS_FORCE_RETARGET_IDLE_MS = 11200;
 const ORB_CURSOR_REACTION_COOLDOWN_MS = 480;
 const ORB_RETARGET_STABILITY_WINDOW_MS = 1400;
-const ORB_INTERACTION_RADIUS = 54;
-const ORB_SMOOTHING = 0.12;
+const ORB_INTERACTION_RADIUS = 92;
+const ORB_SMOOTHING = 0.52;
 const ORB_SNAP_DISTANCE = 1.5;
 const ORB_DIRECTION_EPSILON = 2;
 const ORB_DEFAULT_TRAIL_DIRECTION = { x: -0.9, y: -0.42 };
@@ -62,12 +62,20 @@ const ORB_VISUAL_MODE_LOCK = '';
 const ORB_AUTONOMOUS_BASE_SPEED = 0.72;
 const ORB_AUTONOMOUS_IDLE_SPEED_BONUS = 0.06;
 const ORB_STEER_BLEND = 0.055;
-const ORB_CURSOR_REPEL_RADIUS = ORB_CURSOR_COMFORT_RADIUS + 12;
+const ORB_IDLE_DRIFT_SPEED = parseEnvFloat('ORB_IDLE_DRIFT_SPEED', 0.42, 0.05, 1.8);
+const ORB_WANDER_RADIUS = parseEnvInt('ORB_WANDER_RADIUS', 190, 50, 700);
+const ORB_MAX_TIME_BEFORE_REPOSITION_MS = parseEnvInt('ORB_MAX_TIME_BEFORE_REPOSITION_MS', 9200, 2500, 45000);
+const ORB_SCREEN_EDGE_PADDING = parseEnvInt('ORB_SCREEN_EDGE_PADDING', 170, ORB_MARGIN, 360);
+const ORB_SAFE_EDGE_PADDING = Math.max(ORB_MARGIN, ORB_SCREEN_EDGE_PADDING);
+const ORB_MOVEMENT_SMOOTHING = parseEnvFloat('ORB_MOVEMENT_SMOOTHING', 0.52, 0.05, 0.8);
+const ORB_CURIOSITY_INTENSITY = parseEnvFloat('ORB_CURIOSITY_INTENSITY', 0.58, 0, 1);
+const ORB_CURSOR_AVOID_RADIUS = parseEnvInt('ORB_CURSOR_AVOID_RADIUS', 140, 80, 420);
+const ORB_CURSOR_REPEL_RADIUS = Math.max(ORB_CURSOR_COMFORT_RADIUS + 12, ORB_CURSOR_AVOID_RADIUS);
 const ORB_CURSOR_LEASH_MIN = ORB_CURSOR_COMFORT_RADIUS - 18;
 const ORB_CURSOR_LEASH_MAX = ORB_CURSOR_COMFORT_RADIUS + 116;
-const ORB_EDGE_REPEL_DISTANCE = 150;
-const ORB_EDGE_REPEL_GAIN = 1.35;
-const ORB_CENTER_RECOVERY_GAIN = 0.65;
+const ORB_EDGE_REPEL_DISTANCE = 260;
+const ORB_EDGE_REPEL_GAIN = 2.15;
+const ORB_CENTER_RECOVERY_GAIN = 1.15;
 const ORB_HARD_ESCAPE_CLEARANCE = ORB_MIN_CURSOR_CLEARANCE - 8;
 const ORB_MAX_ACCELERATION = 0.065;
 const ORB_VELOCITY_DAMPING = 0.986;
@@ -76,9 +84,13 @@ const ORB_HOME_Y_RATIO = parseEnvFloat('ORB_HOME_Y_RATIO', 0.5, 0.1, 0.9);
 const ORB_CALM_SCREEN_ANCHOR = process?.env?.ORB_CALM_SCREEN_ANCHOR !== '0';
 const ORB_SCREEN_ANCHOR_X_RATIO = parseEnvFloat('ORB_SCREEN_ANCHOR_X_RATIO', 0.68, 0.15, 0.85);
 const ORB_SCREEN_ANCHOR_Y_RATIO = parseEnvFloat('ORB_SCREEN_ANCHOR_Y_RATIO', 0.36, 0.15, 0.85);
-const ORB_CURSOR_FOLLOW = process?.env?.ORB_CURSOR_FOLLOW === '1';
-const ORB_CURSOR_FOLLOW_OFFSET_X = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_X', 120, -500, 500);
-const ORB_CURSOR_FOLLOW_OFFSET_Y = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_Y', -90, -500, 500);
+const ORB_CURSOR_FOLLOW_ENABLED = process?.env?.ORB_CURSOR_FOLLOW_ENABLED === '1';
+const ORB_CURSOR_ATTRACTION_STRENGTH = parseEnvFloat('ORB_CURSOR_ATTRACTION_STRENGTH', 0, 0, 1);
+const ORB_CURSOR_ASSIST_MODE_ONLY = process?.env?.ORB_CURSOR_ASSIST_MODE_ONLY !== '0';
+const ORB_CURSOR_FOLLOW = ORB_CURSOR_FOLLOW_ENABLED && ORB_CURSOR_ATTRACTION_STRENGTH > 0;
+const ORB_DESKTOP_CURSOR_BEHAVIOR = process?.env?.ORB_DESKTOP_CURSOR_BEHAVIOR !== '0';
+const ORB_CURSOR_FOLLOW_OFFSET_X = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_X', 18, -500, 500);
+const ORB_CURSOR_FOLLOW_OFFSET_Y = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_Y', 16, -500, 500);
 const ORB_CURSOR_FOLLOW_LERP = parseEnvFloat('ORB_CURSOR_FOLLOW_LERP', 0.026, 0.008, 0.08);
 const ORB_CURSOR_REANCHOR_DISTANCE = parseEnvInt('ORB_CURSOR_REANCHOR_DISTANCE', 960, 360, 2600);
 const ORB_CURSOR_REANCHOR_SETTLE_DISTANCE = parseEnvInt('ORB_CURSOR_REANCHOR_SETTLE_DISTANCE', 140, 32, 260);
@@ -86,18 +98,32 @@ const ORB_COMPANION_MODE = process?.env?.ORB_COMPANION_MODE !== '0';
 const ORB_COMPANION_BOND_RADIUS = parseEnvInt('ORB_COMPANION_BOND_RADIUS', 420, 200, 1200);
 const ORB_COMPANION_RETURN_DISTANCE = parseEnvInt('ORB_COMPANION_RETURN_DISTANCE', 980, 500, 2600);
 const ORB_COMPANION_USER_ACTIVE_MS = parseEnvInt('ORB_COMPANION_USER_ACTIVE_MS', 1800, 400, 10000);
+const ORB_IDLE_SLEEP_AFTER_MS = parseEnvInt('ORB_IDLE_SLEEP_AFTER_MS', 90000, 15000, 900000);
 const ORB_PLAYFUL_IDLE_ENABLED = process?.env?.ORB_PLAYFUL_IDLE_ENABLED === '1';
 const ORB_MULTI_DISPLAY_PATROL = process?.env?.ORB_MULTI_DISPLAY_PATROL !== '0';
 const ORB_MULTI_DISPLAY_PATROL_INTERVAL_MS = parseEnvInt('ORB_MULTI_DISPLAY_PATROL_INTERVAL_MS', 8500, 2500, 60000);
 const ORB_MULTI_DISPLAY_PATROL_SPEED_BONUS = parseEnvFloat('ORB_MULTI_DISPLAY_PATROL_SPEED_BONUS', 0.55, 0, 4);
-const ORB_DOCK_TRANSITION_TOTAL_MS = 420;
-const ORB_DOCK_TRANSITION_ACK_MS = 90;
-const ORB_DOCK_TRANSITION_TRAVEL_MS = 220;
-const ORB_DOCK_TRANSITION_LOCK_MS = 110;
+const ORB_PATROL_INTERIOR_MIN_RATIO = parseEnvFloat('ORB_PATROL_INTERIOR_MIN_RATIO', 0.32, 0.22, 0.44);
+const ORB_PATROL_INTERIOR_MAX_RATIO = parseEnvFloat('ORB_PATROL_INTERIOR_MAX_RATIO', 0.68, 0.56, 0.78);
+const ORB_DOCK_SEQUENCE_MS = parseEnvInt('ORB_DOCK_SEQUENCE_MS', 1600, 1200, 2400);
+const ORB_DOCK_TRANSITION_TOTAL_MS = ORB_DOCK_SEQUENCE_MS;
+const ORB_DOCK_TRANSITION_ACK_MS = parseEnvInt('ORB_DOCK_ACK_MS', 160, 80, 500);
+const ORB_DOCK_TRANSITION_TRAVEL_MS = parseEnvInt('ORB_DOCK_TRAVEL_MS', 900, 420, 1600);
+const ORB_DOCK_TRANSITION_LOCK_MS = parseEnvInt('ORB_DOCK_LOCK_MS', 360, 180, 900);
+const ORB_DOCK_TRAIL_ENABLED = process?.env?.ORB_DOCK_TRAIL_ENABLED !== '0';
+const ORB_DOCK_HALO_ENABLED = process?.env?.ORB_DOCK_HALO_ENABLED !== '0';
+const ORB_DOCK_CLICK_PULSES = parseEnvInt('ORB_DOCK_CLICK_PULSES', 2, 1, 4);
+const ORB_DOCK_BREATHING_ENABLED = process?.env?.ORB_DOCK_BREATHING_ENABLED !== '0';
+const ORB_SHOW_STARTUP_SPLASH = process?.env?.ORB_SHOW_STARTUP_SPLASH !== '0';
+const ORB_STARTUP_SPLASH_MS = parseEnvInt('ORB_STARTUP_SPLASH_MS', 3200, 1200, 6000);
+const ORB_LAUNCH_GREETING_ENABLED = process?.env?.ORB_LAUNCH_GREETING_ENABLED !== '0';
+const ORB_LAUNCH_ATTENTION_SPOT = String(process?.env?.ORB_LAUNCH_ATTENTION_SPOT || 'center_safe').toLowerCase();
+const ORB_LAUNCH_SWIRL_ENABLED = process?.env?.ORB_LAUNCH_SWIRL_ENABLED !== '0';
 const ORB_SWARM_HUD_ENABLED = process?.env?.ORB_SWARM_HUD === '1';
 
 // Radial gradients for CSS-config-based skins (used when no image skin is set)
 const SKIN_CONFIG_GRADIENTS = {
+  brilliant_blue: 'radial-gradient(circle at 38% 32%, #e8f7ff 0%, #64d2ff 22%, #1590ff 62%, #002d6e 100%)',
   cyber:  'radial-gradient(circle at 38% 32%, #c0ffff 0%, #00e5ff 22%, #b829dd 65%, #0e001e 100%)',
   sunset: 'radial-gradient(circle at 38% 32%, #fff4a0 0%, #ff9f43 30%, #ff6b6b 65%, #2e0010 100%)',
   forest: 'radial-gradient(circle at 38% 32%, #b0fff0 0%, #00cec9 30%, #00b894 65%, #002018 100%)',
@@ -566,8 +592,8 @@ function clampOrbPosition(x, y) {
   const height = window.innerHeight;
 
   return {
-    x: Math.min(width - ORB_MARGIN, Math.max(ORB_MARGIN, x)),
-    y: Math.min(height - ORB_MARGIN, Math.max(ORB_MARGIN, y)),
+    x: Math.min(width - ORB_SAFE_EDGE_PADDING, Math.max(ORB_SAFE_EDGE_PADDING, x)),
+    y: Math.min(height - ORB_SAFE_EDGE_PADDING, Math.max(ORB_SAFE_EDGE_PADDING, y)),
   };
 }
 
@@ -613,8 +639,8 @@ function clampPositionToRect(position, rect) {
     return clampOrbPosition(position?.x ?? window.innerWidth * 0.5, position?.y ?? window.innerHeight * 0.5);
   }
 
-  const marginX = Math.min(ORB_MARGIN, Math.max(24, rect.width * 0.2));
-  const marginY = Math.min(ORB_MARGIN, Math.max(24, rect.height * 0.2));
+  const marginX = Math.min(ORB_SAFE_EDGE_PADDING, Math.max(24, rect.width * 0.2));
+  const marginY = Math.min(ORB_SAFE_EDGE_PADDING, Math.max(24, rect.height * 0.2));
   return clampOrbPosition(
     Math.min(rect.x + rect.width - marginX, Math.max(rect.x + marginX, position.x)),
     Math.min(rect.y + rect.height - marginY, Math.max(rect.y + marginY, position.y))
@@ -622,6 +648,10 @@ function clampPositionToRect(position, rect) {
 }
 
 function constrainPositionToCursorDisplay(position, cursor, rects) {
+  if (ORB_DESKTOP_CURSOR_BEHAVIOR) {
+    return clampOrbPosition(position.x, position.y);
+  }
+
   const cursorRect = getMonitorRectForPoint(cursor, rects);
   return cursorRect ? clampPositionToRect(position, cursorRect) : clampOrbPosition(position.x, position.y);
 }
@@ -630,29 +660,42 @@ function isPositionInRect(position, rect) {
   return Boolean(
     position &&
     rect &&
-    position.x >= rect.x + ORB_MARGIN &&
-    position.x <= rect.x + rect.width - ORB_MARGIN &&
-    position.y >= rect.y + ORB_MARGIN &&
-    position.y <= rect.y + rect.height - ORB_MARGIN
+    position.x >= rect.x + ORB_SAFE_EDGE_PADDING &&
+    position.x <= rect.x + rect.width - ORB_SAFE_EDGE_PADDING &&
+    position.y >= rect.y + ORB_SAFE_EDGE_PADDING &&
+    position.y <= rect.y + rect.height - ORB_SAFE_EDGE_PADDING
   );
 }
 
 function getMotionBounds(cursor, rects) {
+  if (ORB_DESKTOP_CURSOR_BEHAVIOR) {
+    return getFullMotionBounds();
+  }
+
   const rect = getMonitorRectForPoint(cursor, rects);
   if (rect) {
     return {
-      left: rect.x + ORB_MARGIN,
-      right: rect.x + rect.width - ORB_MARGIN,
-      top: rect.y + ORB_MARGIN,
-      bottom: rect.y + rect.height - ORB_MARGIN,
+      left: rect.x + ORB_SAFE_EDGE_PADDING,
+      right: rect.x + rect.width - ORB_SAFE_EDGE_PADDING,
+      top: rect.y + ORB_SAFE_EDGE_PADDING,
+      bottom: rect.y + rect.height - ORB_SAFE_EDGE_PADDING,
     };
   }
 
   return {
-    left: ORB_MARGIN,
-    right: window.innerWidth - ORB_MARGIN,
-    top: ORB_MARGIN,
-    bottom: window.innerHeight - ORB_MARGIN,
+    left: ORB_SAFE_EDGE_PADDING,
+    right: window.innerWidth - ORB_SAFE_EDGE_PADDING,
+    top: ORB_SAFE_EDGE_PADDING,
+    bottom: window.innerHeight - ORB_SAFE_EDGE_PADDING,
+  };
+}
+
+function getFullMotionBounds() {
+  return {
+    left: ORB_SAFE_EDGE_PADDING,
+    right: window.innerWidth - ORB_SAFE_EDGE_PADDING,
+    top: ORB_SAFE_EDGE_PADDING,
+    bottom: window.innerHeight - ORB_SAFE_EDGE_PADDING,
   };
 }
 
@@ -682,17 +725,41 @@ function chooseMultiDisplayPatrolTarget(rects, patrolIndex) {
   }
 
   const rect = rects[patrolIndex % rects.length];
-  const insetX = Math.min(ORB_MARGIN + 36, rect.width * 0.22);
-  const insetY = Math.min(ORB_MARGIN + 24, rect.height * 0.22);
-  const sweep = Math.floor(patrolIndex / rects.length) % 4;
+  const minX = Math.max(ORB_PATROL_INTERIOR_MIN_RATIO, ORB_SAFE_EDGE_PADDING / rect.width);
+  const maxX = Math.min(ORB_PATROL_INTERIOR_MAX_RATIO, 1 - ORB_SAFE_EDGE_PADDING / rect.width);
+  const minY = Math.max(ORB_PATROL_INTERIOR_MIN_RATIO, ORB_SAFE_EDGE_PADDING / rect.height);
+  const maxY = Math.min(ORB_PATROL_INTERIOR_MAX_RATIO, 1 - ORB_SAFE_EDGE_PADDING / rect.height);
+  const sweep = Math.floor(patrolIndex / rects.length) % 5;
   const anchors = [
-    { x: rect.x + insetX, y: rect.y + insetY },
-    { x: rect.x + rect.width - insetX, y: rect.y + insetY },
-    { x: rect.x + rect.width - insetX, y: rect.y + rect.height - insetY },
-    { x: rect.x + insetX, y: rect.y + rect.height - insetY },
+    { x: rect.x + rect.width * 0.5, y: rect.y + rect.height * 0.48 },
+    { x: rect.x + rect.width * minX, y: rect.y + rect.height * 0.42 },
+    { x: rect.x + rect.width * maxX, y: rect.y + rect.height * 0.42 },
+    { x: rect.x + rect.width * maxX, y: rect.y + rect.height * maxY },
+    { x: rect.x + rect.width * minX, y: rect.y + rect.height * maxY },
   ];
 
   return clampOrbPosition(anchors[sweep].x, anchors[sweep].y);
+}
+
+function chooseIdleSleepCorner(cursor, rects = []) {
+  const rect = getMonitorRectForPoint(cursor, rects) ||
+    (Array.isArray(rects) && rects.length
+      ? rects
+          .slice()
+          .sort((a, b) => (b.x + b.width) - (a.x + a.width))[0]
+      : null);
+
+  if (rect) {
+    return clampPositionToRect({
+      x: rect.x + rect.width - ORB_SAFE_EDGE_PADDING,
+      y: rect.y + ORB_SAFE_EDGE_PADDING,
+    }, rect);
+  }
+
+  return clampOrbPosition(
+    window.innerWidth - ORB_SAFE_EDGE_PADDING,
+    ORB_SAFE_EDGE_PADDING
+  );
 }
 
 function normalizeDirection(dx, dy, fallback = ORB_DEFAULT_TRAIL_DIRECTION) {
@@ -709,10 +776,10 @@ function normalizeDirection(dx, dy, fallback = ORB_DEFAULT_TRAIL_DIRECTION) {
 
 function computeEdgeSlack(position) {
   return Math.min(
-    position.x - ORB_MARGIN,
-    window.innerWidth - ORB_MARGIN - position.x,
-    position.y - ORB_MARGIN,
-    window.innerHeight - ORB_MARGIN - position.y
+    position.x - ORB_SAFE_EDGE_PADDING,
+    window.innerWidth - ORB_SAFE_EDGE_PADDING - position.x,
+    position.y - ORB_SAFE_EDGE_PADDING,
+    window.innerHeight - ORB_SAFE_EDGE_PADDING - position.y
   );
 }
 
@@ -787,7 +854,7 @@ function chooseAutonomousDriftTarget(current, cursor, driftHeading, presenceProf
       current.y + heading.y * ORB_AUTONOMOUS_WAYPOINT_MIN_DISTANCE
     );
   const fallbackSlack = computeEdgeSlack(fallback);
-  const correctedFallback = fallbackSlack < 42
+  const correctedFallback = fallbackSlack < ORB_EDGE_REPEL_DISTANCE * 0.35
     ? clampOrbPosition(
       current.x + centerBias.x * ORB_AUTONOMOUS_WAYPOINT_MIN_DISTANCE,
       current.y + centerBias.y * ORB_AUTONOMOUS_WAYPOINT_MIN_DISTANCE
@@ -803,15 +870,52 @@ function ensureCursorClearance(position, cursor, driftHeading) {
   return clampOrbPosition(position.x, position.y);
 }
 
+function avoidCenterWorkZone(candidate) {
+  const center = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.48 };
+  const centerSafeRadius = Math.min(window.innerWidth, window.innerHeight) * 0.21;
+  const dx = candidate.x - center.x;
+  const dy = candidate.y - center.y;
+  const distance = Math.hypot(dx, dy);
+  if (distance >= centerSafeRadius) {
+    return candidate;
+  }
+  const ux = distance > 0.001 ? dx / distance : (Math.random() > 0.5 ? 1 : -1);
+  const uy = distance > 0.001 ? dy / distance : -1;
+  return clampOrbPosition(
+    center.x + ux * (centerSafeRadius + ORB_WANDER_RADIUS * 0.2),
+    center.y + uy * (centerSafeRadius + ORB_WANDER_RADIUS * 0.2)
+  );
+}
+
+function avoidInputZone(candidate, pointer) {
+  if (!pointer) {
+    return candidate;
+  }
+  const avoidRadius = 140;
+  const dx = candidate.x - pointer.x;
+  const dy = candidate.y - pointer.y;
+  const distance = Math.hypot(dx, dy);
+  if (distance >= avoidRadius) {
+    return candidate;
+  }
+  const ux = distance > 0.001 ? dx / distance : (Math.random() > 0.5 ? 1 : -1);
+  const uy = distance > 0.001 ? dy / distance : -1;
+  return clampOrbPosition(pointer.x + ux * (avoidRadius + 40), pointer.y + uy * (avoidRadius + 40));
+}
+
 function getCursorFollowTarget(cursor, rects = []) {
   if (!cursor) {
     return getHomePosition();
   }
 
-  return constrainPositionToCursorDisplay({
+  const followTarget = {
     x: cursor.x + ORB_CURSOR_FOLLOW_OFFSET_X,
     y: cursor.y + ORB_CURSOR_FOLLOW_OFFSET_Y,
-  }, cursor, rects);
+  };
+
+  return ORB_DESKTOP_CURSOR_BEHAVIOR
+    ? clampOrbPosition(followTarget.x, followTarget.y)
+    : constrainPositionToCursorDisplay(followTarget, cursor, rects);
 }
 
 function shouldRetargetDrift(current, target, cursor, lastRetargetAt, presenceProfile = null) {
@@ -830,7 +934,11 @@ function shouldRetargetDrift(current, target, cursor, lastRetargetAt, presencePr
   const distanceToTarget = Math.hypot(target.x - current.x, target.y - current.y);
   const reachedTarget = distanceToTarget <= ORB_RETARGET_DISTANCE;
 
-  if (computeEdgeSlack(target) < 28) {
+  if (computeEdgeSlack(current) < ORB_EDGE_REPEL_DISTANCE * 0.45) {
+    return true;
+  }
+
+  if (computeEdgeSlack(target) < ORB_EDGE_REPEL_DISTANCE * 0.38) {
     return true;
   }
 
@@ -871,10 +979,10 @@ function buildSteeringVector(current, target, cursor, presenceProfile, fallbackD
     sy += centerDirection.y * ORB_CENTER_RECOVERY_GAIN;
   }
 
-  const leftDistance = current.x - ORB_MARGIN;
-  const rightDistance = window.innerWidth - ORB_MARGIN - current.x;
-  const topDistance = current.y - ORB_MARGIN;
-  const bottomDistance = window.innerHeight - ORB_MARGIN - current.y;
+  const leftDistance = current.x - ORB_SAFE_EDGE_PADDING;
+  const rightDistance = window.innerWidth - ORB_SAFE_EDGE_PADDING - current.x;
+  const topDistance = current.y - ORB_SAFE_EDGE_PADDING;
+  const bottomDistance = window.innerHeight - ORB_SAFE_EDGE_PADDING - current.y;
 
   if (leftDistance < ORB_EDGE_REPEL_DISTANCE) {
     sx += (1 - leftDistance / ORB_EDGE_REPEL_DISTANCE) * ORB_EDGE_REPEL_GAIN;
@@ -897,7 +1005,7 @@ function toPlayableAudioUrl(audioPath) {
     return null;
   }
 
-  if (/^(file|https?):/i.test(audioPath)) {
+  if (/^(file|https?|data):/i.test(audioPath)) {
     return audioPath;
   }
 
@@ -925,10 +1033,15 @@ function FloatingOrb() {
   const [nodOffset, setNodOffset] = useState({ x: 0, y: 0 });
   const [socketHint, setSocketHint] = useState('Base frame');
   const [egfState, setEgfState] = useState({ ok: false, mode: 'unavailable' });
-  const [orbVisible, setOrbVisible] = useState(true);
+  const [orbVisible, setOrbVisible] = useState(false);
   const [dockTransitionOffset, setDockTransitionOffset] = useState({ x: 0, y: 0 });
   const [dockTransitionScale, setDockTransitionScale] = useState(1);
   const [dockTransitionOpacity, setDockTransitionOpacity] = useState(1);
+  const [dockFxPhase, setDockFxPhase] = useState('idle');
+  const [launchFxPhase, setLaunchFxPhase] = useState('idle');
+  const [startupSplashVisible, setStartupSplashVisible] = useState(ORB_SHOW_STARTUP_SPLASH);
+  const [startupSplashPhase, setStartupSplashPhase] = useState('seed');
+  const [startupStatusCue, setStartupStatusCue] = useState('CALI ORB online');
   const [displayActive, setDisplayActive] = useState(true);
   const [hasPositionUpdate, setHasPositionUpdate] = useState(false);
   const [swarmPendingCount, setSwarmPendingCount] = useState(0);
@@ -936,6 +1049,10 @@ function FloatingOrb() {
   const [swarmHudLastResult, setSwarmHudLastResult] = useState('none');
   const [swarmNodes, setSwarmNodes] = useState([]);
   const [ingestRipples, setIngestRipples] = useState([]);
+  const [movementState, setMovementState] = useState('idle_hover');
+  const [interactionState, setInteractionState] = useState('observe_user');
+  const [cueTarget, setCueTarget] = useState(null);
+  const [orbDocked, setOrbDocked] = useState(true);
   const [cursorPosition, setCursorPosition] = useState({
     x: Math.round(window.innerWidth * ORB_HOME_X_RATIO),
     y: Math.round(window.innerHeight * ORB_HOME_Y_RATIO),
@@ -963,8 +1080,25 @@ function FloatingOrb() {
     x: Math.round(window.innerWidth * ORB_HOME_X_RATIO),
     y: Math.round(window.innerHeight * ORB_HOME_Y_RATIO),
   });
+  const learnedNavigationRef = useRef({ x: 0, y: 0, updatedAt: 0 });
   const activeAudioRef = useRef(null);
+  const speakingActiveRef = useRef(false);
+  const movementStateRef = useRef('idle_hover');
+  const wanderSeedRef = useRef(Math.random() * Math.PI * 2);
+  const stationarySinceRef = useRef(Date.now());
+  const lastMovementLogAtRef = useRef(0);
+  const lastCursorBlockLogAtRef = useRef(0);
+  const textInputActiveRef = useRef(false);
+  const orbDockedRef = useRef(true);
+  const overlayOriginRef = useRef({ x: 0, y: 0 });
+  const interactionStateRef = useRef('observe_user');
+  const lastCueAtRef = useRef(0);
+  const cueAwaitMotionRef = useRef(false);
+  const lastUserMotionAtRef = useRef(Date.now());
+  const cueTargetRef = useRef(null);
   const speechBubbleTimerRef = useRef(null);
+  const startupSplashTimersRef = useRef([]);
+  const startupSplashPlayedRef = useRef(false);
   const dockTransitionTimersRef = useRef([]);
   const dockingInProgressRef = useRef(false);
   const presenceProfileRef = useRef({
@@ -987,6 +1121,26 @@ function FloatingOrb() {
   const lastUserInputAtRef = useRef(Date.now());
   const companionIntentRef = useRef(new CompanionIntent({ playfulnessEnabled: ORB_PLAYFUL_IDLE_ENABLED }));
   const fieldMotionRef = useRef(new FieldMotion());
+
+  const logCursorBlocked = (reason) => {
+    const now = Date.now();
+    if (now - lastCursorBlockLogAtRef.current < 2500) {
+      return;
+    }
+    lastCursorBlockLogAtRef.current = now;
+    console.info(reason);
+  };
+
+  const toOverlayPoint = (point) => {
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+      return null;
+    }
+    const origin = overlayOriginRef.current || { x: 0, y: 0 };
+    return {
+      x: Math.round(point.x - origin.x),
+      y: Math.round(point.y - origin.y),
+    };
+  };
 
   const visualMode = ORB_VISUAL_MODE_LOCK || logicMode;
   const visual = useMemo(() => LOGIC_VISUALS[visualMode], [visualMode]);
@@ -1055,6 +1209,61 @@ function FloatingOrb() {
           ? '#67c6ff'
           : 'rgba(216,242,255,0.62)';
 
+  const setMovementStateWithLog = (nextState, context = '') => {
+    if (movementStateRef.current === nextState) {
+      return;
+    }
+    movementStateRef.current = nextState;
+    setMovementState(nextState);
+    const now = Date.now();
+    if (now - lastMovementLogAtRef.current > 180) {
+      console.info(`[ORB movement] state=${nextState}${context ? ` | ${context}` : ''}`);
+      lastMovementLogAtRef.current = now;
+    }
+  };
+
+  const setInteractionStateWithLog = (nextState, context = '') => {
+    if (interactionStateRef.current === nextState) return;
+    interactionStateRef.current = nextState;
+    setInteractionState(nextState);
+    console.info(`[ORB interaction] state=${nextState}${context ? ` | ${context}` : ''}`);
+  };
+
+  const isExplanationRequest = (text = '') => {
+    const q = String(text || '').toLowerCase();
+    return q.includes('explain') || q.includes('why') || q.includes('detail') || q.includes('how does');
+  };
+
+  const toShortCue = (text = '', maxWords = 12) => {
+    const cleaned = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!cleaned) return '';
+    const words = cleaned.split(' ');
+    if (words.length <= maxWords) return cleaned;
+    return `${words.slice(0, maxWords).join(' ')}...`;
+  };
+
+  const deliverGuidanceCue = (text, options = {}) => {
+    const allowLong = Boolean(options.allowLong);
+    const cue = allowLong ? String(text || '').trim() : toShortCue(text, 12);
+    if (!cue) return;
+    const target = options.target
+      || lastPointerRef.current
+      || lastKnownCursorRef.current
+      || { x: window.innerWidth * 0.62, y: window.innerHeight * 0.44 };
+    cueTargetRef.current = { x: target.x, y: target.y };
+    setCueTarget(cueTargetRef.current);
+    setInteractionStateWithLog('match_pace');
+    setTimeout(() => setInteractionStateWithLog('point_target'), 120);
+    setTimeout(() => {
+      setInteractionStateWithLog('short_cue');
+      setBridgeStatus(cue);
+      showSpeechBubble(cue, { persistMs: 2400 });
+      lastCueAtRef.current = Date.now();
+      cueAwaitMotionRef.current = true;
+      setInteractionStateWithLog('wait_for_user');
+    }, 220);
+  };
+
   const showSpeechBubble = (text, options = {}) => {
     const normalized = String(text || '').trim();
     if (!normalized) {
@@ -1079,11 +1288,44 @@ function FloatingOrb() {
     }, Math.min(Math.max(Number(persistMs) || 4200, 700), 9000));
   };
 
+  const extractResponseText = (result) => {
+    if (!result || typeof result !== 'object') return '';
+    const candidates = [
+      result.response_text,
+      result.response,
+      result.text,
+      result.summary,
+      result.voice_response,
+      result?.data?.response_text,
+      result?.data?.response,
+      result?.data?.text,
+      result?.data?.summary,
+    ];
+    const first = candidates.find((value) => typeof value === 'string' && value.trim());
+    return first ? first.trim() : '';
+  };
+
   useEffect(() => {
     const decay = setInterval(() => {
       setBloomLevel((current) => Math.max(0.16, current - 0.045));
     }, 130);
     return () => clearInterval(decay);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!cueAwaitMotionRef.current) return;
+      if (lastUserMotionAtRef.current <= lastCueAtRef.current) return;
+      cueAwaitMotionRef.current = false;
+      setInteractionStateWithLog('confirm_action');
+      showSpeechBubble('Good. Next.', { mode: 'state', persistMs: 1200 });
+      setCueTarget(null);
+      cueTargetRef.current = null;
+      setTimeout(() => setInteractionStateWithLog('celebrate_small_win'), 220);
+      setTimeout(() => setInteractionStateWithLog('return_to_hover'), 560);
+      setTimeout(() => setInteractionStateWithLog('observe_user'), 980);
+    }, 120);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -1161,6 +1403,10 @@ function FloatingOrb() {
   }, [displayActive]);
 
   useEffect(() => {
+    orbDockedRef.current = orbDocked;
+  }, [orbDocked]);
+
+  useEffect(() => {
     if (commandOpen) {
       window.electronAPI?.setIgnoreMouseEvents(false);
     }
@@ -1183,7 +1429,55 @@ function FloatingOrb() {
       nodTimerRef.current.forEach((id) => clearTimeout(id));
       nodTimerRef.current = null;
     }
+    if (startupSplashTimersRef.current?.length) {
+      startupSplashTimersRef.current.forEach((id) => clearTimeout(id));
+      startupSplashTimersRef.current = [];
+    }
   }, []);
+
+  useEffect(() => {
+    if (!ORB_SHOW_STARTUP_SPLASH || startupSplashPlayedRef.current || !orbVisible) {
+      if (!ORB_SHOW_STARTUP_SPLASH) {
+        setStartupSplashVisible(false);
+      }
+      return undefined;
+    }
+    startupSplashPlayedRef.current = true;
+    setStartupSplashVisible(true);
+    setStartupSplashPhase('seed');
+    setStartupStatusCue('CALI ORB online');
+    const t1 = setTimeout(() => setStartupSplashPhase('gather'), Math.floor(ORB_STARTUP_SPLASH_MS * 0.22));
+    const t2 = setTimeout(() => setStartupSplashPhase('ring'), Math.floor(ORB_STARTUP_SPLASH_MS * 0.44));
+    const t3 = setTimeout(() => {
+      setStartupSplashPhase('awake');
+      setTone('Online');
+      setBridgeStatus('CALI ORB online');
+    }, Math.floor(ORB_STARTUP_SPLASH_MS * 0.66));
+    const t4 = setTimeout(async () => {
+      try {
+        const status = await window.electronAPI?.getOrbStatus?.();
+        if (!status || status.pending) {
+          setStartupStatusCue('Voice warming up');
+          return;
+        }
+        const rs = status.runtime_snapshot || {};
+        if (rs.crm_db_reachable === false) setStartupStatusCue('CRM offline');
+        else if (rs.prime_mail_api_reachable === false || rs.email_db_reachable === false) setStartupStatusCue('Mail offline');
+        else if (rs.mesh_loaded === true) setStartupStatusCue('Mesh loaded');
+      } catch (_error) {
+        setStartupStatusCue('Voice warming up');
+      }
+    }, Math.floor(ORB_STARTUP_SPLASH_MS * 0.72));
+    const t5 = setTimeout(() => {
+      setStartupSplashVisible(false);
+      setMovementStateWithLog('idle_hover', 'startup_complete');
+    }, ORB_STARTUP_SPLASH_MS);
+    startupSplashTimersRef.current = [t1, t2, t3, t4, t5];
+    return () => {
+      startupSplashTimersRef.current.forEach((id) => clearTimeout(id));
+      startupSplashTimersRef.current = [];
+    };
+  }, [orbVisible]);
 
   useEffect(() => {
     const animateOrb = () => {
@@ -1192,6 +1486,15 @@ function FloatingOrb() {
           const current = cursorPositionRef.current;
           const now = Date.now();
           const profile = presenceProfileRef.current || {};
+          const activeEl = document?.activeElement;
+          const isInputFocused = Boolean(
+            activeEl &&
+            (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)
+          );
+          textInputActiveRef.current = isInputFocused;
+          const isSpeakingHold = speakingActiveRef.current === true;
+          const isDocked = orbDockedRef.current || dockingInProgressRef.current === true || orbVisible === false;
+          const isUserActive = (now - lastUserInputAtRef.current) <= ORB_COMPANION_USER_ACTIVE_MS;
           const forceIntervalMs = profile?.is_idle
             ? ORB_AUTONOMOUS_FORCE_RETARGET_IDLE_MS
             : ORB_AUTONOMOUS_FORCE_RETARGET_BASE_MS;
@@ -1200,8 +1503,19 @@ function FloatingOrb() {
           const cursorDistance = cursor
             ? Math.hypot(current.x - cursor.x, current.y - cursor.y)
             : 0;
-          const isUserActive = (now - lastUserInputAtRef.current) <= ORB_COMPANION_USER_ACTIVE_MS;
           const bridgeFault = String(bridgeStatus || '').toLowerCase().includes('error');
+          const isGuidedInteractionActive = Boolean(
+            interactionStateRef.current === 'point_target' ||
+            cueAwaitMotionRef.current === true ||
+            isSubmitting ||
+            commandOpen
+          );
+          const cursorInfluenceAllowed = Boolean(
+            ORB_DESKTOP_CURSOR_BEHAVIOR ||
+            isGuidedInteractionActive ||
+            interactionStateRef.current === 'point_target' ||
+            cueTargetRef.current
+          );
           const intent = companionIntentRef.current.update({
             displayActive: displayActiveRef.current,
             bridgeFault,
@@ -1209,9 +1523,23 @@ function FloatingOrb() {
             swarmPendingCount,
             isUserActive,
             presenceProfile: profile,
-            cursorDistance,
+            cursorDistance: cursorInfluenceAllowed ? cursorDistance : 0,
             returnDistance: ORB_COMPANION_RETURN_DISTANCE,
           });
+
+          if (isDocked) {
+            setMovementStateWithLog('docked');
+          } else if (isSpeakingHold) {
+            setMovementStateWithLog('speaking_hold');
+          } else if (isGuidedInteractionActive) {
+            setMovementStateWithLog('attentive_near_cursor');
+          } else if (intent.intent === 'returning') {
+            setMovementStateWithLog('returning_home');
+          } else if (profile?.is_idle) {
+            setMovementStateWithLog('curious_wander');
+          } else {
+            setMovementStateWithLog('idle_hover');
+          }
 
           if (
             ORB_MULTI_DISPLAY_PATROL &&
@@ -1222,7 +1550,7 @@ function FloatingOrb() {
               monitorRects,
               patrolIndexRef.current
             );
-            patrolIndexRef.current = (patrolIndexRef.current + 1) % (monitorRects.length * 4);
+            patrolIndexRef.current = (patrolIndexRef.current + 1) % (monitorRects.length * 5);
             lastPatrolAtRef.current = now;
             lastForcedRetargetAtRef.current = now;
             lastRetargetAtRef.current = now;
@@ -1257,20 +1585,115 @@ function FloatingOrb() {
             lastRetargetAtRef.current = now;
           }
 
-          if (ORB_CURSOR_FOLLOW && intent.intent === 'returning' && cursor) {
-            targetCursorPositionRef.current = getCursorDisplayAnchor(cursor, monitorRects);
+          if (
+            ORB_CURSOR_FOLLOW &&
+            ORB_CURSOR_ASSIST_MODE_ONLY &&
+            !isGuidedInteractionActive &&
+            intent.intent === 'returning' &&
+            cursor
+          ) {
+            logCursorBlocked('cursor attraction blocked: autonomous mode');
+          } else if (
+            ORB_CURSOR_FOLLOW &&
+            intent.intent === 'returning' &&
+            cursor &&
+            (!ORB_CURSOR_ASSIST_MODE_ONLY || isGuidedInteractionActive)
+          ) {
+            const anchored = getCursorDisplayAnchor(cursor, monitorRects);
+            targetCursorPositionRef.current = {
+              x: lerp(targetCursorPositionRef.current.x, anchored.x, ORB_CURSOR_ATTRACTION_STRENGTH),
+              y: lerp(targetCursorPositionRef.current.y, anchored.y, ORB_CURSOR_ATTRACTION_STRENGTH),
+            };
           }
 
-          if (displayActiveRef.current && cursor && monitorRects.length) {
+          if (isInputFocused && cursor && isGuidedInteractionActive) {
+            const attentiveTarget = clampOrbPosition(
+              cursor.x + ORB_CURSOR_FOLLOW_OFFSET_X * 0.55,
+              cursor.y + ORB_CURSOR_FOLLOW_OFFSET_Y * 0.55
+            );
+            targetCursorPositionRef.current = avoidInputZone(attentiveTarget, cursor);
+          } else if (isInputFocused && cursor && !isGuidedInteractionActive) {
+            logCursorBlocked('cursor attraction blocked: autonomous mode');
+          }
+
+          if (
+            ORB_DESKTOP_CURSOR_BEHAVIOR &&
+            !isDocked &&
+            displayActiveRef.current &&
+            cursor &&
+            !isSpeakingHold &&
+            interactionStateRef.current !== 'point_target'
+          ) {
+            const idleLongEnoughToSleep = Boolean(
+              profile?.is_idle &&
+              Number(profile?.idle_seconds || 0) * 1000 >= ORB_IDLE_SLEEP_AFTER_MS
+            );
+            if (idleLongEnoughToSleep) {
+              targetCursorPositionRef.current = chooseIdleSleepCorner(cursor, monitorRects);
+              setMovementStateWithLog('sleeping_corner', 'desktop_idle_sleep');
+            } else if (!isInputFocused && (intent.intent === 'returning' || cursorDistance >= ORB_COMPANION_BOND_RADIUS)) {
+              const baseTarget = getCursorFollowTarget(cursor, monitorRects);
+              const learned = learnedNavigationRef.current;
+              const learnedFresh = now - learned.updatedAt < 1800;
+              targetCursorPositionRef.current = learnedFresh
+                ? clampOrbPosition(
+                    baseTarget.x + learned.x * 90,
+                    baseTarget.y + learned.y * 90
+                  )
+                : baseTarget;
+              setMovementStateWithLog('returning_home', 'desktop_cursor_leash');
+            }
+          }
+
+          if (cursorInfluenceAllowed && displayActiveRef.current && cursor && monitorRects.length) {
             targetCursorPositionRef.current = constrainPositionToCursorDisplay(
               targetCursorPositionRef.current,
               cursor,
               monitorRects
             );
+          } else if (!cursorInfluenceAllowed && cursor && monitorRects.length) {
+            logCursorBlocked('cursor monitor tether blocked: autonomous mode');
+          }
+
+          if (!ORB_DESKTOP_CURSOR_BEHAVIOR || interactionStateRef.current === 'point_target') {
+            targetCursorPositionRef.current = avoidCenterWorkZone(
+              avoidInputZone(targetCursorPositionRef.current, cursor)
+            );
+          }
+
+          const stationaryForMs = now - stationarySinceRef.current;
+          const minMoveForStationaryReset = 0.75;
+          if (
+            stationaryForMs >= ORB_MAX_TIME_BEFORE_REPOSITION_MS &&
+            !isSpeakingHold &&
+            !isInputFocused &&
+            (!ORB_DESKTOP_CURSOR_BEHAVIOR || profile?.is_idle !== true)
+          ) {
+            const home = getHomePosition();
+            const phase = wanderSeedRef.current + now * 0.001 * ORB_IDLE_DRIFT_SPEED;
+            const wanderTarget = clampOrbPosition(
+              home.x + Math.cos(phase) * ORB_WANDER_RADIUS * (0.65 + ORB_CURIOSITY_INTENSITY * 0.45),
+              home.y + Math.sin(phase * 1.17) * ORB_WANDER_RADIUS * (0.35 + ORB_CURIOSITY_INTENSITY * 0.45)
+            );
+            targetCursorPositionRef.current = avoidCenterWorkZone(avoidInputZone(wanderTarget, cursor));
+            lastRetargetAtRef.current = now;
+            lastForcedRetargetAtRef.current = now;
+            stationarySinceRef.current = now;
+          }
+
+          if (interactionStateRef.current === 'point_target' && cueTargetRef.current) {
+            const ct = cueTargetRef.current;
+            const offsetTarget = clampOrbPosition(
+              ct.x + ORB_CURSOR_FOLLOW_OFFSET_X * 0.75,
+              ct.y + ORB_CURSOR_FOLLOW_OFFSET_Y * 0.75
+            );
+            targetCursorPositionRef.current = avoidInputZone(avoidCenterWorkZone(offsetTarget), ct);
           }
 
           const target = targetCursorPositionRef.current;
-          const motionBounds = getMotionBounds(cursor, monitorRects);
+          const motionBounds = cursorInfluenceAllowed
+            ? getMotionBounds(cursor, monitorRects)
+            : getFullMotionBounds();
           const motionStep = fieldMotionRef.current.update({
             currentPosition: current,
             targetZone: target,
@@ -1285,16 +1708,43 @@ function FloatingOrb() {
             lastKnownCursorRef.current,
             driftHeadingRef.current
           );
-          const displaySafePosition = displayActiveRef.current && cursor && monitorRects.length
+          let displaySafePosition = cursorInfluenceAllowed && displayActiveRef.current && cursor && monitorRects.length
             ? constrainPositionToCursorDisplay(safePosition, cursor, monitorRects)
             : safePosition;
+          const smoothing = isSpeakingHold
+            ? Math.max(0.08, ORB_MOVEMENT_SMOOTHING * 0.35)
+            : isInputFocused
+              ? Math.max(0.1, ORB_MOVEMENT_SMOOTHING * 0.55)
+              : ORB_MOVEMENT_SMOOTHING;
+          const driftPhase = now * 0.0012 * ORB_IDLE_DRIFT_SPEED + wanderSeedRef.current;
+          const hoverX = Math.cos(driftPhase) * (3 + ORB_CURIOSITY_INTENSITY * 6);
+          const hoverY = Math.sin(driftPhase * 1.33) * (2 + ORB_CURIOSITY_INTENSITY * 5);
+          if (!isSpeakingHold && !isInputFocused && movementStateRef.current !== 'docked') {
+            displaySafePosition = clampOrbPosition(displaySafePosition.x + hoverX, displaySafePosition.y + hoverY);
+          }
+          displaySafePosition = {
+            x: lerp(current.x, displaySafePosition.x, smoothing),
+            y: lerp(current.y, displaySafePosition.y, smoothing),
+          };
           const moved = Math.hypot(
             displaySafePosition.x - current.x,
             displaySafePosition.y - current.y
           );
+          if (cueTargetRef.current && interactionStateRef.current === 'point_target') {
+            const ct = cueTargetRef.current;
+            const coverDistance = Math.hypot(displaySafePosition.x - ct.x, displaySafePosition.y - ct.y);
+            if (coverDistance < 115) {
+              const ux = (displaySafePosition.x - ct.x) / Math.max(coverDistance, 1);
+              const uy = (displaySafePosition.y - ct.y) / Math.max(coverDistance, 1);
+              displaySafePosition = clampOrbPosition(ct.x + ux * 132, ct.y + uy * 132);
+            }
+          }
+          if (moved > minMoveForStationaryReset) {
+            stationarySinceRef.current = now;
+          }
           if (moved < 0.16 && computeEdgeSlack(displaySafePosition) < 18) {
             const home = getHomePosition();
-          const centerRecovery = clampOrbPosition(
+            const centerRecovery = clampOrbPosition(
               home.x + rand(-140, 140),
               home.y + rand(-95, 95)
             );
@@ -1309,6 +1759,9 @@ function FloatingOrb() {
           );
           cursorPositionRef.current = displaySafePosition;
           setCursorPosition(displaySafePosition);
+        }
+        if (draggingRef.current) {
+          setMovementStateWithLog('user_dragging');
         }
       } catch (error) {
         console.warn('Orb animation loop error:', error);
@@ -1343,6 +1796,7 @@ function FloatingOrb() {
 
     const handleMouseMove = (event) => {
       lastUserInputAtRef.current = Date.now();
+      lastUserMotionAtRef.current = Date.now();
       const pointer = { x: event.clientX, y: event.clientY };
       lastPointerRef.current = pointer;
 
@@ -1401,6 +1855,7 @@ function FloatingOrb() {
 
     const handleMouseDown = () => {
       lastUserInputAtRef.current = Date.now();
+      lastUserMotionAtRef.current = Date.now();
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -1436,11 +1891,14 @@ function FloatingOrb() {
       audio.preload = 'auto';
       audio.volume = 1;
       activeAudioRef.current = audio;
+      speakingActiveRef.current = true;
+      setMovementStateWithLog('speaking_hold', 'audio_playback_started');
 
       const clearIfCurrent = () => {
         if (activeAudioRef.current === audio) {
           activeAudioRef.current = null;
         }
+        speakingActiveRef.current = false;
       };
 
       audio.addEventListener('ended', clearIfCurrent, { once: true });
@@ -1454,6 +1912,14 @@ function FloatingOrb() {
 
     const applyPulse = (pulse) => {
       const payload = pulse?.data?.predicate || pulse;
+      const nav = Array.isArray(payload?.navigation_vector) ? payload.navigation_vector : null;
+      if (nav && Number.isFinite(Number(nav[0])) && Number.isFinite(Number(nav[1]))) {
+        learnedNavigationRef.current = {
+          x: clamp(Number(nav[0]), -1, 1),
+          y: clamp(Number(nav[1]), -1, 1),
+          updatedAt: Date.now(),
+        };
+      }
       const nextMode = modeFromCognitiveMode(payload?.cognitive_mode);
       setLogicMode(nextMode);
       const recalledFromPosteriori = pulse?.source === 'POSTERIORI';
@@ -1522,6 +1988,10 @@ function FloatingOrb() {
           x: payload?.x ?? window.innerWidth / 2,
           y: payload?.y ?? window.innerHeight / 2,
         };
+        overlayOriginRef.current = {
+          x: Number.isFinite(payload?.overlayX) ? Number(payload.overlayX) : 0,
+          y: Number.isFinite(payload?.overlayY) ? Number(payload.overlayY) : 0,
+        };
         const nextMonitorRects = normalizeMonitorRects(payload?.displayRects);
         if (nextMonitorRects.length) {
           monitorRectsRef.current = nextMonitorRects;
@@ -1532,26 +2002,40 @@ function FloatingOrb() {
           x: cursorPoint.x - previousCursorPoint.x,
           y: cursorPoint.y - previousCursorPoint.y,
         };
-        if (Math.hypot(movement.x, movement.y) > ORB_DIRECTION_EPSILON) {
+        const cursorMotionCanGuide = Boolean(
+          interactionStateRef.current === 'point_target' ||
+          cueAwaitMotionRef.current === true ||
+          commandOpen ||
+          isSubmitting
+        );
+        if (cursorMotionCanGuide && Math.hypot(movement.x, movement.y) > ORB_DIRECTION_EPSILON) {
           lastUserInputAtRef.current = Date.now();
           driftHeadingRef.current = normalizeDirection(
             driftHeadingRef.current.x * 0.985 + movement.x * 0.015,
             driftHeadingRef.current.y * 0.985 + movement.y * 0.015,
             driftHeadingRef.current
           );
+        } else if (Math.hypot(movement.x, movement.y) > ORB_DIRECTION_EPSILON) {
+          lastUserInputAtRef.current = Date.now();
+          logCursorBlocked('cursor drift-heading influence blocked: autonomous mode');
         }
         lastCursorPointRef.current = cursorPoint;
         if (!displayActiveRef.current) {
-          const resetPosition = ensureCursorClearance(
-            cursorPositionRef.current,
-            cursorPoint,
-            driftHeadingRef.current
-          );
+          const resetPosition = ORB_DESKTOP_CURSOR_BEHAVIOR
+            ? getCursorFollowTarget(cursorPoint, monitorRectsRef.current)
+            : ensureCursorClearance(
+                cursorPositionRef.current,
+                cursorPoint,
+                driftHeadingRef.current
+              );
           cursorPositionRef.current = resetPosition;
           setCursorPosition(resetPosition);
         }
         displayActiveRef.current = true;
         setDisplayActive(true);
+        if (ORB_DESKTOP_CURSOR_BEHAVIOR && !orbDockedRef.current && orbVisible) {
+          targetCursorPositionRef.current = getCursorFollowTarget(cursorPoint, monitorRectsRef.current);
+        }
       }),
       window.electronAPI.onCognitivePulse((_event, pulse) => applyPulse(pulse)),
       window.electronAPI.onSpeechPulse((_event, message) => {
@@ -1580,9 +2064,9 @@ function FloatingOrb() {
       }),
       window.electronAPI.onOrbBridgeMessage((_event, message) => {
         const payload = message?.data || {};
-        const audioPath = payload?.audio_path || message?.audio_path;
-        if (audioPath) {
-          playOrbAudio(audioPath);
+        const audioSource = payload?.audio_url || message?.audio_url || payload?.audio_path || message?.audio_path;
+        if (audioSource) {
+          playOrbAudio(audioSource);
         }
 
         if (message?.type === 'ready') {
@@ -1701,6 +2185,10 @@ function FloatingOrb() {
           if (text) {
             showSpeechBubble(text);
           }
+          const audioPath = message?.audio_url || message?.audio_path || message?.data?.audio_url || message?.data?.audio_path;
+          if (audioPath) {
+            playOrbAudio(audioPath);
+          }
         }
         if (message?.type === 'speak_result') {
           setTone('Speaking');
@@ -1708,6 +2196,10 @@ function FloatingOrb() {
           setBridgeStatus(text);
           setLastResponseText(text);
           showSpeechBubble(text);
+          const audioPath = message?.data?.audio_url || message?.data?.audio_path;
+          if (audioPath) {
+            playOrbAudio(audioPath);
+          }
           setBloomLevel(0.88);
           setOrbScale(1.08);
           setTimeout(() => setOrbScale(1), 260);
@@ -1803,9 +2295,23 @@ function FloatingOrb() {
         setBridgeStatus(visible ? 'Orb deployed' : 'Tray docked');
         if (visible) {
           cancelDockTransition();
+          setOrbDocked(false);
+          orbDockedRef.current = false;
           setBloomLevel(0.9);
           setOrbScale(1.08);
           setTimeout(() => setOrbScale(1), 260);
+        }
+      }),
+      window.electronAPI.onOrbLaunchSequence?.((_event, payload) => {
+        runLaunchSequence(payload || {});
+      }),
+      window.electronAPI.onOrbDockedState?.((_event, payload) => {
+        const docked = Boolean(payload?.docked);
+        setOrbDocked(docked);
+        if (docked) {
+          setMovementStateWithLog('docked', 'external_dock_state');
+        } else {
+          setMovementStateWithLog('idle_hover', 'external_undock_state');
         }
       }),
       window.electronAPI.onDockTransition?.((_event, payload) => {
@@ -1837,24 +2343,34 @@ function FloatingOrb() {
     try {
       if (mode === 'ask') {
         setTone('Querying');
-        setBridgeStatus(text);
+        deliverGuidanceCue('Got it. One step at a time.');
         pulseOrb(0.92, 1.08, 240);
         triggerSwarmDispatch({ query: text });
-        const result = await window.electronAPI?.orbQuery?.(text);
-        const responseText = result?.response_text || result?.text || 'Response ready';
+        let result = null;
+        if (typeof window.electronAPI?.orbChat === 'function') {
+          result = await window.electronAPI.orbChat(text);
+        } else {
+          result = await window.electronAPI?.orbQuery?.(text);
+        }
+        let responseText = extractResponseText(result);
+        if (!responseText && typeof window.electronAPI?.orbQuery === 'function') {
+          const fallback = await window.electronAPI.orbQuery(text);
+          responseText = extractResponseText(fallback);
+        }
+        if (!responseText) {
+          responseText = 'No response text returned from ORB.';
+        }
         setLastResponseText(responseText);
-        setBridgeStatus(responseText);
-        showSpeechBubble(responseText);
+        deliverGuidanceCue(responseText, { allowLong: isExplanationRequest(text) });
       } else if (mode === 'search') {
         setTone('Researching');
-        setBridgeStatus(text);
+        deliverGuidanceCue('Researching now. Stay with me.');
         pulseOrb(0.96, 1.08, 260);
         triggerSwarmDispatch({ mode: 'research', query: text });
         const result = await window.electronAPI?.orbResearch?.(text, []);
         const responseText = result?.voice_response || result?.response_text || result?.summary || 'Research response ready';
         setLastResponseText(responseText);
-        setBridgeStatus(responseText);
-        showSpeechBubble(responseText, { persistMs: 5600 });
+        deliverGuidanceCue(responseText, { allowLong: isExplanationRequest(text) });
       } else if (mode === 'shop') {
         await window.electronAPI?.openSearch?.(text, 'shopping');
         setBridgeStatus(`Opened shopping for "${text}"`);
@@ -1896,6 +2412,7 @@ function FloatingOrb() {
   const cancelDockTransition = () => {
     clearDockTransitionTimers();
     dockingInProgressRef.current = false;
+    setDockFxPhase('idle');
     setDockTransitionOffset({ x: 0, y: 0 });
     setDockTransitionScale(1);
     setDockTransitionOpacity(1);
@@ -1915,39 +2432,62 @@ function FloatingOrb() {
     const totalMs = Number(spec?.totalMs) || ORB_DOCK_TRANSITION_TOTAL_MS;
 
     const current = cursorPositionRef.current;
-    const dockAnchor = {
-      x: Math.round(window.innerWidth * 0.5),
-      y: Math.max(110, window.innerHeight - 110),
-    };
+    const dockAnchorGlobal = spec?.dockAnchorGlobal || null;
+    const dockAnchor = dockAnchorGlobal
+      ? (toOverlayPoint(dockAnchorGlobal) || {
+          x: Math.round(dockAnchorGlobal.x),
+          y: Math.round(dockAnchorGlobal.y),
+        })
+      : {
+          x: Math.round(window.innerWidth * 0.5),
+          y: Math.max(110, window.innerHeight - 110),
+        };
     const dockVector = {
       x: dockAnchor.x - current.x,
       y: dockAnchor.y - current.y,
     };
+    const arcSide = dockVector.x >= 0 ? 1 : -1;
+    const arcMagnitude = Math.max(22, Math.min(88, Math.hypot(dockVector.x, dockVector.y) * 0.11));
 
     setTone('Docking');
     setBridgeStatus('Dock acknowledge');
     setBloomLevel(0.94);
     setDockTransitionScale(1.03);
+    setDockFxPhase('recall');
 
     dockTransitionTimersRef.current.push(
       setTimeout(() => {
         setBridgeStatus('Dock trajectory');
-        setDockTransitionOffset(dockVector);
+        setDockTransitionOffset({
+          x: dockVector.x * 0.72,
+          y: dockVector.y * 0.72 - arcMagnitude,
+        });
         setDockTransitionScale(1.04);
         setDockTransitionOpacity(0.96);
+        setDockFxPhase('glide');
       }, ackMs),
       setTimeout(() => {
-        setBridgeStatus('Dock lock');
+        setBridgeStatus('Dock orbit lock');
+        setDockTransitionOffset({
+          x: dockVector.x + (arcMagnitude * 0.34 * arcSide),
+          y: dockVector.y - (arcMagnitude * 0.18),
+        });
         setDockTransitionScale(0.97);
         setDockTransitionOpacity(0.86);
+        setDockFxPhase('orbit_lock');
       }, ackMs + travelMs),
       setTimeout(() => {
-        setDockTransitionScale(1);
+        setDockTransitionScale(0.985);
+        setDockFxPhase('click_lock');
       }, ackMs + travelMs + Math.max(50, Math.floor(lockMs * 0.6))),
       setTimeout(async () => {
         setTone('Docked');
         setBridgeStatus('Docked');
         setBloomLevel(0.58);
+        setDockFxPhase('bloom');
+        setOrbDocked(true);
+        cursorPositionRef.current = dockAnchor;
+        setCursorPosition(dockAnchor);
         try {
           await window.electronAPI?.completeDockTransition?.();
         } catch (_error) {}
@@ -1955,6 +2495,73 @@ function FloatingOrb() {
       }, totalMs + 20)
     );
   };
+
+  const runLaunchSequence = async (payload = {}) => {
+    const dockAnchor = payload?.dockAnchorGlobal && Number.isFinite(payload.dockAnchorGlobal.x) && Number.isFinite(payload.dockAnchorGlobal.y)
+      ? (toOverlayPoint(payload.dockAnchorGlobal) || {
+          x: Math.round(payload.dockAnchorGlobal.x),
+          y: Math.round(payload.dockAnchorGlobal.y),
+        })
+      : null;
+    if (dockAnchor) {
+      cursorPositionRef.current = dockAnchor;
+      setCursorPosition(dockAnchor);
+    }
+    const centerSafe = {
+      x: Math.round(window.innerWidth * 0.52),
+      y: Math.round(window.innerHeight * 0.46),
+    };
+    const anchor = ORB_LAUNCH_ATTENTION_SPOT === 'center_safe'
+      ? centerSafe
+      : centerSafe;
+    setLaunchFxPhase('swirl');
+    setMovementStateWithLog('returning_home', 'launch_swirl');
+    setTone('Launch');
+    setBridgeStatus('Launch sequence');
+    setBloomLevel(0.92);
+    setOrbScale(1.12);
+    if (ORB_LAUNCH_SWIRL_ENABLED) {
+      setDockTransitionScale(1.1);
+      setDockTransitionOffset({ x: 0, y: -42 });
+      setTimeout(() => {
+        setDockTransitionOffset({ x: 16, y: -18 });
+      }, 420);
+      setTimeout(() => {
+        setDockTransitionOffset({ x: 0, y: 0 });
+        setDockTransitionScale(1);
+      }, 920);
+    }
+
+    setTimeout(() => {
+      cursorPositionRef.current = anchor;
+      setCursorPosition(anchor);
+      setLaunchFxPhase('attention');
+      setMovementStateWithLog('attentive_near_cursor', 'launch_attention');
+    }, 980);
+
+    setTimeout(async () => {
+      const greetingText = String(payload?.greetingText || 'ORB online and ready.');
+      showSpeechBubble(greetingText, { mode: 'state', persistMs: 3200 });
+      if ((payload?.greetingEnabled ?? ORB_LAUNCH_GREETING_ENABLED) && window.electronAPI?.orbSpeak) {
+        try {
+          await window.electronAPI.orbSpeak(greetingText, 'thoughtful_warm');
+        } catch (_error) {}
+      }
+      setLaunchFxPhase('greet');
+    }, 1600);
+
+    setTimeout(() => {
+      setLaunchFxPhase('idle');
+      setMovementStateWithLog('curious_wander', 'launch_complete');
+      setTone('Present');
+      setBridgeStatus('Orb deployed');
+      setOrbScale(1);
+    }, 4600);
+  };
+
+  const isOrbSleeping = movementState === 'sleeping_corner';
+  const sleepVisualOpacity = isOrbSleeping ? 0.46 : 1;
+  const sleepVisualScale = isOrbSleeping ? 0.82 : 1;
 
   const orbStyle = {
     position: 'absolute',
@@ -1971,8 +2578,8 @@ function FloatingOrb() {
     flex: '0 0 auto',
     pointerEvents: 'auto',
     cursor: draggingRef.current ? 'grabbing' : 'grab',
-    transform: `translate(-50%, -50%) translate(${nodOffset.x + dockTransitionOffset.x}px, ${nodOffset.y + dockTransitionOffset.y}px) scale(${(orbScale + bloomLevel * 0.08) * dockTransitionScale})`,
-    opacity: dockTransitionOpacity,
+    transform: `translate(-50%, -50%) translate(${nodOffset.x + dockTransitionOffset.x}px, ${nodOffset.y + dockTransitionOffset.y}px) scale(${(orbScale + bloomLevel * 0.08) * dockTransitionScale * sleepVisualScale})`,
+    opacity: dockTransitionOpacity * sleepVisualOpacity,
     transition: 'transform 220ms cubic-bezier(0.22, 0.8, 0.2, 1), opacity 180ms ease',
     willChange: 'left, top, transform',
     WebkitAppRegion: 'no-drag',
@@ -2008,7 +2615,11 @@ function FloatingOrb() {
     inset: '-18px',
     borderRadius: '50%',
     background: `radial-gradient(circle, ${visual.aura} 0%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0) 72%)`,
-    opacity: clamp(0.34 + bloomLevel * 0.56 + egfPulseBoost * 0.4, 0.15, 1),
+    opacity: clamp(
+      0.48 + bloomLevel * 0.42 + egfPulseBoost * 0.35 + ((orbDocked && ORB_DOCK_BREATHING_ENABLED) ? 0.1 : 0),
+      0.26,
+      1
+    ),
     filter: `blur(${10 + bloomLevel * 12}px)`,
     transform: `scale(${1 + bloomLevel * 0.18})`,
     transition: 'all 160ms ease',
@@ -2029,7 +2640,9 @@ function FloatingOrb() {
     border: `1px solid ${visual.color}`,
     boxShadow: `0 0 32px ${visual.color}`,
     opacity: clamp(0.3 + bloomLevel * 0.28 + egfPulseBoost * 0.25, 0.12, 1),
-    animation: 'orbPulsePrimary 2600ms ease-in-out infinite',
+    animation: orbDocked && ORB_DOCK_BREATHING_ENABLED
+      ? 'orbDockBreathing 2400ms ease-in-out infinite'
+      : 'orbPulsePrimary 1850ms cubic-bezier(0.25, 0.1, 0.25, 1) infinite',
   };
 
   const secondaryPulseLayerStyle = {
@@ -2038,7 +2651,9 @@ function FloatingOrb() {
     border: `1px solid ${pulseAccent}`,
     boxShadow: `0 0 42px ${pulseAccent}`,
     opacity: clamp(0.18 + bloomLevel * 0.22 + egfTurbulenceBoost * 0.45, 0.08, 1),
-    animation: 'orbPulseSecondary 3600ms ease-in-out infinite',
+    animation: orbDocked && ORB_DOCK_BREATHING_ENABLED
+      ? 'orbDockBreathing 3200ms ease-in-out infinite'
+      : 'orbPulseSecondary 2950ms cubic-bezier(0.2, 0.15, 0.25, 1) infinite',
   };
 
   // Determine inner content gradient from config skin or cognitive visual
@@ -2050,7 +2665,7 @@ function FloatingOrb() {
         ? 'radial-gradient(circle at 36% 30%, rgba(190,200,215,0.82), rgba(95,110,130,0.5) 32%, rgba(9,12,20,0.98) 75%)'
     : skinConfig && SKIN_CONFIG_GRADIENTS[skinConfig.colorScheme]
       ? SKIN_CONFIG_GRADIENTS[skinConfig.colorScheme]
-      : `radial-gradient(circle at 36% 30%, rgba(255,255,255,0.92), ${visual.color} 28%, rgba(8,12,24,0.98) 75%)`;
+      : `radial-gradient(circle at 36% 30%, rgba(232,247,255,0.97), rgba(100,210,255,0.95) 24%, rgba(21,144,255,0.94) 52%, rgba(0,45,110,0.99) 86%)`;
 
   // Glass outer shell — the encasing sphere
   const glassShellStyle = {
@@ -2073,7 +2688,7 @@ function FloatingOrb() {
       `0 0 ${10 + bloomLevel * 14}px rgba(0,0,0,0.55)`,
     ].join(', '),
     overflow: 'hidden',
-    opacity: 0.80 + bloomLevel * 0.16,
+    opacity: 0.92 + bloomLevel * 0.08,
     isolation: 'isolate',
   };
 
@@ -2281,6 +2896,8 @@ function FloatingOrb() {
           inset: 0,
           background: 'transparent',
           pointerEvents: 'none',
+          display: orbVisible ? 'block' : 'none',
+          visibility: orbVisible ? 'visible' : 'hidden',
           opacity: orbVisible ? 1 : 0,
           transition: 'opacity 220ms ease',
         },
@@ -2290,17 +2907,43 @@ function FloatingOrb() {
       null,
       `
         @keyframes orbPulsePrimary {
-          0%, 100% { transform: scale(0.96); opacity: 0.18; }
-          45% { transform: scale(1.12); opacity: 0.5; }
-          70% { transform: scale(1.2); opacity: 0.12; }
+          0%, 100% { transform: scale(0.95); opacity: 0.26; }
+          38% { transform: scale(1.08); opacity: 0.56; }
+          72% { transform: scale(1.16); opacity: 0.18; }
         }
         @keyframes orbPulseSecondary {
-          0%, 100% { transform: scale(1.02); opacity: 0.08; }
-          38% { transform: scale(1.22); opacity: 0.34; }
-          82% { transform: scale(1.36); opacity: 0.04; }
+          0%, 100% { transform: scale(1.01); opacity: 0.14; }
+          42% { transform: scale(1.18); opacity: 0.38; }
+          86% { transform: scale(1.3); opacity: 0.08; }
+        }
+        @keyframes orbCuePulse {
+          0% { transform: translate(-50%, -50%) scale(0.75); opacity: 0.85; }
+          70% { transform: translate(-50%, -50%) scale(1.18); opacity: 0.12; }
+          100% { transform: translate(-50%, -50%) scale(1.28); opacity: 0; }
+        }
+        @keyframes orbDockBreathing {
+          0%, 100% { transform: scale(0.98); opacity: 0.25; }
+          50% { transform: scale(1.08); opacity: 0.52; }
         }
       `
     ),
+    cueTarget && interactionState === 'point_target'
+      ? React.createElement('div', {
+        style: {
+          position: 'fixed',
+          left: `${cueTarget.x}px`,
+          top: `${cueTarget.y}px`,
+          width: '56px',
+          height: '56px',
+          borderRadius: '50%',
+          border: '2px solid rgba(99,230,166,0.95)',
+          boxShadow: '0 0 22px rgba(99,230,166,0.65)',
+          animation: 'orbCuePulse 720ms ease-out infinite',
+          pointerEvents: 'none',
+          zIndex: 9998,
+        },
+      })
+      : null,
     speechBubbleText
       ? React.createElement(
           'div',
@@ -2333,6 +2976,61 @@ function FloatingOrb() {
           speechBubbleText
         )
       : null,
+    startupSplashVisible
+      ? React.createElement(
+        'div',
+        {
+          style: {
+            position: 'fixed',
+            left: `${cursorPosition.x}px`,
+            top: `${cursorPosition.y}px`,
+            transform: 'translate(-50%, -50%)',
+            width: '190px',
+            height: '190px',
+            pointerEvents: 'none',
+            zIndex: 10001,
+            opacity: 0.96,
+          },
+        },
+        React.createElement('div', {
+          style: {
+            position: 'absolute',
+            inset: startupSplashPhase === 'seed' ? '72px' : startupSplashPhase === 'gather' ? '62px' : '52px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 38% 30%, rgba(232,247,255,.95), rgba(100,210,255,.82) 30%, rgba(12,110,255,.54) 64%, rgba(1,14,46,.95) 100%)',
+            boxShadow: '0 0 32px rgba(64,188,255,.66)',
+            transition: 'all 260ms ease',
+          },
+        }),
+        React.createElement('div', {
+          style: {
+            position: 'absolute',
+            inset: startupSplashPhase === 'ring' || startupSplashPhase === 'awake' ? '30px' : '44px',
+            borderRadius: '50%',
+            border: '1px solid rgba(0,229,255,.72)',
+            borderRightColor: 'transparent',
+            borderBottomColor: 'rgba(0,230,118,.7)',
+            transform: `rotate(${startupSplashPhase === 'awake' ? 26 : -18}deg)`,
+            transition: 'all 300ms ease',
+            boxShadow: '0 0 24px rgba(0,229,255,.42)',
+          },
+        }),
+        React.createElement('div', {
+          style: {
+            position: 'absolute',
+            left: '50%',
+            top: '86%',
+            transform: 'translateX(-50%)',
+            color: 'rgba(210,238,255,.96)',
+            fontFamily: 'monospace',
+            fontSize: '11px',
+            letterSpacing: '0.8px',
+            textShadow: '0 0 12px rgba(0,180,255,.56)',
+            whiteSpace: 'nowrap',
+          },
+        }, startupStatusCue),
+      )
+      : null,
     React.createElement(
       'div',
       {
@@ -2353,6 +3051,9 @@ function FloatingOrb() {
           }
 
           event.preventDefault();
+          if (orbDockedRef.current) {
+            setOrbDocked(false);
+          }
           setCommandOpen(true);
           window.electronAPI?.setIgnoreMouseEvents(false);
           draggingRef.current = true;
@@ -2381,7 +3082,7 @@ function FloatingOrb() {
           }
 
           setTone('Querying');
-          setBridgeStatus(trimmed);
+          deliverGuidanceCue('Good. I am with you.');
           pulseOrb(0.92, 1.08, 240);
           triggerSwarmDispatch({ query: trimmed });
           await window.electronAPI?.orbQuery?.(trimmed);
@@ -2474,6 +3175,12 @@ function FloatingOrb() {
             outline: 'none',
           },
           onFocus: () => window.electronAPI?.setIgnoreMouseEvents(false),
+          onKeyDown: (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleCommandSubmit('ask');
+            }
+          },
         }),
         React.createElement(
           'div',
@@ -2659,6 +3366,64 @@ function FloatingOrb() {
           },
         });
       }),
+      ORB_DOCK_TRAIL_ENABLED && dockingInProgressRef.current
+        ? React.createElement('div', {
+          style: {
+            position: 'absolute',
+            inset: '-28px',
+            borderRadius: '50%',
+            border: `1px solid ${visual.color}`,
+            opacity: dockFxPhase === 'glide' ? 0.5 : 0.24,
+            boxShadow: `0 0 34px ${visual.color}`,
+            pointerEvents: 'none',
+          },
+        })
+        : null,
+      dockFxPhase === 'click_lock'
+        ? Array.from({ length: ORB_DOCK_CLICK_PULSES }).map((_, idx) =>
+          React.createElement('div', {
+            key: `dock-click-${idx}`,
+            style: {
+              position: 'absolute',
+              inset: `${-12 - (idx * 8)}px`,
+              borderRadius: '50%',
+              border: `1px solid ${visual.color}`,
+              boxShadow: `0 0 ${16 + (idx * 8)}px ${visual.color}`,
+              opacity: 0.42 - (idx * 0.12),
+              pointerEvents: 'none',
+            },
+          })
+        )
+        : null,
+      ORB_DOCK_HALO_ENABLED && dockFxPhase === 'bloom'
+        ? React.createElement('div', {
+          style: {
+            position: 'absolute',
+            inset: '-38px',
+            borderRadius: '50%',
+            background: `radial-gradient(circle, ${visual.aura} 0%, rgba(255,255,255,0.08) 48%, rgba(255,255,255,0) 78%)`,
+            boxShadow: `0 0 60px ${visual.color}`,
+            opacity: 0.72,
+            pointerEvents: 'none',
+          },
+        })
+        : null,
+      launchFxPhase !== 'idle'
+        ? React.createElement('div', {
+          style: {
+            position: 'absolute',
+            inset: launchFxPhase === 'swirl' ? '-34px' : '-20px',
+            borderRadius: '50%',
+            border: `1px solid ${visual.color}`,
+            borderRightColor: 'transparent',
+            boxShadow: `0 0 ${launchFxPhase === 'swirl' ? 40 : 24}px ${visual.color}`,
+            opacity: launchFxPhase === 'greet' ? 0.38 : 0.62,
+            transform: `rotate(${launchFxPhase === 'swirl' ? 210 : 25}deg)`,
+            transition: 'all 220ms ease',
+            pointerEvents: 'none',
+          },
+        })
+        : null,
       swarmNodes.map((node) => {
         const vector = nodeVector(node);
         const radius = Math.hypot(vector.x, vector.y);

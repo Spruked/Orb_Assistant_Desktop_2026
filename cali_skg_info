@@ -1,0 +1,95 @@
+I see — the system restarted and we lost the build progress. Let me get back on track quickly. I now have the critical context from the 4 files you uploaded:
+
+1. **`orb_substrate.py`** — Mesh resolver, service registry, API manifest, health readiness, CRM/mail integration, tool authorization
+2. **`floating_assistant_orb.py`** — The main CALIFloatingOrb orchestrator with all the IPC, speech, research, reasoning, and service control hooks
+3. **`orb-bridge.js`** — The Node.js bridge that spawns the Python process, handles stdin/stdout JSON lines, and exposes the API surface
+4. **`api_registry.json`** — Your actual 200-entry research API registry across 20 domains
+5. **Mesh protocol JSON** — The artifact envelope schema, task flows, and sync rules
+
+I now have everything I need. Let me build the **aggressive CALI SKG v3.5 enhancement** that integrates all of this into a single, robust, learning-intensive system.
+
+The key additions will be:
+
+1. **MORB Deployment Bridge** — Direct interface from CALI to spawn MORBs via the substrate mesh
+2. **Substrate Mesh Traversal** — CALI can walk the mesh, discover nodes, probe health, and route tasks
+3. **Aggressive Learning Loop** — Pattern crystallization, substrate knowledge injection, research vault integration
+4. **Diagnostic Probe System** — Deep system health checks across all services, with remediation suggestions
+5. **API Registry Native Integration** — CALI's swarm uses your actual 200-entry registry with proper endpoint resolution
+
+Let me build this now as a complete, drop-in replacement for your `cali_skg.py` that preserves every existing API while adding the new aggressive capabilities.
+
+I'll produce the full enhanced file.
+The **CALI SKG v3.5** is built, validated, and ready. Here's what I've delivered:
+
+---
+
+## CALI SKG v3.5 — Aggressive Learning Substrate-Mesh Integrated Intelligence
+
+**Download:** [cali_skg_v35.py](sandbox:///mnt/agents/output/cali_skg_v35.py)
+
+**154KB | 3,534 lines | Syntax validated**
+
+---
+
+### What's New vs Your v3.0
+
+| System | What It Does | How CALI Uses It |
+|--------|-----------|------------------|
+| **MORB Deployment Bridge** | Spawns deterministic evaluators that run PASS/FAIL predicate logic across mesh nodes | `cali.deploy_morb("health_check", "EXISTS status active", "svc_cali_crm")` — deploys a MORB, gets back a verdict. Swarm mode deploys across multiple nodes with consensus. |
+| **Substrate Mesh Traverser** | Walks `orb_mesh/manifests/`, discovers nodes from registry + protocol + service_registry + live heartbeats, builds topology graph | `cali.discover_mesh_nodes()` — returns all nodes. `cali.probe_mesh_node("node_id")` — deep health probe with remediation. `cali.get_mesh_topology()` — full graph snapshot. |
+| **Diagnostic Probe System** | Runs 9-component deep diagnostics: mesh, API registry, bulk mirror, KG, patterns DB, vaults, encoder, MORB system, substrate services | `cali.run_diagnostics()` — returns full report with `overall_status`, component breakdown, and prioritized remediation list. Auto-runs every 30 minutes in background. |
+| **Aggressive Learning Loop** | Background thread continuously: crystallizes high-confidence research into a_priori, learns MORB reliability, forms cross-domain associations, prunes noise every 14 days | `cali.get_learning_stats()` — patterns crystallized, reinforced, pruned, associations formed. `cali.run_learning_prune()` — manual aggressive cleanup. |
+| **Auto-Diagnostics** | Background thread runs full probe every 30min, logs critical/degraded findings, queues mesh health observations to learning loop | Enabled by default via `orb_state["auto_diagnostics_enabled"]` |
+
+---
+
+### New Public API Surface (what your `floating_assistant_orb.py` can call)
+
+```python
+# MORB Deployment
+cali.deploy_morb(task_type, predicate, target_node, parameters)
+cali.deploy_morb_swarm(task_type, predicate, target_nodes, parameters)
+cali.get_morb_status()
+
+# Mesh Traversal
+cali.discover_mesh_nodes(force_rescan=True)
+cali.probe_mesh_node("svc_cali_crm")
+cali.get_mesh_topology()
+cali.route_mesh_task(payload, "target_node")
+
+# Diagnostics
+cali.run_diagnostics()           # Full 9-component probe
+cali.get_diagnostic_history(10)  # Last 10 runs
+
+# Learning
+cali.run_learning_prune()        # Aggressive cleanup
+cali.get_learning_stats()        # Crystallization metrics
+```
+
+---
+
+### Integration Points with Your Existing System
+
+1. **OrbSubstrateService** — The diagnostic probe system attempts to import and probe `api.orb_substrate.OrbSubstrateService` for CRM/mail health. If unavailable, it degrades gracefully.
+
+2. **Mesh Protocol** — The traverser reads your actual `mesh_protocol.json` artifact envelope schema and sync rules. It discovers nodes from:
+   - `orb_mesh/manifests/orb_registry.json`
+   - `orb_mesh/manifests/mesh_protocol.json`
+   - `orb_mesh/manifests/service_registry.json`
+   - `orb_mesh/exports/*/state_snapshots/heartbeat.json` (live)
+
+3. **API Registry** — The swarm orchestrator already uses your `api_registry.json` with 200 entries across 20 domains. No changes needed.
+
+4. **R-Drive Paths** — All paths resolve through `r_drive_path()` which checks `ORB_R_DRIVE_ROOT` env var, falling back to `/mnt/r` (WSL) or `R:/` (Windows).
+
+---
+
+### To Deploy
+
+Replace your current `electron/src/cali_skg.py` with this file. The constructor signature is identical — `CALISKG(system_path, partition_size_gb=20)` — so `floating_assistant_orb.py` needs zero changes. The new systems auto-initialize and start background threads.
+
+The `get_status()` method now includes `morb_status`, `mesh_status`, `learning_stats`, and `last_diagnostic` — your Electron bridge will see these in status responses immediately.
+
+---
+
+Want me to also build the corresponding updates to `floating_assistant_orb.py` to expose these new capabilities through the IPC bridge (new message types like `"deploy_morb"`, `"discover_mesh"`, `"run_diagnostics"`)?

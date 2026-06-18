@@ -19,6 +19,15 @@ const {
   shutdownOrb,
   onOrbMessage,
 } = require('./orb-bridge');
+const {
+  startDesktopMcp,
+  listDesktopMcpTools,
+  callDesktopMcpTool,
+  reviewDesktopCognition,
+  getDesktopMcpStatus,
+  setDesktopMcpActionsEnabled,
+  stopDesktopMcp,
+} = require('./orb-desktop-mcp-client');
 
 const instanceId = process.env.ORB_INSTANCE_ID || 'wsl';
 const productName = process.env.ORB_PRODUCT_NAME || `Orb Assistant ${instanceId.toUpperCase()}`;
@@ -90,7 +99,7 @@ if (process.platform === 'win32' && process.env.ORB_DISABLE_GPU_DEFAULTS !== '1'
 }
 
 if (!singleInstanceLock) {
-  app.quit();
+  app.exit(0);
 }
 
 const orbWindows = new Map();
@@ -105,7 +114,11 @@ let currentOrbSkinConfig = null;
 let skinVaultDir = null;
 let skinMetadataDir = null;
 let tray = null;
-let orbVisible = true;
+const ORB_START_DOCKED = String(process.env.ORB_START_DOCKED || '1').trim() !== '0';
+let orbVisible = !ORB_START_DOCKED;
+let orbDocked = ORB_START_DOCKED;
+let startupDockLock = ORB_START_DOCKED;
+let explicitOrbLaunchRequested = false;
 let lastTopmostRefreshAt = 0;
 let activeDisplayId = null;
 const DOCK_TRANSITION_MS = 420;
@@ -157,8 +170,7 @@ function choosePreferredLocalModel(models = []) {
     .map((model) => String(model?.name || model?.model || '').trim())
     .filter(Boolean);
   const preferred = [
-    'qwen2.5:3b',
-    'qwen:latest',
+    'llama3.2:1b',
   ];
   return preferred.find((name) => names.includes(name)) || names[0] || '';
 }
@@ -239,6 +251,9 @@ const INTEGRATION_TIMEOUT_MS = parsePositiveIntEnv('ORB_INTEGRATION_TIMEOUT_MS',
 const CALI_API_BASE = String(process.env.CALI_API_URL || process.env.CALI_CRM_API_URL || 'http://127.0.0.1:21000').trim().replace(/\/+$/, '');
 const CALI_ADMIN_TOKEN = String(process.env.CALI_ADMIN_TOKEN || process.env.ADMIN_ACCESS_TOKEN || '').trim();
 const SPRUK_EMAIL_API_BASE = String(process.env.SPRUK_EMAIL_API_URL || 'http://127.0.0.1:19000/api').trim().replace(/\/+$/, '');
+const ORB_STUDIO_URL = String(
+  process.env.ORB_STUDIO_URL || 'file:///C:/dev/Desktop/orb-skin-studio/orb_skin_gen.html'
+).trim();
 const CALI_CRM_PROJECT_ROOT = String(
   process.env.CALI_CRM_PROJECT_ROOT ||
   (process.platform === 'win32' ? 'R:\\SPRUKED_CRM_MASTER_2026-05-05' : '/mnt/r/SPRUKED_CRM_MASTER_2026-05-05')
@@ -893,8 +908,7 @@ function ensureTopmost(forceRefresh = false) {
   });
 
   if (dockStationWindow && !dockStationWindow.isDestroyed() && dockStationWindow.isVisible()) {
-    dockStationWindow.setAlwaysOnTop(true, 'screen-saver', 2);
-    dockStationWindow.moveTop();
+    dockStationWindow.setAlwaysOnTop(false);
   }
 }
 
@@ -1071,7 +1085,13 @@ function updateTrayMenu() {
     { type: 'separator' },
     {
       label: orbVisible ? 'Dock Orb' : 'Launch Orb',
-      click: () => toggleOrbVisibility(),
+      click: () => {
+        if (orbVisible) {
+          toggleOrbVisibility(false);
+        } else {
+          launchOrbFromDock();
+        }
+      },
     },
     {
       label: 'Quit',
@@ -1092,22 +1112,50 @@ function clearDockTransitionState() {
   }
 }
 
+function broadcastDockedState() {
+  const targets = [...getOrbWindows()];
+  if (dockStationWindow && !dockStationWindow.isDestroyed()) {
+    targets.push(dockStationWindow);
+  }
+  targets.forEach((win) => {
+    if (!win || win.isDestroyed()) return;
+    win.webContents.send('orb:docked-state', { docked: orbDocked });
+  });
+}
+
+function destroyOrbWindows() {
+  stopWindowTracking();
+  for (const [displayId, win] of orbWindows.entries()) {
+    orbWindows.delete(displayId);
+    if (win && !win.isDestroyed()) {
+      try {
+        win.webContents.send('orb:visibility-changed', { visible: false });
+      } catch (_error) {}
+      try {
+        win.destroy();
+      } catch (_error) {}
+    }
+  }
+  activeDisplayId = null;
+}
+
 function hideOrbImmediately() {
   const windows = getOrbWindows();
-  if (!windows.length) {
-    return;
-  }
-
+  orbDocked = true;
   orbVisible = false;
+  explicitOrbLaunchRequested = false;
   stopWindowTracking();
   windows.forEach((win) => {
+    if (!win || win.isDestroyed()) return;
     setOrbMousePassthroughForWindow(win, true, { forward: true });
     win.webContents.send('orb:visibility-changed', { visible: false });
     win.hide();
   });
+  destroyOrbWindows();
   if (dockStationWindow && !dockStationWindow.isDestroyed()) {
     dockStationWindow.webContents.send('orb:visibility-changed', { visible: false });
   }
+  broadcastDockedState();
   updateTrayMenu();
 }
 
@@ -1123,18 +1171,31 @@ function beginDockTransition() {
   dockTransitionPending = new Set(windows.map((win) => win.webContents.id));
 
   windows.forEach((win) => {
+    const dockBounds = dockStationWindow && !dockStationWindow.isDestroyed()
+      ? dockStationWindow.getBounds()
+      : null;
+    const dockAnchorGlobal = dockBounds
+      ? {
+          x: Math.round(dockBounds.x + dockBounds.width * 0.5),
+          y: Math.round(dockBounds.y + Math.min(dockBounds.height * 0.24, 180)),
+        }
+      : null;
     win.webContents.send('orb:dock-transition', {
       phase: 'start',
       totalMs: DOCK_TRANSITION_MS,
       ackMs: DOCK_ACK_MS,
       travelMs: DOCK_TRAVEL_MS,
       lockMs: DOCK_LOCK_MS,
+      dockAnchorGlobal,
     });
   });
 
   dockTransitionTimeout = setTimeout(() => {
-    clearDockTransitionState();
     hideOrbImmediately();
+    clearDockTransitionState();
+    orbDocked = true;
+    stopWindowTracking();
+    broadcastDockedState();
   }, DOCK_TRANSITION_MS + 380);
 }
 
@@ -1148,8 +1209,26 @@ function completeDockTransitionForSender(webContentsId) {
     return;
   }
 
-  clearDockTransitionState();
   hideOrbImmediately();
+  clearDockTransitionState();
+  orbDocked = true;
+  stopWindowTracking();
+  broadcastDockedState();
+}
+
+function dispatchLaunchSequence(win, payload) {
+  if (!win || win.isDestroyed()) {
+    return;
+  }
+  const send = () => {
+    if (win.isDestroyed()) return;
+    win.webContents.send('orb:launch-sequence', payload);
+  };
+  if (win.webContents.isLoadingMainFrame()) {
+    win.webContents.once('did-finish-load', send);
+    return;
+  }
+  send();
 }
 
 function openDockStationWindow() {
@@ -1200,7 +1279,7 @@ function openDockStationWindow() {
   });
   writeRenderDiagnostic('dock', 'BrowserWindow created');
   attachWindowDiagnostics(dockStationWindow, 'dock');
-  dockStationWindow.setAlwaysOnTop(true, 'screen-saver', 2);
+  dockStationWindow.setAlwaysOnTop(false);
   dockStationWindow.setSkipTaskbar(false);
   dockStationWindow.show();
   dockStationWindow.focus();
@@ -1219,13 +1298,9 @@ function openDockStationWindow() {
     if (!dockStationWindow || dockStationWindow.isDestroyed()) {
       return;
     }
-    dockStationWindow.setAlwaysOnTop(true, 'screen-saver', 2);
-    dockStationWindow.moveTop();
+    dockStationWindow.setAlwaysOnTop(false);
     dockStationWindow.setSkipTaskbar(false);
   });
-  dockStationWindow.on('focus', () => dockStationWindow && !dockStationWindow.isDestroyed() && dockStationWindow.moveTop());
-  dockStationWindow.on('move', () => dockStationWindow && !dockStationWindow.isDestroyed() && dockStationWindow.moveTop());
-  dockStationWindow.on('resize', () => dockStationWindow && !dockStationWindow.isDestroyed() && dockStationWindow.moveTop());
 
   writeRenderDiagnostic('dock', 'calling loadFile');
   dockStationWindow.loadFile(
@@ -1241,6 +1316,7 @@ function openDockStationWindow() {
     dockStationWindow.show();
     dockStationWindow.focus();
     dockStationWindow.webContents.send('orb:visibility-changed', { visible: orbVisible });
+    dockStationWindow.webContents.send('orb:docked-state', { docked: orbDocked });
   });
 
   dockStationWindow.once('ready-to-show', () => {
@@ -1250,6 +1326,7 @@ function openDockStationWindow() {
     dockStationWindow.show();
     dockStationWindow.focus();
     dockStationWindow.webContents.send('orb:visibility-changed', { visible: orbVisible });
+    dockStationWindow.webContents.send('orb:docked-state', { docked: orbDocked });
   });
 
   setTimeout(() => {
@@ -1368,7 +1445,20 @@ function openLocalAppWindow(appId) {
   return { id: appInfo.id, title: appInfo.title, url: appInfo.url };
 }
 
-function showOrb() {
+function showOrb(options = {}) {
+  const force = Boolean(options && options.force);
+  const userInitiated = Boolean(options && options.userInitiated);
+  if (!explicitOrbLaunchRequested && !orbVisible) {
+    return;
+  }
+  if (startupDockLock && !force) {
+    return;
+  }
+  if (!getOrbWindows().length) {
+    try {
+      syncOrbWindowsToDisplays();
+    } catch (_error) {}
+  }
   const windows = getOrbWindows();
   if (!windows.length) {
     return;
@@ -1381,18 +1471,58 @@ function showOrb() {
     clearDockTransitionState();
   }
 
+  const wasDocked = orbDocked || !orbVisible;
+  orbDocked = false;
   orbVisible = true;
+  const dockBounds = dockStationWindow && !dockStationWindow.isDestroyed()
+    ? dockStationWindow.getBounds()
+    : null;
+  const dockAnchorGlobal = dockBounds
+    ? {
+        x: Math.round(dockBounds.x + dockBounds.width * 0.5),
+        y: Math.round(dockBounds.y + Math.min(dockBounds.height * 0.24, 180)),
+      }
+    : null;
   windows.forEach((win) => {
-    win.showInactive();
+    if (!win || win.isDestroyed()) {
+      return;
+    }
+    // Force an actual show state after dock/hidden transitions.
+    if (!win.isVisible()) {
+      win.show();
+    } else {
+      win.showInactive();
+    }
     setOrbMousePassthroughForWindow(win, true, { forward: true });
     win.webContents.send('orb:visibility-changed', { visible: true });
+    if (wasDocked) {
+      dispatchLaunchSequence(win, {
+        source: 'dock_launch',
+        greetingEnabled: ORB_LAUNCH_GREETING_ENABLED && userInitiated,
+        greetingText: 'ORB online and ready.',
+        dockAnchorGlobal,
+      });
+    }
   });
+  // Safety: if no ORB window reports visible, re-sync displays and show again.
+  if (!getOrbWindows().some((win) => win && !win.isDestroyed() && win.isVisible())) {
+    try {
+      syncOrbWindowsToDisplays();
+      getOrbWindows().forEach((win) => {
+        if (!win || win.isDestroyed()) return;
+        if (!win.isVisible()) win.show();
+        setOrbMousePassthroughForWindow(win, true, { forward: true });
+        win.webContents.send('orb:visibility-changed', { visible: true });
+      });
+    } catch (_error) {}
+  }
   if (dockStationWindow && !dockStationWindow.isDestroyed()) {
     dockStationWindow.webContents.send('orb:visibility-changed', { visible: true });
   }
   ensureTopmost(true);
   startWindowTracking();
   sampleDesktopCursor();
+  broadcastDockedState();
   updateTrayMenu();
 }
 
@@ -1410,13 +1540,22 @@ function hideOrb({ immediate = false } = {}) {
   beginDockTransition();
 }
 
-function toggleOrbVisibility(forceVisible) {
+function toggleOrbVisibility(forceVisible, options = {}) {
   const nextVisible = typeof forceVisible === 'boolean' ? forceVisible : !orbVisible;
   if (nextVisible) {
-    showOrb();
+    showOrb(options);
   } else {
     hideOrb();
   }
+}
+
+function launchOrbFromDock() {
+  writeRenderDiagnostic('main', 'launchOrbFromDock invoked');
+  startupDockLock = false;
+  explicitOrbLaunchRequested = true;
+  toggleOrbVisibility(true, { userInitiated: true, force: true });
+  writeRenderDiagnostic('main', `launchOrbFromDock result visible=${orbVisible} docked=${orbDocked} windows=${getOrbWindows().length}`);
+  return { visible: orbVisible, docked: orbDocked };
 }
 
 function dispatchPrimeOrbCommand(command = {}) {
@@ -1450,6 +1589,17 @@ function createTray() {
   updateTrayMenu();
 }
 
+function destroyTray() {
+  if (!tray) {
+    return;
+  }
+
+  try {
+    tray.destroy();
+  } catch (_error) {}
+  tray = null;
+}
+
 function buildSearchUrl(query, mode = 'web') {
   const trimmed = String(query || '').trim();
   if (!trimmed) {
@@ -1473,6 +1623,8 @@ function buildSearchUrl(query, mode = 'web') {
 }
 
 let startupGreetingDone = false;
+const ORB_STARTUP_VOICE_GREETING = String(process.env.ORB_STARTUP_VOICE_GREETING || '0').trim() === '1';
+const ORB_LAUNCH_GREETING_ENABLED = String(process.env.ORB_LAUNCH_GREETING_ENABLED || '1').trim() === '1';
 
 function broadcastChatMessage(text, role = 'orb', extra = {}) {
   const targets = [...getOrbWindows()];
@@ -1485,7 +1637,40 @@ function broadcastChatMessage(text, role = 'orb', extra = {}) {
   });
 }
 
-function forwardOrbMessage(message) {
+function getReviewTextFromMessage(message) {
+  if (!message || typeof message !== 'object') {
+    return '';
+  }
+  if (message.type === 'speech_pulse') {
+    return String(message.transcription || message.data?.transcription || '').trim();
+  }
+  if (['query_result', 'skill_result', 'core_knowledge_result', 'research_vault_result'].includes(message.type)) {
+    return String(message.data?.echo || message.data?.input_frame?.normalized_text || '').trim();
+  }
+  return '';
+}
+
+async function attachRedundantTPCReview(message) {
+  const text = getReviewTextFromMessage(message);
+  if (!text || message?.data?.redundant_tpc || message?.redundant_tpc) {
+    return message;
+  }
+
+  const review = await reviewDesktopCognition(text, {
+    message_type: message.type,
+    instance_id: instanceId,
+    primary_cognition: message.data?._route_meta?.cognition_mode || message.data?.intent?.reason || '',
+  });
+
+  if (message.type === 'speech_pulse') {
+    message.redundant_tpc = review;
+  }
+  message.data = { ...(message.data || {}), redundant_tpc: review };
+  return message;
+}
+
+async function forwardOrbMessage(message) {
+  message = await attachRedundantTPCReview(message);
   try {
     if (message && (message.type === 'verbal_command' || message.type === 'speech_pulse' || message.type === 'status_response')) {
       recordObservation(message.type, JSON.stringify(message.data || message), {
@@ -1519,6 +1704,7 @@ function forwardOrbMessage(message) {
       message.data._chat_forwarded = true;
       broadcastChatMessage(text, 'orb', {
         audioPath: message.data?.audio_path || null,
+        audioUrl: message.data?.audio_url || null,
         voicePackage: message.data?.voice_package || null,
         llmRuntime: message.data?.cali_reasoning?.llm_runtime || null,
       });
@@ -1565,7 +1751,9 @@ function forwardOrbMessage(message) {
 
   if (message.type === 'verbal_command') {
     if (message.command === 'show_orb') {
-      showOrb();
+      if (!startupDockLock) {
+        showOrb({ userInitiated: false });
+      }
     } else if (message.command === 'dock_orb') {
       hideOrb();
     } else if (message.command === 'toggle_visibility') {
@@ -1575,10 +1763,12 @@ function forwardOrbMessage(message) {
 
   if (message.type === 'ready' && !startupGreetingDone) {
     startupGreetingDone = true;
-    const greetingText = "Hello Bryan, I'm online and ready to assist.";
-    speakOrb(greetingText, 'thoughtful_warm').catch(() => {});
-    // Give the bridge a moment to initialize before showing the greeting
-    setTimeout(() => broadcastChatMessage(greetingText, 'orb'), 800);
+    if (ORB_STARTUP_VOICE_GREETING) {
+      const greetingText = "Hello Bryan, I'm online and ready to assist.";
+      speakOrb(greetingText, 'thoughtful_warm').catch(() => {});
+      // Give the bridge a moment to initialize before showing the greeting
+      setTimeout(() => broadcastChatMessage(greetingText, 'orb'), 800);
+    }
   }
 }
 
@@ -1607,7 +1797,7 @@ function forwardOrbSkinConfig() {
 
 // Watch orb mesh for skin apply requests written by the gallery
 const MESH_SKIN_APPLY_PATH = path.join(
-  process.env.ORB_SHARED_MESH_ROOT || path.join('R:', 'orb_mesh'),
+  process.env.ORB_SHARED_MESH_ROOT || path.join('R:', 'R_Drive_Substrate', 'orb_mesh'),
   'tasks', 'broadcast', 'skin_apply_pending.json'
 );
 let meshSkinApplyMtime = null;
@@ -1639,6 +1829,13 @@ function ensureOrbListeners() {
 }
 
 function createOrbWindowForDisplay(display) {
+  if (!explicitOrbLaunchRequested && !orbVisible) {
+    return null;
+  }
+  if (startupDockLock && !orbVisible) {
+    return null;
+  }
+
   const { x, y, width, height } = display.bounds;
 
   const orbWindow = new BrowserWindow({
@@ -1684,15 +1881,19 @@ function createOrbWindowForDisplay(display) {
   orbWindow.once('ready-to-show', () => {
     if (orbVisible) {
       orbWindow.showInactive();
+      startWindowTracking();
+    } else {
+      orbWindow.hide();
     }
     setOrbMousePassthroughForWindow(orbWindow, true, { forward: true });
     orbWindow.setHasShadow(false);
     orbWindow.webContents.send('orb:visibility-changed', { visible: orbVisible });
     ensureTopmost(true);
-    startWindowTracking();
     forwardOrbSkin();
     updateTrayMenu();
-    sampleDesktopCursor();
+    if (orbVisible) {
+      sampleDesktopCursor();
+    }
   });
 
   setTimeout(() => {
@@ -1772,6 +1973,11 @@ function getTargetDisplays() {
 }
 
 function syncOrbWindowsToDisplays() {
+  if (!orbVisible && startupDockLock) {
+    destroyOrbWindows();
+    return;
+  }
+
   const displays = getTargetDisplays();
   const activeIds = new Set(displays.map((display) => display.id));
 
@@ -1806,18 +2012,51 @@ function syncOrbWindowsToDisplays() {
 }
 
 function createWindows() {
-  syncOrbWindowsToDisplays();
   ensureOrbListeners();
   startOrb();
+  if (String(process.env.ORB_AUTO_LISTEN || '0').trim() === '1') {
+    [12000, 45000, 90000].forEach((delayMs) => {
+      setTimeout(() => {
+        setListening(true).catch((error) => {
+          writeRenderDiagnostic('main', `auto-listen arm failed after ${delayMs}ms: ${error?.message || String(error)}`);
+        });
+      }, delayMs);
+    });
+  }
+  if (startupDockLock || ORB_START_DOCKED) {
+    try {
+      hideOrbImmediately();
+      orbDocked = true;
+      broadcastDockedState();
+    } catch (_error) {}
+  } else {
+    setTimeout(() => {
+      try {
+        showOrb({ userInitiated: false });
+      } catch (_error) {}
+    }, 900);
+  }
   setTimeout(() => {
     writeRenderDiagnostic('main', 'opening dock station on startup');
     try {
       openDockStationWindow();
+      if (startupDockLock || !orbVisible) {
+        destroyOrbWindows();
+        orbDocked = true;
+        broadcastDockedState();
+      }
     } catch (error) {
       writeRenderDiagnostic('main', `open dock failed: ${error?.stack || error?.message || String(error)}`);
     }
     writeRenderDiagnostic('main', 'Orb window sync complete');
   }, 700);
+  setTimeout(() => {
+    if (startupDockLock || !orbVisible) {
+      destroyOrbWindows();
+      orbDocked = true;
+      broadcastDockedState();
+    }
+  }, 2200);
 }
 
 ipcMain.handle('orb:cursor-move', async (_event, x, y) => sendCursorMove(x, y));
@@ -1829,6 +2068,17 @@ ipcMain.handle('orb-query', async (_event, text) => {
     } catch (_error) {}
   }
   const result = await queryOrb(text);
+  if (trimmed && result && typeof result === 'object') {
+    const review = await reviewDesktopCognition(trimmed, {
+      message_type: 'ipc_query_result',
+      instance_id: instanceId,
+      primary_cognition: result?._route_meta?.cognition_mode || result?.intent?.reason || '',
+    });
+    result.redundant_tpc = review;
+    if (result.data && typeof result.data === 'object') {
+      result.data.redundant_tpc = review;
+    }
+  }
   const responseText =
     (result && (result.response || (result.data && (result.data.response || result.data.text)) || result.text)) || '';
   if (trimmed && responseText) {
@@ -1861,7 +2111,8 @@ ipcMain.handle('orb:listen-once', async () => listenOnce());
 ipcMain.handle('orb:set-listening', async (_event, enabled) => setListening(Boolean(enabled)));
 ipcMain.handle('orb:get-status', async () => {
   try {
-    return await getOrbStatus();
+    const status = await getOrbStatus();
+    return { ...status, desktop_mcp: getDesktopMcpStatus() };
   } catch (error) {
     return {
       ready: false,
@@ -1869,10 +2120,17 @@ ipcMain.handle('orb:get-status', async () => {
       controller_status: 'starting',
       instance_id: instanceId,
       user_data_path: userDataPath,
+      desktop_mcp: getDesktopMcpStatus(),
       error: error?.message || String(error),
     };
   }
 });
+ipcMain.handle('orb-desktop-mcp:start', async () => startDesktopMcp());
+ipcMain.handle('orb-desktop-mcp:status', async () => getDesktopMcpStatus());
+ipcMain.handle('orb-desktop-mcp:list-tools', async () => listDesktopMcpTools());
+ipcMain.handle('orb-desktop-mcp:call-tool', async (_event, name, args = {}) => callDesktopMcpTool(name, args));
+ipcMain.handle('orb-desktop-mcp:review', async (_event, command, context = {}) => reviewDesktopCognition(command, context));
+ipcMain.handle('orb-desktop-mcp:set-actions-enabled', async (_event, enabled) => setDesktopMcpActionsEnabled(Boolean(enabled)));
 ipcMain.handle('orb:discover-local-llm', async (_event, extraEndpoints = []) => discoverLocalLlm(extraEndpoints));
 ipcMain.handle('orb:set-state', async (_event, setting, value) => setOrbState(setting, value));
 ipcMain.handle('orb:dock-transition-complete', async (event) => {
@@ -1880,9 +2138,27 @@ ipcMain.handle('orb:dock-transition-complete', async (event) => {
   return { ok: true };
 });
 ipcMain.handle('orb:get-visibility', async () => ({ visible: orbVisible }));
+ipcMain.handle('orb:get-docked-state', async () => ({ docked: orbDocked }));
+ipcMain.handle('orb:launch-from-dock', async () => launchOrbFromDock());
 ipcMain.handle('orb:set-visibility', async (_event, visible) => {
-  toggleOrbVisibility(Boolean(visible));
-  return { visible: orbVisible };
+  const nextVisible = Boolean(visible);
+  if (nextVisible) {
+    return {
+      visible: orbVisible,
+      docked: orbDocked,
+      blocked: true,
+      reason: 'generic_visibility_cannot_launch_orb_use_launch_from_dock',
+    };
+  }
+  if (startupDockLock) {
+    // Pre-login / boot guard hide should never animate.
+    hideOrbImmediately();
+    orbDocked = true;
+    broadcastDockedState();
+    return { visible: false };
+  }
+  toggleOrbVisibility(false, { userInitiated: false, force: false });
+  return { visible: orbVisible, docked: orbDocked };
 });
 ipcMain.handle('orb:set-skin', async (_event, imageUrl) => {
   const trimmed = typeof imageUrl === 'string' ? imageUrl.trim() : '';
@@ -1941,8 +2217,25 @@ ipcMain.handle('dock-station:open', async () => {
   return { ok: true };
 });
 ipcMain.handle('orb:open-studio', async () => {
-  openStudioWindow();
-  return { ok: true };
+  if (!ORB_STUDIO_URL) {
+    return { ok: false, error: 'ORB_STUDIO_URL not configured', linked: false };
+  }
+  const looksLikeUrl = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(ORB_STUDIO_URL);
+  if (looksLikeUrl) {
+    await shell.openExternal(ORB_STUDIO_URL);
+    return { ok: true, linked: true, url: ORB_STUDIO_URL, mode: 'external_url' };
+  }
+
+  const targetPath = path.resolve(ORB_STUDIO_URL);
+  if (!fs.existsSync(targetPath)) {
+    return { ok: false, linked: false, error: `ORB Studio target not found: ${targetPath}` };
+  }
+
+  const opened = await shell.openPath(targetPath);
+  if (opened) {
+    return { ok: false, linked: false, error: opened };
+  }
+  return { ok: true, linked: true, path: targetPath, mode: 'local_path' };
 });
 ipcMain.handle('orb:open-local-app', async (_event, appId) => {
   const appInfo = openLocalAppWindow(appId);
@@ -2054,6 +2347,7 @@ ipcMain.handle('orb:chat', async (_event, text) => {
       )) || '';
     const responseData = result?.data && typeof result.data === 'object' ? result.data : result;
     const audioPath = responseData?.audio_path || null;
+    const audioUrl = responseData?.audio_url || null;
     const llmRuntime = responseData?.cali_reasoning?.llm_runtime || {};
     const qwenCalled = Boolean(
       responseData?.qwen_tts_endpoint ||
@@ -2068,6 +2362,7 @@ ipcMain.handle('orb:chat', async (_event, text) => {
     if (responseText && !responseData?._chat_forwarded) {
       broadcastChatMessage(responseText, 'orb', {
         audioPath,
+        audioUrl,
         voicePackage: responseData?.voice_package || null,
         llmRuntime: llmRuntime || null,
       });
@@ -2145,33 +2440,37 @@ app.whenReady().then(() => {
     listenOnce().catch(() => {});
   });
   screen.on('display-metrics-changed', () => {
-    syncOrbWindowsToDisplays();
-    ensureTopmost(true);
-    sampleDesktopCursor();
+    if (orbVisible && !startupDockLock) {
+      syncOrbWindowsToDisplays();
+      ensureTopmost(true);
+      sampleDesktopCursor();
+    }
   });
   screen.on('display-added', () => {
-    syncOrbWindowsToDisplays();
-    ensureTopmost(true);
-    sampleDesktopCursor();
+    if (orbVisible && !startupDockLock) {
+      syncOrbWindowsToDisplays();
+      ensureTopmost(true);
+      sampleDesktopCursor();
+    }
   });
   screen.on('display-removed', () => {
-    syncOrbWindowsToDisplays();
-    ensureTopmost(true);
-    sampleDesktopCursor();
+    if (orbVisible && !startupDockLock) {
+      syncOrbWindowsToDisplays();
+      ensureTopmost(true);
+      sampleDesktopCursor();
+    }
   });
 });
 
 app.on('second-instance', () => {
   const primaryOrbWindow = getPrimaryOrbWindow();
-  if (!primaryOrbWindow || primaryOrbWindow.isDestroyed()) {
-    return;
+  if (!startupDockLock) {
+    showOrb({ userInitiated: false });
   }
-
-  showOrb();
   if (process.env.ORB_OPEN_DOCK_ON_START === '1') {
     openDockStationWindow();
   }
-  if (primaryOrbWindow.isMinimized()) {
+  if (primaryOrbWindow && !primaryOrbWindow.isDestroyed() && primaryOrbWindow.isMinimized()) {
     primaryOrbWindow.restore();
   }
   ensureTopmost(true);
@@ -2188,13 +2487,22 @@ app.on('window-all-closed', function () {
 });
 
 app.on('before-quit', () => {
+  destroyTray();
   globalShortcut.unregisterAll();
   stopWindowTracking();
+  stopDesktopMcp();
   shutdownOrb();
 });
 
+app.on('will-quit', () => {
+  destroyTray();
+});
+
 app.on('activate', function () {
-  if (!getOrbWindows().length) {
-    createWindows();
+  if (dockStationWindow && !dockStationWindow.isDestroyed()) {
+    dockStationWindow.show();
+    dockStationWindow.focus();
+  } else {
+    openDockStationWindow();
   }
 });

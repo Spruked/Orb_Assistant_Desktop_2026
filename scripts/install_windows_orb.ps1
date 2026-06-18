@@ -176,6 +176,8 @@ $localOverride = @"
 `$env:ORB_USER_DATA_DIR = "$userDataDir"
 `$env:ORB_SYSTEM_ROOT = "$systemRoot"
 `$env:ORB_SHARED_MESH_ROOT = "$sharedMeshRoot"
+`$env:ORB_MESH_ROOT = "$sharedMeshRoot"
+`$env:ORB_IDENTITY_PATH = "$(Join-Path $sharedMeshRoot "identity\bryan_spruk_identity.json")"
 `$env:ORB_SINGLE_INSTANCE = "1"
 `$env:ORB_PYTHON_PATH = "$PythonPath"
 "@

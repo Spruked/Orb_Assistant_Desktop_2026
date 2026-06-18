@@ -23,7 +23,7 @@ const SKG_CONFIG = {
   llm: {
     local: {
       endpoint: process.env.ORB_BRIDGE_ENDPOINT || 'http://127.0.0.1:5199/query',
-      model: process.env.ORB_LOCAL_LLM_MODEL || 'qwen2.5:3b',
+      model: process.env.ORB_LOCAL_LLM_MODEL || 'llama3.2:1b',
       timeoutMs: 15000,
     },
     api: {

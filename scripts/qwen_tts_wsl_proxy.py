@@ -54,6 +54,24 @@ def _powershell_json(method: str, route: str, body: str | None = None, timeout: 
     return 200, payload
 
 
+def _post_with_route_fallback(body: str) -> tuple[int, dict[str, Any]]:
+    candidates = ["/synthesize", "/generate", "/tts", "/speak"]
+    last_status = 502
+    last_payload: dict[str, Any] = {"status": "error", "error": "no_route_attempted"}
+    for route in candidates:
+        status_code, payload = _powershell_json("POST", route, body=body, timeout=220)
+        last_status = status_code
+        last_payload = payload if isinstance(payload, dict) else {"status": "error", "error": str(payload)}
+        # Success path: any recognized audio output indicator.
+        if status_code < 400 and any(
+            key in last_payload for key in ("audio_path", "audio_file", "path", "output_path", "audio_base64")
+        ):
+            last_payload["resolved_route"] = route
+            return status_code, last_payload
+    last_payload["resolved_route"] = "none"
+    return last_status, last_payload
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "OrbQwenTtsWslProxy/1.0"
 
@@ -83,7 +101,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         length = int(self.headers.get("Content-Length", "0") or "0")
         body = self.rfile.read(length).decode("utf-8", errors="replace")
-        status_code, payload = _powershell_json("POST", "/synthesize", body=body, timeout=220)
+        status_code, payload = _post_with_route_fallback(body)
         payload = {
             **payload,
             "proxy": "wsl_qwen_tts_proxy",

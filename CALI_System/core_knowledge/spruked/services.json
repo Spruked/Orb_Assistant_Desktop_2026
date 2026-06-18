@@ -56,7 +56,7 @@
       "working_directory": "",
       "expected_ports": [],
       "service_type": "website",
-      "enabled": true,
+      "enabled": false,
       "start_command": "",
       "stop_command": ""
     },
@@ -156,6 +156,23 @@
       "working_directory": "/home/bryan/projects/shilohridgekatahdins.com/Shiloh-Ridge-Farm-II/backend",
       "expected_ports": [
         8002
+      ],
+      "service_type": "orb",
+      "enabled": true,
+      "start_command": "",
+      "stop_command": ""
+    },
+    {
+      "service_id": "butch_ranch_hand_orb",
+      "instance_id": "shiloh-shep-butch",
+      "display_name": "Butch Ranch Hand ORB",
+      "domain": "shilohridgekatahdins.com",
+      "public_url": "https://shilohridgekatahdins.com",
+      "local_url": "http://127.0.0.1:8004",
+      "health_url": "http://127.0.0.1:8004/api/health",
+      "working_directory": "/home/bryan/projects/shilohridgekatahdins.com/Shiloh-Ridge-Farm-II/backend",
+      "expected_ports": [
+        8004
       ],
       "service_type": "orb",
       "enabled": true,

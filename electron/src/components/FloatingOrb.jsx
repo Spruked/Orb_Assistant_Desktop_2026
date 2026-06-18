@@ -2,6 +2,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './FloatingOrb.css';
 
+const ORB_API_URL = String(process?.env?.ORB_API_URL || 'http://127.0.0.1:21100/api/v1').trim();
+const ORB_UCM_WS_URL = String(process?.env?.ORB_UCM_WS_URL || '').trim();
+const ORB_WS_FALLBACK = `${ORB_API_URL.replace(/^http/i, 'ws').replace(/\/api\/v1\/?$/i, '')}/ws/orb_assistant`;
+
 const LOGIC_MODE_VISUALS = {
   deductive: { label: 'Deductive', color: '#59b7ff' },
   inductive: { label: 'Inductive', color: '#58d68d' },
@@ -357,7 +361,8 @@ const FloatingOrb = ({ workerId = "CALI_UNIT_01" }) => {
         // Orb_Assistant is not a worker.
         // It uses a dedicated ORB channel and handshake.
         // Do not reuse worker logic.
-        const ws = new WebSocket(`ws://localhost:8000/ws/orb_assistant`);
+        const wsUrl = ORB_UCM_WS_URL || ORB_WS_FALLBACK;
+        const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
         ws.onopen = () => {

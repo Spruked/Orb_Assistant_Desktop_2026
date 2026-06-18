@@ -1,4 +1,4 @@
-var OrbDockStationApp = (() => {
+var OrbDockStation = (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -6,7 +6,11 @@ var OrbDockStationApp = (() => {
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __commonJS = (cb, mod) => function __require() {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    try {
+      return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    } catch (e) {
+      throw mod = 0, e;
+    }
   };
   var __copyProps = (to, from, except, desc) => {
     if (from && typeof from === "object" || typeof from === "function") {
@@ -25,9 +29,9 @@ var OrbDockStationApp = (() => {
     mod
   ));
 
-  // Orb_Assistant_Desktop/electron/node_modules/react/cjs/react.development.js
+  // node_modules/react/cjs/react.development.js
   var require_react_development = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/react/cjs/react.development.js"(exports, module) {
+    "node_modules/react/cjs/react.development.js"(exports, module) {
       "use strict";
       if (true) {
         (function() {
@@ -1899,9 +1903,9 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/node_modules/react/index.js
+  // node_modules/react/index.js
   var require_react = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/react/index.js"(exports, module) {
+    "node_modules/react/index.js"(exports, module) {
       "use strict";
       if (false) {
         module.exports = null;
@@ -1911,9 +1915,9 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/node_modules/scheduler/cjs/scheduler.development.js
+  // node_modules/scheduler/cjs/scheduler.development.js
   var require_scheduler_development = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
+    "node_modules/scheduler/cjs/scheduler.development.js"(exports) {
       "use strict";
       if (true) {
         (function() {
@@ -2361,9 +2365,9 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/node_modules/scheduler/index.js
+  // node_modules/scheduler/index.js
   var require_scheduler = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/scheduler/index.js"(exports, module) {
+    "node_modules/scheduler/index.js"(exports, module) {
       "use strict";
       if (false) {
         module.exports = null;
@@ -2373,9 +2377,9 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/node_modules/react-dom/cjs/react-dom.development.js
+  // node_modules/react-dom/cjs/react-dom.development.js
   var require_react_dom_development = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
+    "node_modules/react-dom/cjs/react-dom.development.js"(exports) {
       "use strict";
       if (true) {
         (function() {
@@ -23537,9 +23541,9 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/node_modules/react-dom/index.js
+  // node_modules/react-dom/index.js
   var require_react_dom = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/react-dom/index.js"(exports, module) {
+    "node_modules/react-dom/index.js"(exports, module) {
       "use strict";
       if (false) {
         checkDCE();
@@ -23550,9 +23554,9 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/node_modules/react-dom/client.js
+  // node_modules/react-dom/client.js
   var require_client = __commonJS({
-    "Orb_Assistant_Desktop/electron/node_modules/react-dom/client.js"(exports) {
+    "node_modules/react-dom/client.js"(exports) {
       "use strict";
       var m = require_react_dom();
       if (false) {
@@ -23581,7 +23585,7 @@ var OrbDockStationApp = (() => {
     }
   });
 
-  // Orb_Assistant_Desktop/electron/src/ui/orb-dock-station.jsx
+  // src/ui/orb-dock-station.jsx
   var import_react = __toESM(require_react());
   var import_client = __toESM(require_client());
   var clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -23678,13 +23682,19 @@ var OrbDockStationApp = (() => {
     llmConnected: false,
     voiceProviderReady: false,
     voiceProvider: "unknown",
-    orbVisible: true,
+    orbVisible: false,
+    orbDocked: true,
+    orbReadinessOk: false,
+    orbApiUrl: "http://127.0.0.1:21100/api/v1",
+    statusReason: "",
     fourMind: { caleon: 0.5, kaygee: 0.5, cali_x_one: 0.5, empirical: 0.5 },
     fieldDensity: 0,
     epistemicAlignment: 0,
     spatialCoord: null,
     driftDetected: false,
     hlsfSnapshot: INITIAL_HLSF_SNAPSHOT,
+    egfState: { ok: false, mode: "unknown", error: "" },
+    siteOrbStatus: {},
     events: []
   };
   function useTelemetry() {
@@ -23751,7 +23761,7 @@ var OrbDockStationApp = (() => {
         if (status.pending && !runtimeSnapshot) {
           setT((prev) => ({
             ...prev,
-            dockChannelConnected: true,
+            dockChannelConnected: false,
             lastEvent: String(status.error || "backend status pending")
           }));
           pushEvent("WARN", "Backend status pending");
@@ -23770,31 +23780,34 @@ var OrbDockStationApp = (() => {
         const snapshotIdle = runtimeSnapshot ? String(runtimeSnapshot.presence_state || "").toLowerCase() === "idle" : presenceSnapshot ? Boolean(presenceSnapshot.idle) : Boolean(presence.is_idle);
         const snapshotIdleSeconds = presenceSnapshot ? Math.max(0, toNumberOr(presenceSnapshot.idle_seconds, 0)) : Math.max(0, toNumberOr(presence.idle_seconds, 0));
         const caliStatus = status.cali_status || {};
-        const activeModel = runtimeSnapshot?.active_llm || caliStatus.identity || status.active_llm || "unknown";
         const localLlm = status.local_llm || {};
+        const activeModel = runtimeSnapshot?.active_llm || localLlm.model || caliStatus?.orb_state?.llm_local_model || status.active_llm || "unknown";
         const llmRuntime = localLlm.last_runtime || {};
         const llmRoute = String(localLlm.route || "").toLowerCase();
-        const localLlmHealthy = runtimeSnapshot ? Boolean(runtimeSnapshot.llm_connected) : Boolean(
-          localLlm.ready === true || localLlm.endpoint && localLlm.model && llmRuntime && llmRuntime.error == null
-        );
+        const localLlmHealthy = runtimeSnapshot ? Boolean(runtimeSnapshot.llm_connected) : Boolean(localLlm.connected === true || localLlm.ready === true);
         const cp3Audio = status?.cp3_io?.audio_runtime_status || {};
         const qwenTts = status?.qwen_tts || {};
         const voiceProvider = String(
           runtimeSnapshot ? runtimeSnapshot.qwen_tts_ready ? "qwen" : runtimeSnapshot.qwen_last_provider || "unknown" : cp3Audio.tts_provider || (qwenTts.endpoint ? "qwen" : null) || cp3Audio.voice_provider || (status?.cp3_io?.voice_runtime_ready ? "cp3" : "unknown")
         );
-        const voiceProviderReady = runtimeSnapshot ? Boolean(runtimeSnapshot.voice_ready) : Boolean(
-          qwenTts.ready === true || status?.cp3_io?.voice_runtime_ready || ["online", "ready", "active"].includes(String(cp3Audio.voice || "").toLowerCase())
+        const qwenHealthy = Boolean(qwenTts.ready === true);
+        const cp3VoiceReady = Boolean(
+          status?.cp3_io?.voice_runtime_ready || ["online", "ready", "active"].includes(String(cp3Audio.voice || "").toLowerCase())
         );
+        const voiceProviderReady = runtimeSnapshot ? Boolean(runtimeSnapshot.voice_ready) : Boolean(qwenHealthy || cp3VoiceReady);
         const confidenceRaw = runtimeSnapshot ? toNumberOr(runtimeSnapshot.confidence, 0) : presenceSnapshot ? toNumberOr(presenceSnapshot.confidence_state, 0) : 0;
         const autonomyRaw = presenceSnapshot ? toNumberOr(presenceSnapshot.autonomy_level, 0) : 0;
+        const listeningActive = Boolean(
+          runtimeSnapshot?.listening || status?.listening_enabled || status?.cp3_io?.listening_enabled
+        );
         setT((prev) => ({
           ...prev,
           systemHealth: running ? controllerReady ? 100 : 72 : 0,
           coreIntegrity: controllerReady ? 100 : running ? 70 : 0,
           activeLLM: String(activeModel),
           orbRuntimeActive: running,
-          dockChannelConnected: Boolean(runtimeSnapshot?.dock_channel_connected ?? true),
-          llmConnected: runtimeSnapshot ? Boolean(runtimeSnapshot.llm_connected) : llmRoute === "local" ? localLlmHealthy : String(activeModel || "").toLowerCase() !== "unknown",
+          dockChannelConnected: Boolean(runtimeSnapshot?.dock_channel_connected ?? false),
+          llmConnected: runtimeSnapshot ? Boolean(runtimeSnapshot.llm_connected) : llmRoute === "local" ? localLlmHealthy : Boolean(status.active_llm && String(status.active_llm).toLowerCase() !== "unknown"),
           voiceProviderReady,
           voiceProvider,
           governanceIntegrity: runtimeSnapshot ? String(runtimeSnapshot.governance_wrapper || "").toLowerCase() === "on" ? 100 : 0 : running && controllerReady ? 100 : 0,
@@ -23805,7 +23818,7 @@ var OrbDockStationApp = (() => {
           networkActivity: prev.networkActivity,
           instanceId: String(status.instance_id || prev.instanceId || "unknown"),
           controllerStatus,
-          listeningEnabled: Boolean(runtimeSnapshot?.listening ?? status.listening_enabled),
+          listeningEnabled: listeningActive,
           autoListen: Boolean(runtimeSnapshot?.auto_listen ?? status.auto_listen),
           presenceRunning: runtimeSnapshot ? String(runtimeSnapshot.presence_state || "").toLowerCase() !== "offline" : Boolean(presence.running),
           presenceIdle: snapshotIdle,
@@ -23852,7 +23865,14 @@ var OrbDockStationApp = (() => {
           sharedMeshRoot: String(
             status.shared_mesh_root || prev.sharedMeshRoot || "n/a"
           ),
-          swarmRunning: Boolean(status?.swarm_extension?.running)
+          swarmRunning: Boolean(status?.swarm_extension?.running),
+          egfState: status?.egf_state && typeof status.egf_state === "object" ? {
+            ok: status.egf_state.ok !== false,
+            mode: String(status.egf_state.mode || "active"),
+            error: String(status.egf_state.error || "")
+          } : prev.egfState,
+          siteOrbStatus: status?.site_orb_status && typeof status.site_orb_status === "object" ? status.site_orb_status : prev.siteOrbStatus,
+          statusReason: String(status.error || "")
         }));
         if (lastRunningRef.current === null || lastRunningRef.current !== running) {
           pushEvent("INFO", `Runtime ${running ? "running" : "stopped"}`);
@@ -23889,6 +23909,11 @@ var OrbDockStationApp = (() => {
         const epistemicAlignment = clamp(toNumberOr(pulse.epistemic_alignment, -1), 0, 1);
         const spatialCoord = pulse.spatial_coordinate !== void 0 ? pulse.spatial_coordinate : void 0;
         const driftDetected = Boolean(pulse.drift_detected);
+        const egfState = pulse.egf_state && typeof pulse.egf_state === "object" ? {
+          ok: pulse.egf_state.ok !== false,
+          mode: String(pulse.egf_state.mode || "active"),
+          error: String(pulse.egf_state.error || "")
+        } : null;
         setT((prev) => ({
           ...prev,
           activeLLM: activeModel || prev.activeLLM,
@@ -23900,7 +23925,8 @@ var OrbDockStationApp = (() => {
           ...fourMind ? { fourMind: { ...prev.fourMind, ...fourMind } } : {},
           ...fieldDensity >= 0 ? { fieldDensity } : {},
           ...epistemicAlignment >= 0 ? { epistemicAlignment } : {},
-          ...spatialCoord !== void 0 ? { spatialCoord } : {}
+          ...spatialCoord !== void 0 ? { spatialCoord } : {},
+          ...egfState ? { egfState } : {}
         }));
         pushEvent(
           tension ? "WARN" : "PASS",
@@ -24035,6 +24061,7 @@ var OrbDockStationApp = (() => {
           return;
         }
         if (type === "ready") {
+          setT((prev) => ({ ...prev, orbRuntimeActive: true, dockChannelConnected: true, statusReason: "" }));
           pushEvent("PASS", "Python bridge ready");
           return;
         }
@@ -24043,6 +24070,7 @@ var OrbDockStationApp = (() => {
           return;
         }
         if (type === "presence_update" || type === "presence_pulse") {
+          setT((prev) => ({ ...prev, orbRuntimeActive: true, dockChannelConnected: true, statusReason: "" }));
           applyPresenceUpdate(message);
           return;
         }
@@ -24051,6 +24079,7 @@ var OrbDockStationApp = (() => {
           return;
         }
         if (type === "hlsf_snapshot") {
+          setT((prev) => ({ ...prev, orbRuntimeActive: true, dockChannelConnected: true, statusReason: "" }));
           applyHLSFSnapshot(message.data || {}, "hlsf");
           return;
         }
@@ -24061,9 +24090,14 @@ var OrbDockStationApp = (() => {
         }
         if (type === "query_result" || type === "research_result" || type === "speak_result") {
           markSuccess();
+          const data = message?.data && typeof message.data === "object" ? message.data : {};
+          const hasAudio = Boolean(data.audio_url || data.audio_path);
+          const playbackConfirmed = data.audio_played === true;
+          const provider = String(data.tts_provider || "").toLowerCase() || null;
+          const providerReady = playbackConfirmed || hasAudio || provider === "qwen" || provider === "kokoro";
           const reportedLatency = toNumberOr(
-            message?.data?.latency_ms,
-            toNumberOr(message?.data?.latency, NaN)
+            data.latency_ms,
+            toNumberOr(data.latency, NaN)
           );
           setT((prev) => ({
             ...prev,
@@ -24072,8 +24106,14 @@ var OrbDockStationApp = (() => {
               40,
               1200
             ),
-            networkActivity: prev.networkActivity + 1
+            networkActivity: prev.networkActivity + 1,
+            voiceProvider: provider || prev.voiceProvider,
+            voiceProviderReady: providerReady || prev.voiceProviderReady,
+            lastEvent: playbackConfirmed ? "voice playback confirmed" : hasAudio ? "voice payload ready" : data.audio_error ? `voice pending: ${String(data.audio_error)}` : prev.lastEvent
           }));
+          if (data.audio_error) {
+            pushEvent("WARN", `Voice path: ${String(data.audio_error)}`);
+          }
           pushEvent("PASS", `${type.replace("_", " ")} received`);
           return;
         }
@@ -24131,16 +24171,54 @@ var OrbDockStationApp = (() => {
         return void 0;
       }
       let active = true;
+      let resolvedOrbApiUrl = "http://127.0.0.1:21100/api/v1";
+      const resolveOrbApiUrl = async () => {
+        try {
+          if (typeof api.getMeshRegistry === "function") {
+            const mesh = await api.getMeshRegistry();
+            const meshUrl = String(mesh?.services?.desktop_orb?.api_url || "").trim();
+            if (meshUrl) {
+              resolvedOrbApiUrl = meshUrl.replace(/\/+$/, "");
+            }
+          }
+        } catch (_error) {
+        }
+        if (active) {
+          setT((prev) => ({ ...prev, orbApiUrl: resolvedOrbApiUrl }));
+        }
+        return resolvedOrbApiUrl;
+      };
+      const checkReadiness = async () => {
+        const base = await resolveOrbApiUrl();
+        const url = `${base}/readiness`;
+        try {
+          const res = await fetch(url, { method: "GET" });
+          const ok = Boolean(res?.ok);
+          if (active) {
+            setT((prev) => ({
+              ...prev,
+              orbReadinessOk: ok,
+              orbRuntimeActive: ok ? true : prev.orbRuntimeActive
+            }));
+          }
+        } catch (_error) {
+          if (active) {
+            setT((prev) => ({ ...prev, orbReadinessOk: false }));
+          }
+        }
+      };
       const refreshStatus = async (source = "poll") => {
         try {
           const status = await api.getOrbStatus();
           if (active) {
             applyStatus(status, source);
           }
+          await checkReadiness();
           if (typeof api.getOrbVisibility === "function") {
             const visibility = await api.getOrbVisibility();
             if (active) {
-              setT((prev) => ({ ...prev, orbVisible: Boolean(visibility?.visible) }));
+              const visible = Boolean(visibility?.visible);
+              setT((prev) => ({ ...prev, orbVisible: visible, orbDocked: !visible }));
             }
           }
         } catch (error) {
@@ -24155,8 +24233,17 @@ var OrbDockStationApp = (() => {
         api.getOrbVisibility().then((state) => {
           if (!active) return;
           const visible = Boolean(state?.visible);
-          setT((prev) => ({ ...prev, orbVisible: visible }));
+          setT((prev) => ({ ...prev, orbVisible: visible, orbDocked: !visible }));
           pushEvent("INFO", visible ? "Orb launched" : "Orb docked");
+        }).catch(() => {
+        });
+      }
+      if (typeof api.getOrbDockedState === "function") {
+        api.getOrbDockedState().then((state) => {
+          if (!active) return;
+          const docked = Boolean(state?.docked);
+          setT((prev) => ({ ...prev, orbDocked: docked, orbVisible: docked ? false : prev.orbVisible }));
+          pushEvent("INFO", docked ? "Docked state confirmed." : "Dock released.");
         }).catch(() => {
         });
       }
@@ -24166,8 +24253,13 @@ var OrbDockStationApp = (() => {
         api.onOrbStatusChange((_event, status) => applyStatus(status, "status_change")),
         api.onOrbVisibilityChanged((_event, payload) => {
           const visible = Boolean(payload?.visible);
-          setT((prev) => ({ ...prev, orbVisible: visible }));
+          setT((prev) => ({ ...prev, orbVisible: visible, orbDocked: !visible }));
           pushEvent("INFO", visible ? "Orb launched" : "Orb docked");
+        }),
+        api.onOrbDockedState?.((_event, payload) => {
+          const docked = Boolean(payload?.docked);
+          setT((prev) => ({ ...prev, orbDocked: docked }));
+          pushEvent("INFO", docked ? "Docked state confirmed." : "Dock released.");
         }),
         api.onHysteresis((_event, data) => {
           pushEvent("WARN", `Hysteresis ${data?.triggerThreshold} -> ${data?.releaseThreshold}`);
@@ -24301,104 +24393,80 @@ var OrbDockStationApp = (() => {
       children
     );
   }
-  function OrbDiagram({ telemetry, accent = "#00e5ff" }) {
-    const ref = (0, import_react.useRef)(null);
-    const telemetryRef = (0, import_react.useRef)(telemetry);
-    (0, import_react.useEffect)(() => {
-      telemetryRef.current = telemetry;
-    }, [telemetry]);
-    (0, import_react.useEffect)(() => {
-      const canvas = ref.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width;
-      const h = canvas.height;
-      const cx = w / 2;
-      const cy = h / 2;
-      let frame = 0;
-      let raf = 0;
-      const draw = () => {
-        const live = telemetryRef.current || {};
-        const confidence = clamp(toNumberOr(live.confidenceState, 0.3), 0, 1);
-        const cpuRatio = clamp(toNumberOr(live.cpuLoad, 0) / 100, 0, 1);
-        const isIdle = Boolean(live.presenceIdle);
-        const speed = isIdle ? 35e-4 : 75e-4 + confidence * 0.01;
-        frame += speed;
-        ctx.clearRect(0, 0, w, h);
-        const outerR = 118 + confidence * 14;
-        ctx.beginPath();
-        ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(0,229,255,${0.22 + cpuRatio * 0.5})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        [0.56, 0.72, 0.88].forEach((rf, idx) => {
-          const r = outerR * rf;
-          const phase = frame * (0.35 + idx * 0.2 + confidence * 0.15) * (idx % 2 ? -1 : 1);
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(phase);
-          ctx.beginPath();
-          ctx.ellipse(0, 0, r, r * 0.34, 0, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(0,${145 + idx * 30},${220 + idx * 10},${0.22 + idx * 0.05})`;
-          ctx.setLineDash([4, 8]);
-          ctx.stroke();
-          ctx.setLineDash([]);
-          const nx = Math.cos(phase * 2) * r;
-          const ny = Math.sin(phase * 2) * r * 0.34;
-          ctx.beginPath();
-          ctx.arc(nx, ny, 3, 0, Math.PI * 2);
-          ctx.fillStyle = [accent, "#7c4dff", "#00e676"][idx];
-          ctx.shadowColor = ctx.fillStyle;
-          ctx.shadowBlur = 8;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-          ctx.restore();
-        });
-        ctx.fillStyle = accent;
-        ctx.font = "bold 12px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(isIdle ? "IDLE" : "LIVE", cx, cy + 4);
-        ctx.fillStyle = "rgba(0,229,255,.75)";
-        ctx.font = "7px monospace";
-        ctx.fillText(String(live.cognitiveMode || "UNKNOWN").slice(0, 14), cx, cy + 16);
-        ctx.fillStyle = "rgba(255,255,255,.52)";
-        ctx.fillText(`CPU ${Math.round(toNumberOr(live.cpuLoad, 0))}%`, cx, cy + 27);
-        raf = requestAnimationFrame(draw);
-      };
-      draw();
-      return () => cancelAnimationFrame(raf);
-    }, [accent]);
-    return /* @__PURE__ */ import_react.default.createElement("canvas", { ref, width: 300, height: 300, style: { display: "block" } });
-  }
-  function DockedOrbMirror({ telemetry, accent = "#00e5ff" }) {
+  function DockedOrbStage({ telemetry, accent = "#00e5ff", isDocked = false }) {
+    const mode = String(telemetry?.cognitiveMode || "DEDUCTIVE").toUpperCase();
     const confidence = clamp(toNumberOr(telemetry?.confidenceState, 0.6), 0, 1);
-    const cpu = clamp(toNumberOr(telemetry?.cpuLoad, 0), 0, 100);
-    const mode = String(telemetry?.cognitiveMode || "UNKNOWN");
-    return /* @__PURE__ */ import_react.default.createElement(
-      "div",
-      {
-        style: {
-          marginTop: 8,
-          border: `1px solid ${accent}44`,
-          borderRadius: 8,
-          padding: "10px 12px",
-          background: "linear-gradient(160deg, rgba(0,20,40,.7), rgba(0,8,24,.85))"
+    const liveSize = Math.round(140 + confidence * 48);
+    const modeColor = mode.includes("INTUITION") ? "#f5c96a" : mode.includes("HABIT") ? "#63e6a6" : "#67c6ff";
+    const pulseColor = isDocked ? modeColor : "rgba(255,255,255,.45)";
+    const orbNodeStyle = {
+      width: liveSize,
+      height: liveSize,
+      borderRadius: "50%",
+      background: `radial-gradient(circle at 35% 30%, #ffffffc2 0%, ${pulseColor} 35%, #021022 100%)`,
+      border: `1px solid ${pulseColor}`,
+      boxShadow: `0 0 ${20 + confidence * 24}px ${pulseColor}`,
+      position: "relative",
+      animation: "orbDockBreathNode 3200ms ease-in-out infinite",
+      flexShrink: 0
+    };
+    return /* @__PURE__ */ import_react.default.createElement("div", { style: {
+      border: "1px solid rgba(174,220,232,.2)",
+      borderRadius: 8,
+      padding: 10,
+      minHeight: 460,
+      background: "rgba(2,10,18,.55)",
+      display: "grid",
+      gridTemplateRows: "auto 1fr",
+      gap: 10
+    } }, /* @__PURE__ */ import_react.default.createElement("style", null, `
+        @keyframes orbDockBreathNode {
+          0%, 100% { transform: scale(0.985); opacity: 0.88; }
+          50% { transform: scale(1.03); opacity: 1; }
         }
-      },
-      /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ import_react.default.createElement(
-        "div",
-        {
-          style: {
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: `radial-gradient(circle at 35% 30%, #ffffffaa 0%, ${accent}aa 35%, #05101f 100%)`,
-            border: `1px solid ${accent}66`,
-            boxShadow: `0 0 ${8 + confidence * 12}px ${accent}66`
-          }
-        }
-      ), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gap: 2, flex: 1 } }, /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 10, color: accent } }, "DOCKED ORB MIRROR"), /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 9, color: "rgba(255,255,255,.7)" } }, "Mode ", mode, " | Confidence ", (confidence * 100).toFixed(0), "% | CPU ", cpu.toFixed(0), "%")))
-    );
+      `), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "DOCK STATE", value: isDocked ? "DOCKED" : "LAUNCHED", ok: isDocked }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "RUNTIME", value: telemetry?.orbRuntimeActive ? "ACTIVE" : "INACTIVE", ok: telemetry?.orbRuntimeActive }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "MODE", value: mode, ok: true }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "LLM", value: telemetry?.llmConnected ? "CONNECTED" : "OFFLINE", ok: telemetry?.llmConnected })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", placeItems: "center", overflow: "hidden" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: orbNodeStyle }, /* @__PURE__ */ import_react.default.createElement("div", { style: {
+      position: "absolute",
+      inset: -14,
+      borderRadius: "50%",
+      border: `1px solid ${pulseColor}`,
+      borderRightColor: "transparent",
+      boxShadow: `0 0 26px ${pulseColor}`,
+      transform: "rotate(24deg)"
+    } }), /* @__PURE__ */ import_react.default.createElement("div", { style: {
+      position: "absolute",
+      inset: -28,
+      borderRadius: "50%",
+      border: "1px solid rgba(103,198,255,.32)",
+      borderLeftColor: "transparent",
+      transform: "rotate(-36deg)"
+    } }))));
+  }
+  function HLSFMirrorPanel({ telemetry, accent = "#00e5ff" }) {
+    const hlsfTag = String(telemetry?.hlsfSnapshot?.semantic_tag || "idle").toUpperCase();
+    const hlsfDensity = Math.round(toNumberOr(telemetry?.hlsfSnapshot?.field_density, toNumberOr(telemetry?.fieldDensity, 0)));
+    const hlsfEdgeActive = Boolean(telemetry?.hlsfSnapshot?.hysteresis?.active);
+    const trigger = toNumberOr(telemetry?.hlsfSnapshot?.hysteresis?.trigger, 0);
+    const release = toNumberOr(telemetry?.hlsfSnapshot?.hysteresis?.release, 0);
+    return /* @__PURE__ */ import_react.default.createElement("div", { style: { border: "1px solid rgba(174,220,232,.2)", borderRadius: 8, padding: 10, background: "rgba(2,10,18,.55)", minHeight: 460, display: "grid", gridTemplateRows: "auto 1fr", gap: 10 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "HLSF DENSITY", value: hlsfDensity, ok: hlsfDensity > 0 }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "HLSF EDGE", value: hlsfEdgeActive ? "ACTIVE" : "CLEAR", ok: !hlsfEdgeActive }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "HLSF TAG", value: hlsfTag, ok: hlsfTag !== "IDLE" }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "REL/TRIG", value: `${release}/${trigger}`, ok: trigger > 0 || release > 0 })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", placeItems: "center", overflow: "hidden" } }, /* @__PURE__ */ import_react.default.createElement(HLSFFieldView, { telemetry, accent })));
+  }
+  function EGFMirrorPanel({ telemetry }) {
+    const egfMode = String(telemetry?.egfState?.mode || "unknown").toUpperCase();
+    const egfOk = telemetry?.egfState?.ok !== false;
+    const egfError = String(telemetry?.egfState?.error || "");
+    return /* @__PURE__ */ import_react.default.createElement("div", { style: { border: "1px solid rgba(174,220,232,.2)", borderRadius: 8, padding: 10, background: "rgba(2,10,18,.55)", minHeight: 460, display: "grid", gridTemplateRows: "auto 1fr", gap: 10 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "EGF STATUS", value: egfMode, ok: egfOk }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "EGF AVAIL", value: egfOk ? "AVAILABLE" : "UNAVAILABLE", ok: egfOk }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "EGF ERROR", value: egfError || "NONE", ok: !egfError })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", placeItems: "center", overflow: "hidden" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: {
+      width: 250,
+      height: 250,
+      borderRadius: "50%",
+      border: `1px solid ${egfOk ? "rgba(99,239,158,.72)" : "rgba(255,191,71,.65)"}`,
+      boxShadow: `0 0 26px ${egfOk ? "rgba(99,239,158,.45)" : "rgba(255,191,71,.35)"}`,
+      background: egfOk ? "radial-gradient(circle at 34% 28%, rgba(255,255,255,.88), rgba(99,239,158,.44) 38%, rgba(2,20,16,.95) 100%)" : "radial-gradient(circle at 34% 28%, rgba(255,255,255,.6), rgba(255,191,71,.28) 38%, rgba(20,10,2,.95) 100%)",
+      display: "grid",
+      placeItems: "center",
+      color: egfOk ? "#63ef9e" : "#ffbf47",
+      fontSize: 12,
+      fontFamily: "monospace",
+      letterSpacing: 0.8
+    } }, egfOk ? "EGF ACTIVE" : "EGF UNAVAILABLE")));
   }
   function HLSFFieldView({ telemetry, accent = "#00e5ff" }) {
     const ref = (0, import_react.useRef)(null);
@@ -24476,12 +24544,12 @@ var OrbDockStationApp = (() => {
           ctx.fill();
           ctx.shadowBlur = 0;
           ctx.fillStyle = color;
-          ctx.font = "bold 7px monospace";
+          ctx.font = "bold 9px monospace";
           ctx.textAlign = px >= cx ? "left" : "right";
           ctx.textBaseline = "middle";
           ctx.fillText(`N${dim.n} K${dim.k}`, px + (px >= cx ? 8 : -8), py - 5);
           ctx.fillStyle = "rgba(255,255,255,.55)";
-          ctx.font = "6px monospace";
+          ctx.font = "8px monospace";
           ctx.fillText(`${Math.round(energy * 100)}%`, px + (px >= cx ? 8 : -8), py + 5);
         });
         const coreR = 12 + densityRatio * 4;
@@ -24497,7 +24565,7 @@ var OrbDockStationApp = (() => {
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.fillStyle = accent;
-        ctx.font = "bold 7px monospace";
+        ctx.font = "bold 10px monospace";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(semanticTag.slice(0, 12), cx, cy);
@@ -24517,12 +24585,12 @@ var OrbDockStationApp = (() => {
         }
         if (!activeDims.length) {
           ctx.fillStyle = "rgba(255,255,255,.3)";
-          ctx.font = "7px monospace";
+          ctx.font = "9px monospace";
           ctx.textAlign = "center";
           ctx.fillText("NO ACTIVE DIMENSIONS", cx, cy + 52);
         }
         ctx.fillStyle = "rgba(255,255,255,.35)";
-        ctx.font = "6px monospace";
+        ctx.font = "8px monospace";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
         ctx.fillText(`DENSITY ${density}`, 6, 6);
@@ -24538,65 +24606,6 @@ var OrbDockStationApp = (() => {
       return () => cancelAnimationFrame(raf);
     }, [accent]);
     return /* @__PURE__ */ import_react.default.createElement("canvas", { ref, width: 300, height: 300, style: { display: "block" } });
-  }
-  function OrbRegistryPanel({ accent = "#00e5ff", activeInstanceId = null }) {
-    const [registry, setRegistry] = (0, import_react.useState)({ orbs: [], loaded: false, error: null });
-    const [activeOrb, setActiveOrb] = (0, import_react.useState)(null);
-    (0, import_react.useEffect)(() => {
-      const api = window.electronAPI;
-      if (!api || typeof api.getMeshRegistry !== "function") {
-        setRegistry({ orbs: [], loaded: true, error: "getMeshRegistry not available" });
-        return;
-      }
-      let mounted = true;
-      const load = () => {
-        api.getMeshRegistry().then((result) => {
-          if (!mounted) return;
-          setRegistry({ orbs: result.orbs || [], loaded: true, error: result.error || null });
-        }).catch((e) => {
-          if (!mounted) return;
-          setRegistry({ orbs: [], loaded: true, error: String(e.message || e) });
-        });
-      };
-      load();
-      const interval = setInterval(load, 15e3);
-      return () => {
-        mounted = false;
-        clearInterval(interval);
-      };
-    }, []);
-    (0, import_react.useEffect)(() => {
-      if (activeInstanceId && !activeOrb) {
-        setActiveOrb(activeInstanceId);
-      }
-    }, [activeInstanceId, activeOrb]);
-    if (!registry.loaded) {
-      return /* @__PURE__ */ import_react.default.createElement("div", { style: { padding: "8px 0", fontSize: 9, color: "rgba(255,255,255,.4)", fontFamily: "monospace" } }, "Loading Orb registry\u2026");
-    }
-    if (!registry.orbs.length) {
-      return /* @__PURE__ */ import_react.default.createElement("div", { style: { padding: "8px 0", fontSize: 9, color: "rgba(255,255,255,.35)", fontFamily: "monospace" } }, registry.error ? `Registry error: ${registry.error}` : "No Orbs registered in mesh.");
-    }
-    return /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 5 } }, registry.orbs.map((orb) => {
-      const isActive = (activeOrb || activeInstanceId) === orb.instance_id;
-      const color = orb.online ? "#00e676" : "rgba(255,255,255,.3)";
-      return /* @__PURE__ */ import_react.default.createElement("div", { key: orb.instance_id, style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "6px 10px",
-        borderRadius: 5,
-        cursor: "pointer",
-        border: `1px solid ${isActive ? accent + "88" : "rgba(255,255,255,.1)"}`,
-        background: isActive ? `${accent}11` : "rgba(255,255,255,.03)"
-      }, onClick: () => setActiveOrb(orb.instance_id) }, /* @__PURE__ */ import_react.default.createElement("div", { style: {
-        width: 7,
-        height: 7,
-        borderRadius: "50%",
-        background: color,
-        boxShadow: orb.online ? `0 0 6px ${color}` : "none",
-        flexShrink: 0
-      } }), /* @__PURE__ */ import_react.default.createElement("div", { style: { flex: 1, minWidth: 0 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 10, color: isActive ? accent : "#e0f7fa", fontFamily: "monospace", fontWeight: "bold" } }, String(orb.instance_id).toUpperCase()), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 8, color: "rgba(255,255,255,.4)", fontFamily: "monospace" } }, String(orb.role || "\u2013"))), /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 8, color, fontFamily: "monospace", letterSpacing: 0.5 } }, orb.online ? "ONLINE" : "OFFLINE"), isActive && /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 7, color: accent, fontFamily: "monospace", letterSpacing: 1 } }, "\u25CF ACTIVE"));
-    }));
   }
   var SKINS = [
     { id: "deep-space", label: "Deep Space", accent: "#00e5ff" },
@@ -24650,15 +24659,16 @@ var OrbDockStationApp = (() => {
       const api = window.electronAPI;
       if (!api || typeof api.onChatMessage !== "function") return void 0;
       const unsub = api.onChatMessage((_event, msg) => {
-        const key = `${msg.role || ""}|${msg.text || ""}|${msg.audioPath || ""}`;
+        const key = `${msg.role || ""}|${msg.text || ""}|${msg.audioPath || ""}|${msg.audioUrl || ""}`;
         if (lastMessageKeyRef.current === key) return;
         lastMessageKeyRef.current = key;
         window.setTimeout(() => {
           if (lastMessageKeyRef.current === key) lastMessageKeyRef.current = "";
         }, 1200);
         setMessages((prev) => [...prev, msg]);
-        if (msg.role === "orb" && msg.audioPath) {
-          playAudioNow(msg.audioPath);
+        const orbAudio = msg.audioUrl || msg.audioPath || null;
+        if (msg.role === "orb" && orbAudio) {
+          playAudioNow(orbAudio);
         }
       });
       return () => {
@@ -24670,9 +24680,9 @@ var OrbDockStationApp = (() => {
       if (!api || typeof api.onOrbBridgeMessage !== "function") return void 0;
       const unsub = api.onOrbBridgeMessage((_event, message) => {
         if (!message || message.type !== "speak_result") return;
-        const audioPath = message?.data?.audio_path || null;
-        if (audioPath) {
-          playAudioNow(audioPath);
+        const audioSource = message?.data?.audio_url || message?.data?.audio_path || null;
+        if (audioSource) {
+          playAudioNow(audioSource);
         }
       });
       return () => {
@@ -24764,7 +24774,7 @@ var OrbDockStationApp = (() => {
           },
           msg.text
         ),
-        /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 10, color: "rgba(211,236,243,.42)", marginTop: 3, fontFamily: "monospace" } }, msg.role === "orb" ? msg.audioPath ? "ORB VOICE" : "ORB" : "YOU", " \xB7 ", msg.time)
+        /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 10, color: "rgba(211,236,243,.42)", marginTop: 3, fontFamily: "monospace" } }, msg.role === "orb" ? msg.audioUrl || msg.audioPath ? "ORB VOICE" : "ORB" : "YOU", " \xB7 ", msg.time)
       )),
       /* @__PURE__ */ import_react.default.createElement("div", { ref: bottomRef })
     ), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement(
@@ -24840,10 +24850,15 @@ var OrbDockStationApp = (() => {
         apiBase: persisted.apiBase || "",
         apiModel: persisted.apiModel || "",
         apiKey: persisted.apiKey || "",
-        localEndpoint: persisted.localEndpoint || "http://wsl.localhost:11434",
-        localModel: persisted.localModel || "qwen2.5:3b",
-        governanceWrapper: persisted.governanceWrapper !== false,
-        retainVoice: persisted.retainVoice !== false
+        localEndpoint: persisted.localEndpoint || "http://127.0.0.1:11434",
+        localModel: persisted.localModel || "llama3.2:1b",
+        governanceWrapper: false,
+        retainVoice: persisted.retainVoice !== false,
+        startOnBoot: persisted.startOnBoot !== false,
+        showStartupSplash: persisted.showStartupSplash !== false,
+        startDocked: persisted.startDocked === true,
+        startupVoiceGreeting: persisted.startupVoiceGreeting === true,
+        desktopMcpActionsEnabled: persisted.desktopMcpActionsEnabled === true
       };
     });
     const [skinId, setSkinId] = (0, import_react.useState)(stationConfig.skinId);
@@ -24855,17 +24870,26 @@ var OrbDockStationApp = (() => {
     const [manualContext, setManualContext] = (0, import_react.useState)("");
     const [manualMorbCount, setManualMorbCount] = (0, import_react.useState)(5);
     const [manualDeployZone, setManualDeployZone] = (0, import_react.useState)("around");
+    const [bootPhase, setBootPhase] = (0, import_react.useState)("login");
+    const [loginUser, setLoginUser] = (0, import_react.useState)("");
+    const [loginPass, setLoginPass] = (0, import_react.useState)("");
+    const [loginError, setLoginError] = (0, import_react.useState)("");
+    const [privacyAccepted, setPrivacyAccepted] = (0, import_react.useState)(false);
+    const [termsAccepted, setTermsAccepted] = (0, import_react.useState)(false);
     const [latestOrbOutput, setLatestOrbOutput] = (0, import_react.useState)("");
     const [orbConversation, setOrbConversation] = (0, import_react.useState)([]);
     const [deployingSwarm, setDeployingSwarm] = (0, import_react.useState)(false);
     const startupConnectRef = (0, import_react.useRef)(false);
+    const listeningBootstrapRef = (0, import_react.useRef)({ lastTryAt: 0 });
     const [swarmStatusFeed, setSwarmStatusFeed] = (0, import_react.useState)(() => [
       { id: 0, text: "Prime ORB idle.", level: "INFO" }
     ]);
     const skin = (0, import_react.useMemo)(() => SKINS.find((s) => s.id === skinId) || SKINS[0], [skinId]);
     const accent = skin.accent;
-    const isDocked = !tel.orbVisible;
-    const governanceEnabled = stationConfig.llmRoute !== "cali" && stationConfig.governanceWrapper;
+    const isDocked = Boolean(tel.orbDocked);
+    const isDockReady = bootPhase === "ready";
+    const governanceEnabled = stationConfig.governanceWrapper;
+    const desktopMcpActionsEnabled = stationConfig.desktopMcpActionsEnabled === true;
     const llm = tel.activeLLM && String(tel.activeLLM).trim() && String(tel.activeLLM).toLowerCase() !== "unknown" ? String(tel.activeLLM) : stationConfig.llmRoute === "api" ? stationConfig.apiModel || "API (unset)" : stationConfig.llmRoute === "local" ? stationConfig.localModel || "Local (unset)" : "CALI";
     (0, import_react.useEffect)(() => {
       const api = window.electronAPI;
@@ -24879,7 +24903,7 @@ var OrbDockStationApp = (() => {
               setLatestOrbOutput(text);
               setOrbConversation((prev) => {
                 const next = [...prev, { text, time: msg?.time || (/* @__PURE__ */ new Date()).toTimeString().slice(0, 8) }];
-                return next.slice(-8);
+                return next.slice(-24);
               });
             }
           })
@@ -24895,7 +24919,7 @@ var OrbDockStationApp = (() => {
               setLatestOrbOutput(text);
               setOrbConversation((prev) => {
                 const next = [...prev, { text, time: (/* @__PURE__ */ new Date()).toTimeString().slice(0, 8) }];
-                return next.slice(-8);
+                return next.slice(-24);
               });
             }
           })
@@ -24911,8 +24935,15 @@ var OrbDockStationApp = (() => {
     const cognitiveModeLabel = String(tel.cognitiveMode || "DEDUCTIVE").toUpperCase();
     const TABS = [
       { id: "orb", label: "ORB" },
-      ...tier >= 2 ? [{ id: "runtime", label: "RUNTIME" }, { id: "settings", label: "SETTINGS" }] : []
+      ...tier >= 2 ? [{ id: "runtime", label: "RUNTIME" }, { id: "skills", label: "SKILLS" }, { id: "settings", label: "SETTINGS" }] : []
     ];
+    (0, import_react.useEffect)(() => {
+      const api = window.electronAPI;
+      if (!api || typeof api.setOrbVisibility !== "function") return;
+      if (bootPhase === "ready") return;
+      api.setOrbVisibility(false).catch(() => {
+      });
+    }, [bootPhase]);
     (0, import_react.useEffect)(() => {
       setStationConfig((prev) => {
         if (prev.skinId === skinId) return prev;
@@ -24942,6 +24973,12 @@ var OrbDockStationApp = (() => {
         return next.slice(0, 8);
       });
     }, []);
+    (0, import_react.useEffect)(() => {
+      const api = window.electronAPI;
+      if (!api || typeof api.setDesktopMcpActionsEnabled !== "function") return;
+      api.setDesktopMcpActionsEnabled(desktopMcpActionsEnabled).catch(() => {
+      });
+    }, [desktopMcpActionsEnabled]);
     const discoverLocalLlm = (0, import_react.useCallback)(async ({ autoApply = false } = {}) => {
       const api = window.electronAPI;
       if (!api || typeof api.discoverLocalLlm !== "function") {
@@ -24973,7 +25010,7 @@ var OrbDockStationApp = (() => {
             api.setOrbState("llm_route", "local"),
             api.setOrbState("llm_local_endpoint", discovery.endpoint),
             api.setOrbState("llm_local_model", discovery.model),
-            api.setOrbState("llm_governance_wrapper", next.governanceWrapper !== false),
+            api.setOrbState("llm_governance_wrapper", false),
             api.setOrbState("llm_retain_voice", Boolean(next.retainVoice))
           ]);
           pushSwarmStatus("Local LLM route applied.", "PASS");
@@ -25004,7 +25041,7 @@ var OrbDockStationApp = (() => {
           api.setOrbState("llm_api_key", stationConfig.apiKey || ""),
           api.setOrbState("llm_local_endpoint", stationConfig.localEndpoint || ""),
           api.setOrbState("llm_local_model", stationConfig.localModel || ""),
-          api.setOrbState("llm_governance_wrapper", governanceEnabled),
+          api.setOrbState("llm_governance_wrapper", false),
           api.setOrbState("llm_retain_voice", Boolean(stationConfig.retainVoice))
         ];
         const results = await Promise.allSettled(writes);
@@ -25022,24 +25059,95 @@ var OrbDockStationApp = (() => {
         setSavingLlmConfig(false);
       }
     }, [governanceEnabled, pushSwarmStatus, stationConfig]);
+    const ensureRealtimeListening = (0, import_react.useCallback)(async (reason = "startup", attempts = 6, delayMs = 1200) => {
+      const api = window.electronAPI;
+      if (!api || typeof api.setListening !== "function") return false;
+      for (let i = 0; i < attempts; i += 1) {
+        if (i > 0) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+        try {
+          const response = await api.setListening(true);
+          const enabled = Boolean(
+            response?.data?.enabled ?? response?.enabled ?? response?.data?.ok ?? response?.ok
+          );
+          if (enabled) {
+            pushSwarmStatus(`Realtime listening armed (${reason}).`, "PASS");
+            return true;
+          }
+        } catch (_error) {
+        }
+      }
+      pushSwarmStatus(`Listening arm pending (${reason}).`, "INFO");
+      return false;
+    }, [pushSwarmStatus]);
     const handleActivatePrimeOrb = (0, import_react.useCallback)(async () => {
+      if (!isDockReady) return;
       const api = window.electronAPI;
       if (!api) return;
-      try {
-        if (typeof api.setOrbVisibility === "function") {
-          await api.setOrbVisibility(true);
+      let launched = false;
+      const notes = [];
+      if (typeof api.launchOrbFromDock === "function") {
+        try {
+          const result = await api.launchOrbFromDock();
+          launched = Boolean(result?.visible ?? true);
+        } catch (error) {
+          notes.push(`launch:${error?.message || String(error)}`);
         }
-        if (typeof api.dispatchPrimeOrbCommand === "function") {
-          await api.dispatchPrimeOrbCommand({ command: "activate", source: "dock_station" });
-        }
-        if (stationConfig.llmRoute === "local") {
-          await discoverLocalLlm({ autoApply: true });
-        }
-        pushSwarmStatus("Prime ORB activated.", "PASS");
-      } catch (error) {
-        pushSwarmStatus(`Activate failed: ${error?.message || String(error)}`, "ERR");
       }
-    }, [discoverLocalLlm, pushSwarmStatus, stationConfig.llmRoute]);
+      if (typeof api.dispatchPrimeOrbCommand === "function") {
+        try {
+          const result = await api.dispatchPrimeOrbCommand({ command: "activate", source: "dock_station" });
+          if (result?.ok === false) {
+            notes.push(`dispatch:${result?.error || "not delivered"}`);
+          }
+        } catch (error) {
+          notes.push(`dispatch:${error?.message || String(error)}`);
+        }
+      }
+      try {
+        await ensureRealtimeListening("activate");
+      } catch (error) {
+        notes.push(`listening:${error?.message || String(error)}`);
+      }
+      try {
+        await applyLlmConfig();
+      } catch (error) {
+        notes.push(`routing:${error?.message || String(error)}`);
+      }
+      if (stationConfig.llmRoute === "local") {
+        try {
+          await discoverLocalLlm({ autoApply: true });
+        } catch (error) {
+          notes.push(`llm:${error?.message || String(error)}`);
+        }
+      } else if (stationConfig.llmRoute === "cali") {
+        pushSwarmStatus("CALI local cognitive core routing active.", "PASS");
+      }
+      if (launched) {
+        pushSwarmStatus("Prime ORB activated.", "PASS");
+        if (notes.length) {
+          pushSwarmStatus(`Activate degraded: ${notes.join(" | ")}`, "INFO");
+        }
+      } else {
+        pushSwarmStatus(`Activate failed: ${notes.join(" | ") || "unable to set visibility"}`, "ERR");
+      }
+    }, [applyLlmConfig, discoverLocalLlm, ensureRealtimeListening, isDockReady, pushSwarmStatus, stationConfig.llmRoute]);
+    const handleDockLogin = (0, import_react.useCallback)(() => {
+      const user = String(loginUser || "").trim();
+      const pass = String(loginPass || "").trim();
+      if (!user || !pass) {
+        setLoginError("Enter username and password.");
+        return;
+      }
+      if (!privacyAccepted || !termsAccepted) {
+        setLoginError("Accept Privacy Notice and Terms of Service to continue.");
+        return;
+      }
+      setLoginError("");
+      setBootPhase("ready");
+      pushSwarmStatus("DockStation authenticated. Activate ORB to launch.", "PASS");
+    }, [loginPass, loginUser, privacyAccepted, termsAccepted, pushSwarmStatus]);
     (0, import_react.useEffect)(() => {
       if (startupConnectRef.current) return;
       startupConnectRef.current = true;
@@ -25047,21 +25155,30 @@ var OrbDockStationApp = (() => {
       if (!api) return;
       (async () => {
         try {
-          if (typeof api.setOrbVisibility === "function") {
-            await api.setOrbVisibility(true);
-          }
-          if (typeof api.dispatchPrimeOrbCommand === "function") {
-            await api.dispatchPrimeOrbCommand({ command: "activate", source: "dock_startup" });
-          }
+          await ensureRealtimeListening("startup");
+          await applyLlmConfig();
           if (stationConfig.llmRoute === "local") {
             await discoverLocalLlm({ autoApply: true });
+          } else if (stationConfig.llmRoute === "cali") {
+            pushSwarmStatus("Startup CALI cognitive core routing applied.", "PASS");
           }
-          pushSwarmStatus("Startup connect complete.", "PASS");
+          pushSwarmStatus("Startup connect complete (docked standby).", "PASS");
         } catch (error) {
           pushSwarmStatus(`Startup connect failed: ${error?.message || String(error)}`, "ERR");
         }
       })();
-    }, [discoverLocalLlm, pushSwarmStatus, stationConfig.llmRoute]);
+    }, [applyLlmConfig, discoverLocalLlm, ensureRealtimeListening, pushSwarmStatus, stationConfig.llmRoute]);
+    (0, import_react.useEffect)(() => {
+      if (!tel.dockChannelConnected || tel.listeningEnabled) {
+        return;
+      }
+      const now = Date.now();
+      if (now - listeningBootstrapRef.current.lastTryAt < 8e3) {
+        return;
+      }
+      listeningBootstrapRef.current.lastTryAt = now;
+      ensureRealtimeListening("reconnect", 4, 1500);
+    }, [ensureRealtimeListening, tel.dockChannelConnected, tel.listeningEnabled]);
     const handleDockPrimeOrb = (0, import_react.useCallback)(async () => {
       const api = window.electronAPI;
       if (!api || typeof api.setOrbVisibility !== "function") return;
@@ -25074,9 +25191,9 @@ var OrbDockStationApp = (() => {
     }, [pushSwarmStatus]);
     const handleLaunchPrimeOrb = (0, import_react.useCallback)(async () => {
       const api = window.electronAPI;
-      if (!api || typeof api.setOrbVisibility !== "function") return;
+      if (!api || typeof api.launchOrbFromDock !== "function") return;
       try {
-        await api.setOrbVisibility(true);
+        await api.launchOrbFromDock();
         pushSwarmStatus("Prime ORB launched.", "PASS");
       } catch (error) {
         pushSwarmStatus(`Launch failed: ${error?.message || String(error)}`, "ERR");
@@ -25141,11 +25258,19 @@ ${context}` : query;
     }, [manualContext, manualDeployZone, manualMorbCount, manualQuery, pushSwarmStatus]);
     const voiceStateLabel = tel.voiceProviderReady ? String(tel.voiceProvider || "").toLowerCase() === "qwen" ? "QWEN ACTIVE" : String(tel.voiceProvider || "").toLowerCase() === "kokoro" ? "KOKORO FALLBACK" : "VOICE READY" : String(tel.voiceProvider || "").toLowerCase() === "degraded" ? "VOICE DEGRADED" : "NO VOICE";
     const channelStateLabel = tel.dockChannelConnected ? tel.listeningEnabled ? "CHANNEL CONNECTED / LISTENING" : "CHANNEL CONNECTED / LISTENING OFF" : "CHANNEL DISCONNECTED";
+    const hlsfTag = String(tel?.hlsfSnapshot?.semantic_tag || "idle").toUpperCase();
+    const hlsfDensity = Math.round(toNumberOr(tel?.hlsfSnapshot?.field_density, toNumberOr(tel.fieldDensity, 0)));
+    const hlsfEdgeActive = Boolean(tel?.hlsfSnapshot?.hysteresis?.active);
+    const egfMode = String(tel?.egfState?.mode || "unknown").toUpperCase();
+    const egfOk = tel?.egfState?.ok !== false;
+    const egfError = String(tel?.egfState?.error || "");
+    const siteStatusEntries = Object.entries(tel?.siteOrbStatus || {});
     return /* @__PURE__ */ import_react.default.createElement("div", { style: {
       display: "flex",
       flexDirection: "column",
       height: "100%",
       overflow: "hidden",
+      position: "relative",
       background: "radial-gradient(ellipse at 30% 20%, rgba(9,24,35,1) 0%, rgba(4,12,20,1) 58%, rgba(2,6,12,1) 100%)",
       color: "#edfaff",
       fontFamily: "'Courier New', monospace"
@@ -25179,7 +25304,22 @@ ${context}` : query;
       background: activeTab === t.id ? "rgba(90,242,165,.14)" : "transparent",
       border: `1px solid ${activeTab === t.id ? "rgba(90,242,165,.7)" : "rgba(174,220,232,.18)"}`,
       color: activeTab === t.id ? "#5af2a5" : "rgba(211,236,243,.66)"
-    } }, t.label))), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginLeft: "auto", display: "grid", gap: 6, minWidth: 0, width: "100%", maxWidth: 980 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", gap: 6, justifyContent: "flex-end", alignItems: "center", flexWrap: "wrap" } }, tier >= 3 && /* @__PURE__ */ import_react.default.createElement(
+    } }, t.label))), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginLeft: "auto", display: "grid", gap: 6, minWidth: 0, width: "100%", maxWidth: 980 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", gap: 6, justifyContent: "flex-end", alignItems: "center", flexWrap: "wrap" } }, /* @__PURE__ */ import_react.default.createElement(
+      "span",
+      {
+        style: {
+          padding: "6px 10px",
+          borderRadius: 4,
+          fontSize: 11,
+          fontFamily: "monospace",
+          letterSpacing: 0.8,
+          border: `1px solid ${isDocked ? "rgba(0,230,118,.6)" : "rgba(0,229,255,.45)"}`,
+          background: isDocked ? "rgba(0,230,118,.14)" : "rgba(0,229,255,.12)",
+          color: isDocked ? "#00e676" : "#00e5ff"
+        }
+      },
+      isDocked ? "DOCKED" : "LAUNCHED"
+    ), tier >= 3 && /* @__PURE__ */ import_react.default.createElement(
       "button",
       {
         onClick: () => window.electronAPI?.openStudio?.(),
@@ -25212,7 +25352,7 @@ ${context}` : query;
           letterSpacing: 0.8
         }
       },
-      isDocked ? "Launch Orb" : "Activate"
+      isDocked ? "Activate / Launch ORB" : "Activate ORB"
     ), /* @__PURE__ */ import_react.default.createElement(
       "button",
       {
@@ -25229,7 +25369,7 @@ ${context}` : query;
           letterSpacing: 0.8
         }
       },
-      isDocked ? "Launch" : "Dock"
+      isDocked ? "Launch ORB" : "Dock ORB"
     ), /* @__PURE__ */ import_react.default.createElement(
       "button",
       {
@@ -25368,48 +25508,35 @@ ${context}` : query;
         }
       },
       deployingSwarm ? "Deploying..." : "Spawn Diagnostics"
-    )), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "flex-end" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { width: "100%", maxWidth: 420, padding: "5px 8px", borderRadius: 4, border: "1px solid rgba(174,220,232,.18)", background: "rgba(2,8,14,.55)", fontSize: 10, fontFamily: "monospace", color: "rgba(211,236,243,.84)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, swarmStatusFeed[0]?.text || "Prime ORB idle.")))), /* @__PURE__ */ import_react.default.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 12 } }, activeTab === "orb" && /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 12, minHeight: 0 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, minHeight: 0 } }, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Connected Orbs", accent, badge: "MESH" }, /* @__PURE__ */ import_react.default.createElement(OrbRegistryPanel, { accent, activeInstanceId: tel.instanceId })), /* @__PURE__ */ import_react.default.createElement(ChatPanel, { accent })), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Orb Mirror", accent, badge: isDocked ? "DOCKED" : "LIVE" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 2 } }, /* @__PURE__ */ import_react.default.createElement(
-      "div",
-      {
-        style: {
-          width: "100%",
-          maxWidth: 420,
-          padding: "10px 12px",
-          borderRadius: 6,
-          border: "1px solid rgba(0,229,255,.35)",
-          background: "rgba(2,18,28,.7)",
-          color: "rgba(211,236,243,.92)",
-          fontSize: 14,
-          fontFamily: "monospace",
-          lineHeight: 1.55,
-          textAlign: "left",
-          maxHeight: 210,
-          overflowY: "auto"
-        }
-      },
-      orbConversation.length ? /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } }, orbConversation.map((item, idx) => /* @__PURE__ */ import_react.default.createElement("div", { key: `${item.time}-${idx}`, style: { display: "flex", flexDirection: "column", gap: 2 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 10, color: "rgba(125,211,255,.85)", letterSpacing: 0.5 } }, "ORB \xB7 ", item.time), /* @__PURE__ */ import_react.default.createElement("div", null, item.text)))) : latestOrbOutput || "Awaiting ORB output..."
-    )), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "RUNTIME", value: tel.orbRuntimeActive ? "ACTIVE" : "INACTIVE", ok: tel.orbRuntimeActive }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "LLM CONNECTED", value: tel.llmConnected ? "TRUE" : "FALSE", ok: tel.llmConnected }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "VOICE", value: voiceStateLabel, ok: tel.voiceProviderReady })), /* @__PURE__ */ import_react.default.createElement(DockedOrbMirror, { telemetry: tel, accent }), isDocked && /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "center", paddingTop: 10 } }, /* @__PURE__ */ import_react.default.createElement(
+    )), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "flex-end" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { width: "100%", maxWidth: 420, padding: "5px 8px", borderRadius: 4, border: "1px solid rgba(174,220,232,.18)", background: "rgba(2,8,14,.55)", fontSize: 10, fontFamily: "monospace", color: "rgba(211,236,243,.84)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, swarmStatusFeed[0]?.text || "Prime ORB idle.")))), /* @__PURE__ */ import_react.default.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 12 } }, activeTab === "orb" && /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(320px, 1fr))", gap: 12, minHeight: 0, alignItems: "stretch" } }, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "HLSF Mirror", accent, badge: "LEFT" }, /* @__PURE__ */ import_react.default.createElement(HLSFMirrorPanel, { telemetry: tel, accent })), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Docked ORB", accent, badge: isDocked ? "DOCKED" : "LAUNCHED" }, /* @__PURE__ */ import_react.default.createElement(DockedOrbStage, { telemetry: tel, accent, isDocked }), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "center", paddingTop: 10 } }, /* @__PURE__ */ import_react.default.createElement(
       "button",
       {
-        onClick: handleLaunchPrimeOrb,
+        onClick: isDocked ? handleLaunchPrimeOrb : handleDockPrimeOrb,
         style: {
           padding: "7px 14px",
           borderRadius: 4,
-          border: "1px solid rgba(0,230,118,.65)",
-          background: "rgba(0,230,118,.16)",
-          color: "#00e676",
+          border: isDocked ? "1px solid rgba(0,230,118,.65)" : "1px solid rgba(125,211,255,.65)",
+          background: isDocked ? "rgba(0,230,118,.16)" : "rgba(125,211,255,.16)",
+          color: isDocked ? "#00e676" : "#7dd3ff",
           cursor: "pointer",
           fontSize: 11,
           fontFamily: "monospace",
           letterSpacing: 0.8
         }
       },
-      "Launch Floating Orb"
-    )), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", gap: 12, justifyContent: "center", padding: "10px 0 0", flexWrap: "wrap" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 10, color: "rgba(255,255,255,.58)", fontFamily: "monospace", letterSpacing: 1 } }, "PRESENCE"), /* @__PURE__ */ import_react.default.createElement(OrbDiagram, { telemetry: tel, accent })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 10, color: "rgba(255,255,255,.58)", fontFamily: "monospace", letterSpacing: 1 } }, "HLSF FIELD"), /* @__PURE__ */ import_react.default.createElement(HLSFFieldView, { telemetry: tel, accent }))))), activeTab === "runtime" && /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 } }, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Core System", accent }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "center", marginBottom: 8 } }, /* @__PURE__ */ import_react.default.createElement(Gauge, { value: tel.systemHealth, label: "HEALTH", color: accent, size: 84 })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "CORE INTEGRITY", value: `${tel.coreIntegrity.toFixed(1)}%` }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "UPTIME", value: uptime }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "CONTROLLER", value: String(tel.controllerStatus || "\u2013").toUpperCase(), ok: ["active", "ready"].includes(String(tel.controllerStatus || "").toLowerCase()) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "PRESENCE", value: tel.presenceIdle ? "IDLE" : "ACTIVE", ok: tel.presenceRunning }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "IDLE SECONDS", value: `${Math.round(tel.idleSeconds || 0)}s` }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "INSTANCE", value: String(tel.instanceId || "\u2013") }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "MESH ROOT", value: String(tel.sharedMeshRoot || "\u2013") }))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Orb Stats", accent }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 } }, /* @__PURE__ */ import_react.default.createElement(Gauge, { value: tel.cpuLoad, label: "CPU", color: "#00e5ff", size: 62 }), /* @__PURE__ */ import_react.default.createElement(Gauge, { value: tel.memUsage, label: "MEM", color: "#ffd740", size: 62 })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", border: "1px solid rgba(255,215,64,.2)", background: "rgba(255,215,64,.08)", borderRadius: 4, padding: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 7, color: "rgba(255,255,255,.5)" } }, "KG NODES"), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 11, color: "#ffd740", fontWeight: "bold" } }, Math.round(toNumberOr(tel.knowledgeGraphNodes, 0)))), /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", border: "1px solid rgba(0,230,118,.2)", background: "rgba(0,230,118,.08)", borderRadius: 4, padding: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 7, color: "rgba(255,255,255,.5)" } }, "KG EDGES"), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 11, color: "#00e676", fontWeight: "bold" } }, Math.round(toNumberOr(tel.knowledgeGraphEdges, 0))))))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Live Runtime", accent: "#7c4dff" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "ACTIVE LLM", value: llm }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "GOV WRAPPER", value: governanceEnabled ? "ON" : "OFF", ok: governanceEnabled || stationConfig.llmRoute === "cali" }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "COGNITION DEVICE", value: String(tel.device || "unknown") }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "ENCODER", value: String(tel.encoderBackend || "unknown") }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "ANOMALIES", value: tel.anomalies, ok: tel.anomalies === 0 }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "INTERACTIONS", value: Math.round(toNumberOr(tel.interactionCount, 0)) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "LISTENING", value: tel.listeningEnabled ? "ON" : "OFF", ok: tel.listeningEnabled }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "AUTO LISTEN", value: tel.autoListen ? "ON" : "OFF", ok: tel.autoListen }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "COGNITIVE MODE", value: cognitiveModeLabel }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "AUTONOMY", value: tel.autonomyLevel.toFixed(2) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "CONFIDENCE", value: tel.confidenceState.toFixed(2) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "SUCCESS RATE", value: `${tel.llmSuccessRate.toFixed(1)}%` })), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 9, color: "rgba(255,255,255,.45)" } }, "LATENCY TREND"), /* @__PURE__ */ import_react.default.createElement(Sparkline, { value: tel.llmLatency, color: "#7c4dff" }))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Event Feed", accent: "#4dd0e1", badge: "STREAM" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { maxHeight: 200, overflowY: "auto" } }, tel.events.map((ev) => /* @__PURE__ */ import_react.default.createElement("div", { key: ev.id, style: { display: "flex", gap: 8, padding: "3px 0", borderBottom: "1px solid rgba(255,255,255,.05)" } }, /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 8, color: "rgba(255,255,255,.35)", width: 58 } }, ev.time), /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 8, width: 34, color: EVENT_COLOR[ev.type] || "#aaa" } }, "[", ev.type, "]"), /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 9, color: "rgba(255,255,255,.7)" } }, ev.msg)))))), activeTab === "settings" && /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "LLM Connector", accent: "#b388ff" }, /* @__PURE__ */ import_react.default.createElement(
+      isDocked ? "Launch ORB" : "Dock ORB"
+    ))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "EGF Mirror", accent, badge: "RIGHT" }, /* @__PURE__ */ import_react.default.createElement(EGFMirrorPanel, { telemetry: tel }))), activeTab === "skills" && /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr", gap: 12, minHeight: 0 } }, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Talk To Orb", accent, badge: "SKILLS" }, /* @__PURE__ */ import_react.default.createElement(ChatPanel, { accent }))), activeTab === "runtime" && /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 } }, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Core System", accent }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "center", marginBottom: 8 } }, /* @__PURE__ */ import_react.default.createElement(Gauge, { value: tel.systemHealth, label: "HEALTH", color: accent, size: 84 })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "CORE INTEGRITY", value: `${tel.coreIntegrity.toFixed(1)}%` }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "UPTIME", value: uptime }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "CONTROLLER", value: String(tel.controllerStatus || "\u2013").toUpperCase(), ok: ["active", "ready"].includes(String(tel.controllerStatus || "").toLowerCase()) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "PRESENCE", value: tel.presenceIdle ? "IDLE" : "ACTIVE", ok: tel.presenceRunning }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "IDLE SECONDS", value: `${Math.round(tel.idleSeconds || 0)}s` }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "INSTANCE", value: String(tel.instanceId || "\u2013") }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "MESH ROOT", value: String(tel.sharedMeshRoot || "\u2013") }))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Orb Stats", accent }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 } }, /* @__PURE__ */ import_react.default.createElement(Gauge, { value: tel.cpuLoad, label: "CPU", color: "#00e5ff", size: 62 }), /* @__PURE__ */ import_react.default.createElement(Gauge, { value: tel.memUsage, label: "MEM", color: "#ffd740", size: 62 })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", border: "1px solid rgba(255,215,64,.2)", background: "rgba(255,215,64,.08)", borderRadius: 4, padding: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 7, color: "rgba(255,255,255,.5)" } }, "KG NODES"), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 11, color: "#ffd740", fontWeight: "bold" } }, Math.round(toNumberOr(tel.knowledgeGraphNodes, 0)))), /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", border: "1px solid rgba(0,230,118,.2)", background: "rgba(0,230,118,.08)", borderRadius: 4, padding: 4 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 7, color: "rgba(255,255,255,.5)" } }, "KG EDGES"), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 11, color: "#00e676", fontWeight: "bold" } }, Math.round(toNumberOr(tel.knowledgeGraphEdges, 0))))))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Live Runtime", accent: "#7c4dff" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 } }, /* @__PURE__ */ import_react.default.createElement(Pill, { label: "ACTIVE LLM", value: llm }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "GOV WRAPPER", value: governanceEnabled ? "ON" : "OFF", ok: governanceEnabled || stationConfig.llmRoute === "cali" }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "COGNITION DEVICE", value: String(tel.device || "unknown") }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "ENCODER", value: String(tel.encoderBackend || "unknown") }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "ANOMALIES", value: tel.anomalies, ok: tel.anomalies === 0 }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "INTERACTIONS", value: Math.round(toNumberOr(tel.interactionCount, 0)) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "LISTENING", value: tel.listeningEnabled ? "ON" : "OFF", ok: tel.listeningEnabled }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "AUTO LISTEN", value: tel.autoListen ? "ON" : "OFF", ok: tel.autoListen }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "COGNITIVE MODE", value: cognitiveModeLabel }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "AUTONOMY", value: tel.autonomyLevel.toFixed(2) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "CONFIDENCE", value: tel.confidenceState.toFixed(2) }), /* @__PURE__ */ import_react.default.createElement(Pill, { label: "SUCCESS RATE", value: `${tel.llmSuccessRate.toFixed(1)}%` })), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 9, color: "rgba(255,255,255,.45)" } }, "LATENCY TREND"), /* @__PURE__ */ import_react.default.createElement(Sparkline, { value: tel.llmLatency, color: "#7c4dff" }))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Event Feed", accent: "#4dd0e1", badge: "STREAM" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { maxHeight: 200, overflowY: "auto" } }, tel.events.map((ev) => /* @__PURE__ */ import_react.default.createElement("div", { key: ev.id, style: { display: "flex", gap: 8, padding: "3px 0", borderBottom: "1px solid rgba(255,255,255,.05)" } }, /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 8, color: "rgba(255,255,255,.35)", width: 58 } }, ev.time), /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 8, width: 34, color: EVENT_COLOR[ev.type] || "#aaa" } }, "[", ev.type, "]"), /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 9, color: "rgba(255,255,255,.7)" } }, ev.msg)))))), activeTab === "settings" && /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(Panel, { title: "LLM Connector", accent: "#b388ff" }, /* @__PURE__ */ import_react.default.createElement(
       "select",
       {
         value: stationConfig.llmRoute,
-        onChange: (e) => persistConfig({ ...stationConfig, llmRoute: e.target.value }),
+        onChange: (e) => {
+          const nextRoute = e.target.value;
+          persistConfig({
+            ...stationConfig,
+            llmRoute: nextRoute,
+            governanceWrapper: false
+          });
+        },
         style: { background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.2)", borderRadius: 4, padding: "4px 6px", fontSize: 10, marginBottom: 6, width: "100%" }
       },
       /* @__PURE__ */ import_react.default.createElement("option", { value: "cali" }, "CALI (local cognitive core)"),
@@ -25472,15 +25599,7 @@ ${context}` : query;
         onChange: (e) => persistConfig({ ...stationConfig, localModel: e.target.value }),
         style: { background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.2)", borderRadius: 4, padding: "4px 6px", fontSize: 10, marginBottom: 6, width: "100%" }
       }
-    ), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 9, color: ollamaDiscovery?.ok ? "#63ef9e" : "rgba(255,255,255,.5)", marginBottom: 6 } }, ollamaDiscovery?.ok ? `Ollama: ${ollamaDiscovery.endpoint} | ${discoveredLocalModels.length} model(s)` : "Ollama scan will replace stale local model values.")), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 9, color: "rgba(255,255,255,.75)", display: "flex", gap: 6, alignItems: "center", marginBottom: 4 } }, /* @__PURE__ */ import_react.default.createElement(
-      "input",
-      {
-        type: "checkbox",
-        checked: stationConfig.governanceWrapper,
-        disabled: stationConfig.llmRoute === "cali",
-        onChange: (e) => persistConfig({ ...stationConfig, governanceWrapper: e.target.checked })
-      }
-    ), "Governance wrapper"), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 9, color: "rgba(255,255,255,.75)", display: "flex", gap: 6, alignItems: "center", marginBottom: 8 } }, /* @__PURE__ */ import_react.default.createElement(
+    ), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 9, color: ollamaDiscovery?.ok ? "#63ef9e" : "rgba(255,255,255,.5)", marginBottom: 6 } }, ollamaDiscovery?.ok ? `Ollama: ${ollamaDiscovery.endpoint} | ${discoveredLocalModels.length} model(s)` : "Ollama scan will replace stale local model values.")), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 9, color: "rgba(255,255,255,.75)", display: "flex", gap: 6, alignItems: "center", marginBottom: 8 } }, /* @__PURE__ */ import_react.default.createElement(
       "input",
       {
         type: "checkbox",
@@ -25504,7 +25623,21 @@ ${context}` : query;
         }
       },
       savingLlmConfig ? "Applying..." : "Apply LLM Routing"
-    )), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Orb Skin", accent }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gap: 4 } }, SKINS.map((s) => /* @__PURE__ */ import_react.default.createElement(
+    )), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Desktop MCP", accent: "#ffcc66" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement(
+      Pill,
+      {
+        label: "DESKTOP ACTIONS",
+        value: desktopMcpActionsEnabled ? "ENABLED" : "DISABLED",
+        ok: desktopMcpActionsEnabled
+      }
+    ), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: desktopMcpActionsEnabled,
+        onChange: (e) => persistConfig({ ...stationConfig, desktopMcpActionsEnabled: e.target.checked })
+      }
+    ), "Desktop actions"))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Orb Skin", accent }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "grid", gap: 4 } }, SKINS.map((s) => /* @__PURE__ */ import_react.default.createElement(
       "button",
       {
         key: s.id,
@@ -25547,7 +25680,91 @@ ${context}` : query;
         }
       },
       tel.listeningEnabled ? "Disable Listening" : "Enable Listening"
-    ))))), /* @__PURE__ */ import_react.default.createElement("div", { style: {
+    ))), /* @__PURE__ */ import_react.default.createElement(Panel, { title: "Startup", accent: "#4dd0e1" }, /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 6 } }, /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: stationConfig.startOnBoot,
+        onChange: (e) => persistConfig({ ...stationConfig, startOnBoot: e.target.checked })
+      }
+    ), "Start CALI ORB when Windows starts"), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: stationConfig.showStartupSplash,
+        onChange: (e) => persistConfig({ ...stationConfig, showStartupSplash: e.target.checked })
+      }
+    ), "Show startup animation"), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: stationConfig.startDocked,
+        onChange: (e) => persistConfig({ ...stationConfig, startDocked: e.target.checked })
+      }
+    ), "Start minimized/docked"), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 10, color: "rgba(255,255,255,.82)", display: "flex", gap: 6, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: stationConfig.startupVoiceGreeting,
+        onChange: (e) => persistConfig({ ...stationConfig, startupVoiceGreeting: e.target.checked })
+      }
+    ), "Startup voice greeting"), /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 9, color: "rgba(255,255,255,.52)", marginTop: 4 } }, "Startup preferences saved locally. Env/runtime startup flags remain authoritative."))))), bootPhase !== "ready" && /* @__PURE__ */ import_react.default.createElement("div", { style: {
+      position: "absolute",
+      inset: 0,
+      background: "rgba(2,10,18,.68)",
+      backdropFilter: "blur(1px)",
+      display: "grid",
+      placeItems: "center",
+      zIndex: 9999
+    } }, /* @__PURE__ */ import_react.default.createElement("div", { style: {
+      width: 420,
+      border: "1px solid rgba(139,223,240,.34)",
+      borderRadius: 8,
+      background: "rgba(4,18,30,.94)",
+      padding: 18,
+      color: "#edfaff",
+      fontFamily: "monospace",
+      display: "grid",
+      gap: 10
+    } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { fontSize: 18, letterSpacing: 1 } }, "DockStation Login"), /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        value: loginUser,
+        onChange: (e) => setLoginUser(e.target.value),
+        placeholder: "Username",
+        style: { background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.22)", borderRadius: 4, padding: "8px 10px", fontSize: 12 }
+      }
+    ), /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "password",
+        value: loginPass,
+        onChange: (e) => setLoginPass(e.target.value),
+        placeholder: "Password",
+        style: { background: "rgba(0,0,0,.35)", color: "#e0f7fa", border: "1px solid rgba(255,255,255,.22)", borderRadius: 4, padding: "8px 10px", fontSize: 12 }
+      }
+    ), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 11, color: "rgba(220,245,255,.9)", display: "flex", gap: 8, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: privacyAccepted,
+        onChange: (e) => setPrivacyAccepted(e.target.checked)
+      }
+    ), "I agree to the Privacy Notice."), /* @__PURE__ */ import_react.default.createElement("label", { style: { fontSize: 11, color: "rgba(220,245,255,.9)", display: "flex", gap: 8, alignItems: "center" } }, /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "checkbox",
+        checked: termsAccepted,
+        onChange: (e) => setTermsAccepted(e.target.checked)
+      }
+    ), "I agree to the Terms of Service."), loginError ? /* @__PURE__ */ import_react.default.createElement("div", { style: { color: "#ff9f9f", fontSize: 11 } }, loginError) : null, /* @__PURE__ */ import_react.default.createElement(
+      "button",
+      {
+        onClick: handleDockLogin,
+        style: { padding: "8px 10px", borderRadius: 4, border: "1px solid rgba(0,230,118,.65)", background: "rgba(0,230,118,.16)", color: "#00e676", fontSize: 12, cursor: "pointer" }
+      },
+      "Login & Continue"
+    ))), /* @__PURE__ */ import_react.default.createElement("div", { style: {
       flex: "0 0 auto",
       height: 32,
       display: "flex",

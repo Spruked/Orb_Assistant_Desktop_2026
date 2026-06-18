@@ -7,7 +7,20 @@
   "root": "/mnt/r/Orb_Assistant_Desktop",
   "user_data_dir": "/mnt/r/Orb_Assistant_Desktop/.orb-assistant-desktop",
   "system_root": "/mnt/r/Orb_Assistant_Desktop/system",
-  "shared_mesh_root": "/mnt/r/orb_mesh",
+  "shared_mesh_root": "/mnt/r/R_Drive_Substrate/orb_mesh",
+  "mcp_servers": {
+    "orb_desktop_mcp": {
+      "transport": "stdio",
+      "root_windows": "R:\\R_Drive_Substrate\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp",
+      "root_wsl": "/mnt/r/R_Drive_Substrate/Orb_Assistant_Desktop/mcp/orb_desktop_mcp",
+      "entrypoint_windows": "R:\\R_Drive_Substrate\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_mcp_server.py",
+      "entrypoint_wsl": "/mnt/r/R_Drive_Substrate/Orb_Assistant_Desktop/mcp/orb_desktop_mcp/orb_mcp_server.py",
+      "shared_tools": [
+        "orb_cognition_review"
+      ],
+      "desktop_authority_required": true
+    }
+  },
   "launchers": {
     "windows": "R:\\Orb_Assistant_Desktop\\launch_desktop_orb.ps1",
     "wsl": "/mnt/r/Orb_Assistant_Desktop/launch_desktop_orb.sh"

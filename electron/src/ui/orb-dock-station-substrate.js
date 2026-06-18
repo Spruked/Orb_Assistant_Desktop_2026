@@ -13,8 +13,8 @@
     "spruked.com",
     "truemarkmint.com",
     "shilohridgekatahdins.com",
-    "alphacertsig.com",
-    "dragonithome.spruked.com",
+    "shilohridgekatahdins.com/butch",
+    "dragonithome.spruked.com"
   ];
 
   const state = {
@@ -31,6 +31,8 @@
     lastApp: null,
     lastBridgeType: "none",
     updatedAt: null,
+    bootstrapAttempted: false,
+    bootstrapInFlight: false,
   };
 
   const appItems = [
@@ -58,6 +60,49 @@
       url: "http://127.0.0.1:21001",
       healthUrl: "http://127.0.0.1:21000/health",
     },
+    {
+      id: "spruked_site",
+      label: "spruked.com",
+      role: "Public umbrella ORB website",
+      port: "3001",
+      url: "http://localhost:3001",
+      healthUrl: "http://localhost:3001",
+      healthCandidates: ["http://localhost:3001", "http://127.0.0.1:3001"],
+    },
+    {
+      id: "truemark_site",
+      label: "truemarkmint.com",
+      role: "Product/business ORB website",
+      port: "3300",
+      url: "http://127.0.0.1:3300",
+      healthUrl: "http://127.0.0.1:3300",
+      healthCandidates: ["http://127.0.0.1:3300"],
+    },
+    {
+      id: "shiloh_site",
+      label: "shilohridgekatahdins.com",
+      role: "Ranch ORB website/API alias",
+      port: "8001",
+      url: "http://127.0.0.1:8001",
+      healthUrl: "http://127.0.0.1:8001/api/health",
+      healthCandidates: ["http://127.0.0.1:8001/api/health", "http://127.0.0.1:8001/openapi.json", "http://127.0.0.1:8001"],
+    },
+    {
+      id: "butch_site",
+      label: "Butch / Ranch-hand ORB",
+      role: "Specialized ranch-hand ORB alias",
+      port: "8002",
+      url: "http://127.0.0.1:8002",
+      healthUrl: "http://127.0.0.1:8002/api/health",
+      healthCandidates: ["http://127.0.0.1:8002/api/health", "http://127.0.0.1:8002/openapi.json", "http://127.0.0.1:8002"],
+    },
+  ];
+
+  const prioritySiteBadgeMap = [
+    { siteId: "spruked.com", appId: "spruked_site" },
+    { siteId: "truemarkmint.com", appId: "truemark_site" },
+    { siteId: "shilohridgekatahdins.com", appId: "shiloh_site" },
+    { siteId: "shilohridgekatahdins.com/butch", appId: "butch_site" },
   ];
 
   const tabs = [
@@ -185,6 +230,32 @@
     `;
   }
 
+  function siteComplianceRows(siteStatus) {
+    const entries = Object.entries(siteStatus || {});
+    if (!entries.length) {
+      return `<div class="substrate-list"><div>No site ORB compliance data yet.</div></div>`;
+    }
+    return `
+      <div class="substrate-list substrate-service-list">
+        ${entries.map(([siteId, row]) => `
+          <div class="substrate-service-row">
+            <span class="substrate-service-name">${esc(siteId)}</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              ${pill("CRM", row?.crm_ok ? "OK" : "OFF", row?.crm_ok === true)}
+              ${pill("MAIL", row?.mail_ok ? "OK" : "OFF", row?.mail_ok === true)}
+              ${pill("MESH", row?.mesh_ok ? "OK" : "OFF", row?.mesh_ok === true)}
+              ${pill("VOICE", row?.voice_ok ? "OK" : "OFF", row?.voice_ok === true)}
+              ${pill("LISTENERS", row?.listeners_on ? "ON" : "OFF", row?.listeners_on === true)}
+              ${pill("E2E", row?.e2e_ok ? "PASS" : "FAIL", row?.e2e_ok === true)}
+            </div>
+            <code>${esc(row?.last_interaction_at || "n/a")}</code>
+            ${row?.last_error ? `<code>${esc(row.last_error)}</code>` : ""}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
   function appRows(items) {
     return `
       <div class="substrate-list substrate-service-list">
@@ -208,6 +279,7 @@
       pill("PORT", item.port, status.ok !== false),
       pill("ROLE", item.role, true),
       pathLine("URL", item.url),
+      pathLine("HEALTH", status.endpoint || item.healthUrl || item.url),
       `<div class="substrate-actions app-actions">
         <button class="primary" data-local-app-id="${esc(item.id)}" type="button">Open</button>
         <button data-app-health-id="${esc(item.id)}" type="button">Check</button>
@@ -282,7 +354,7 @@
             pathLine("CP3.0", cp3.cp3_root),
           ].join(""), "LIVE")}
           ${panel("Bridge", [
-            pill("BRIDGE", bridgeState, bridgeState === "CONNECTED" ? true : bridgeState === "ERROR" ? false : null),
+            pill("BRIDGE", bridgeState, bridgeState === "CONNECTED" ? true : (bridgeState === "ERROR" || String(bridgeState).startsWith("DEGRADED")) ? false : null),
             status.error ? pathLine("ERROR", status.error) : pathLine("LAST EVENT", state.lastBridgeType),
             pathLine("UPDATED", state.updatedAt || "waiting"),
           ].join(""), "IPC")}
@@ -378,6 +450,60 @@
       const localLlm = status.local_llm || {};
       const qwenTts = status.qwen_tts || {};
       const cp3Audio = (cp3.audio_runtime_status || {});
+      const runtimeSnapshot = status.runtime_snapshot || {};
+      const siteOrbStatus = status.site_orb_status || {};
+      const caliLlmStatus = status?.cali_status?.llm_status || {};
+      const llmConnected =
+        runtimeSnapshot.llm_connected === true ||
+        localLlm.connected === true ||
+        localLlm.ready === true ||
+        caliLlmStatus.connected === true;
+      const resolvedLlmEndpoint =
+        localLlm.endpoint ||
+        caliLlmStatus.endpoint ||
+        runtimeSnapshot.llm_endpoint ||
+        "n/a";
+      const resolvedLlmModel =
+        localLlm.model ||
+        caliLlmStatus.model ||
+        runtimeSnapshot.active_llm ||
+        status?.cali_status?.orb_state?.llm_local_model ||
+        "n/a";
+      const qwenReady =
+        runtimeSnapshot.qwen_tts_ready === true ||
+        qwenTts.ready === true ||
+        String(cp3Audio.tts_provider || "").toLowerCase() === "qwen";
+      const voiceReady =
+        runtimeSnapshot.voice_ready === true ||
+        qwenReady ||
+        cp3.voice_runtime_ready === true;
+      const voiceLabel = voiceReady
+        ? (String(cp3Audio.tts_provider || "").toLowerCase() === "qwen" || qwenReady ? "QWEN ACTIVE" : "VOICE READY")
+        : "NO VOICE";
+      const siteBadgeRows = prioritySiteBadgeMap.map(({ siteId, appId }) => {
+        const siteRow = siteOrbStatus?.[siteId] || {};
+        const appState = state.appStatus?.[appId] || {};
+        const connected = appState.ok === true;
+        const listenersOn = siteRow.listeners_on === true ? true : cp3.listening_enabled === true;
+        const llmOk = siteRow.llm_ok === true ? true : llmConnected;
+        const voiceOk = siteRow.voice_ok === true ? true : voiceReady;
+        return `
+          <div class="substrate-service-row">
+            <span class="substrate-service-name">${esc(siteId)}</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              ${pill("CONNECTED", connected ? "ON" : (appState.label || "OFF"), connected)}
+              ${pill("LISTENERS", listenersOn ? "ON" : "OFF", listenersOn)}
+              ${pill("LLM", llmOk ? "OK" : "OFF", llmOk)}
+              ${pill("VOICE", voiceOk ? "OK" : "OFF", voiceOk)}
+              ${pill("CRM", siteRow.crm_ok ? "OK" : "OFF", siteRow.crm_ok === true)}
+              ${pill("MAIL", siteRow.mail_ok ? "OK" : "OFF", siteRow.mail_ok === true)}
+              ${pill("MESH", siteRow.mesh_ok ? "OK" : "OFF", siteRow.mesh_ok === true)}
+              ${pill("E2E", siteRow.e2e_ok ? "PASS" : "FAIL", siteRow.e2e_ok === true)}
+            </div>
+            <code>${esc(appState.endpoint || "n/a")}</code>
+          </div>
+        `;
+      }).join("");
       return `
         <div class="substrate-grid substrate-services-layout">
           ${panel("Sites / Services", [
@@ -387,18 +513,25 @@
           ].join(""), "LOCAL")}
           ${panel("Runtime Connections", [
             pill("LLM ROUTE", localLlm.route || "n/a", true),
-            pill("LLM CONNECTED", localLlm.ready === true ? "TRUE" : "FALSE", localLlm.ready === true),
-            pathLine("LLM ENDPOINT", localLlm.endpoint || "n/a"),
-            pathLine("LLM MODEL", localLlm.model || "n/a"),
+            pill("LLM CONNECTED", llmConnected ? "TRUE" : "FALSE", llmConnected),
+            pathLine("LLM ENDPOINT", resolvedLlmEndpoint),
+            pathLine("LLM MODEL", resolvedLlmModel),
             pill("GOV WRAPPER", localLlm.governance_wrapper ? "ON" : "OFF", localLlm.governance_wrapper === true),
-            pill("QWEN TTS READY", qwenTts.ready === true ? "TRUE" : "FALSE", qwenTts.ready === true),
+            pill("QWEN TTS READY", qwenReady ? "TRUE" : "FALSE", qwenReady),
             pathLine("VOICE ENDPOINT", qwenTts.endpoint || cp3Audio.qwen_tts_endpoint || "n/a"),
-            pill("VOICE PROVIDER", cp3Audio.tts_provider || "unknown", true),
+            pill("VOICE PROVIDER", cp3Audio.tts_provider || voiceLabel, voiceReady),
             pill("CP3 VOICE RUNTIME", runtimeLabel(cp3Audio.voice, cp3.voice_runtime_ready), runtimeOk(cp3Audio.voice, cp3.voice_runtime_ready)),
             pathLine("MEMORY PATH", substrate.memory_root || "n/a"),
             pathLine("NOTES PATH", substrate.notes_root || "n/a"),
             pathLine("VOICE CACHE", substrate.voice_cache_root || "n/a"),
           ].join(""), "RUNTIME")}
+          ${panel("Site ORB Compliance", [
+            pill("SITES", Object.keys(siteOrbStatus || {}).length, Object.keys(siteOrbStatus || {}).length > 0),
+            siteComplianceRows(siteOrbStatus),
+          ].join(""), "E2E")}
+          ${panel("Priority Site Runtime", [
+            `<div class="substrate-list substrate-service-list">${siteBadgeRows}</div>`,
+          ].join(""), "BADGES")}
           ${panel("Last Service", state.lastService
             ? [
                 pill("ACTION", state.lastService.action || "status", true),
@@ -417,7 +550,7 @@
     return `
       <div class="substrate-grid five">
         ${panel("Bridge", [
-          pill("BRIDGE", bridgeState, bridgeState === "CONNECTED" ? true : bridgeState === "ERROR" ? false : null),
+          pill("BRIDGE", bridgeState, bridgeState === "CONNECTED" ? true : (bridgeState === "ERROR" || String(bridgeState).startsWith("DEGRADED")) ? false : null),
           pill("CACHE", boolLabel(substrate.short_term_cache_exists), substrate.short_term_cache_exists),
           pill("DECISIONS", boolLabel(substrate.decisions_exists), substrate.decisions_exists),
           status.error ? pathLine("ERROR", status.error) : pathLine("UPDATED", state.updatedAt || "waiting"),
@@ -462,7 +595,33 @@
     const serviceItems = (services.items || serviceDomains.map((domain) => ({ id: domain, domain })))
       .map((item) => ({ ...item, enabled: item.enabled !== false }));
     const bridgePending = status.pending || status.ready === false;
-    const bridgeState = status.error ? "ERROR" : bridgePending ? "STARTING" : status.running ? "CONNECTED" : "WAITING";
+    const runtime = status.runtime_snapshot || {};
+    const hasLiveSignals = Boolean(
+      String(runtime.last_updated || "").trim() ||
+      (state.lastBridgeType && String(state.lastBridgeType).trim() && String(state.lastBridgeType).toLowerCase() !== "none")
+    );
+    const specificError = String(status.error || runtime.last_error || "").trim();
+    const optionalTelemetryError = (() => {
+      const e = specificError.toLowerCase();
+      if (!e) return false;
+      return (
+        e.includes("egf_unavailable") ||
+        e.includes("bulkmirrorcache") ||
+        e.includes("manifest not found") ||
+        e.includes("cali_substrate") ||
+        e.includes("domain_knowledge") ||
+        e.includes("timed out waiting for status_response")
+      );
+    })();
+    const bridgeState = specificError && !optionalTelemetryError
+      ? `DEGRADED: ${specificError}`
+      : specificError && optionalTelemetryError
+      ? "DEGRADED: PARTIAL TELEMETRY"
+      : bridgePending
+      ? (hasLiveSignals ? "DEGRADED: STATUS PENDING" : "STARTING")
+      : status.running
+      ? "CONNECTED"
+      : (hasLiveSignals ? "DEGRADED: PARTIAL TELEMETRY" : "WAITING");
     const lastSkillDecision = skills.last_decision || null;
 
     root.innerHTML = `
@@ -743,25 +902,34 @@
   }
 
   async function checkAppHealth(item) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
-    try {
-      const response = await fetch(item.healthUrl || item.url, {
-        cache: "no-store",
-        signal: controller.signal,
-      });
-      clearTimeout(timer);
-      state.appStatus[item.id] = {
-        label: response.ok ? "ONLINE" : `HTTP ${response.status}`,
-        ok: response.ok,
-      };
-    } catch (error) {
-      clearTimeout(timer);
-      state.appStatus[item.id] = {
-        label: error?.name === "AbortError" ? "TIMEOUT" : "OFF",
-        ok: false,
-      };
+    const candidates = Array.isArray(item.healthCandidates) && item.healthCandidates.length
+      ? item.healthCandidates
+      : [item.healthUrl || item.url];
+    for (const endpoint of candidates) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 3000);
+      try {
+        const response = await fetch(endpoint, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        clearTimeout(timer);
+        const reachable = response.status >= 100 && response.status < 500;
+        state.appStatus[item.id] = {
+          label: response.ok ? "ONLINE" : `HTTP ${response.status}`,
+          ok: reachable,
+          endpoint,
+        };
+        if (reachable) return;
+      } catch (_error) {
+        clearTimeout(timer);
+      }
     }
+    state.appStatus[item.id] = {
+      label: "OFF",
+      ok: false,
+      endpoint: candidates[0] || item.url,
+    };
   }
 
   async function refreshAppHealth() {
@@ -786,9 +954,56 @@
     render();
   }
 
+  async function bootstrapLocalRuntime() {
+    const api = window.electronAPI;
+    if (!api || state.bootstrapInFlight) return;
+    state.bootstrapInFlight = true;
+    try {
+      if (typeof api.dispatchPrimeOrbCommand === "function") {
+        await api.dispatchPrimeOrbCommand({ command: "activate", source: "substrate_bootstrap" });
+      }
+      if (typeof api.discoverLocalLlm === "function") {
+        const discovery = await api.discoverLocalLlm([
+          "http://wsl.localhost:11434",
+          "http://127.0.0.1:11434",
+        ]);
+        const endpoint = discovery?.endpoint || "http://127.0.0.1:11434";
+        const model = discovery?.model || "llama3.2:1b";
+        if (typeof api.setOrbState === "function") {
+          await Promise.allSettled([
+            api.setOrbState("llm_route", "local"),
+            api.setOrbState("llm_local_endpoint", endpoint),
+            api.setOrbState("llm_local_model", model),
+          ]);
+        }
+      } else if (typeof api.setOrbState === "function") {
+        await Promise.allSettled([
+          api.setOrbState("llm_route", "local"),
+          api.setOrbState("llm_local_endpoint", "http://127.0.0.1:11434"),
+          api.setOrbState("llm_local_model", "llama3.2:1b"),
+        ]);
+      }
+    } catch (_error) {
+      // Non-fatal bootstrap path.
+    } finally {
+      state.bootstrapInFlight = false;
+    }
+  }
+
   render();
   refresh();
   refreshAppHealth();
+  setTimeout(async () => {
+    const status = state.status || {};
+    const local = status.local_llm || {};
+    const runtime = status.runtime_snapshot || {};
+    const connected = runtime.llm_connected === true || local.connected === true || local.ready === true;
+    if (!connected && !state.bootstrapAttempted) {
+      state.bootstrapAttempted = true;
+      await bootstrapLocalRuntime();
+      await refresh();
+    }
+  }, 600);
   setInterval(refresh, 5000);
   setInterval(refreshAppHealth, 15000);
 
@@ -851,8 +1066,17 @@
       const api = window.electronAPI;
       try {
         if (api && typeof api.openLocalApp === "function") {
-          const result = await api.openLocalApp(appId);
-          state.lastApp = { status: "opened", ...result };
+          try {
+            const result = await api.openLocalApp(appId);
+            state.lastApp = { status: "opened", ...result };
+          } catch (_openLocalError) {
+            if (api && typeof api.openSearch === "function") {
+              await api.openSearch(appInfo.url, "web");
+              state.lastApp = { status: "opened", title: appInfo.label, url: appInfo.url };
+            } else {
+              throw _openLocalError;
+            }
+          }
         } else if (api && typeof api.openSearch === "function") {
           await api.openSearch(appInfo.url, "web");
           state.lastApp = { status: "opened", title: appInfo.label, url: appInfo.url };

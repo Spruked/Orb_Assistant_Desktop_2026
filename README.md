@@ -4,6 +4,10 @@ A screen-aware, cursor-tracking AI assistant that integrates with UCM_4_Core ECM
 
 This root README is the **authoritative** Orb documentation for this workspace. Module READMEs remain intact as historical or component-specific references.
 
+## Authority Boundaries
+
+External mail accounts connect to Prime Mail. Prime Mail normalizes mail into the local ecosystem. CALI CRM owns contact identity. Desktop ORB operates through Prime Mail and CALI-approved access rules.
+
 ## Architecture Note
 
 Earlier versions of this repo included an "Immutable System Law" describing a binding Core-4 cognitive architecture.
@@ -135,19 +139,19 @@ Path resolution is now env-first (`ORB_EGF_ROOT`) with workspace default fallbac
 > **This section reflects the currently active runtime configuration (non-Docker).**
 
 ### UCM WebSocket (React orb path)
-- **WebSocket**: `ws://localhost:8000/ws/orb_assistant`
+- **WebSocket**: `ORB_UCM_WS_URL` (derived fallback: `${ORB_API_URL without /api/v1}/ws/orb_assistant`)
   - Used by `electron/src/components/FloatingOrb.jsx`
   - Handshake: `ORB_HANDSHAKE` with `orb_id` and `capabilities`
   - Receives `lerp_optimization` and `drift_preference` updates
 
 ### UCM HTTP (React orb path)
-- **HTTP**: `http://localhost:8000/api/orb/performance`
+- **HTTP**: Use the configured ORB base URL (`ORB_API_URL`, default `http://127.0.0.1:21100/api/v1`)
   - Polled every 5s by `FloatingOrb.jsx` for performance HUD
   - Note: the mock server in `electron/src/ucm_server.py` does **not** implement this endpoint yet
 
 ### Mock UCM WebSocket Server
 - **Server**: `electron/src/ucm_server.py`
-  - Binds on `0.0.0.0:8000`
+  - Bind port is local-dev configurable (no fixed ORB production port assumption)
   - WebSocket path: `/ws/orb_assistant`
 
 ### WS Stub (local dev)

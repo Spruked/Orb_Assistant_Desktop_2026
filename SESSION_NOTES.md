@@ -1,4 +1,4 @@
-﻿# ORB Build Session Notes
+# ORB Build Session Notes
 
 > IMPORTANT NOTE (2026-05-24): Ignore any references to `/mnt/agents/upload/...` paths.
 > Those files belong to Kimi Moonshot sandbox workflows and are not part of this ORB runtime or repository context.
@@ -8,31 +8,55 @@
 
 ---
 
+## Session: 2026-05-31 | GPT-5 Codex | Mesh Guardrail Audit + Cross-Authority Verification
+
+### Changes This Session
+- Audited live CRM + Prime Mail + ORB runtime alignment against substrate authority contract.
+- Verified ORB mesh/manifest guardrail readiness fields are present and valid:
+  - `manifest_validation_status`
+  - `write_tools_enabled`
+  - `write_tools_allowed_by_permissions`
+  - `write_tools_requiring_user_approval`
+- Verified blocked-write guardrail behavior (`permission_flag_disabled` for draft-prepare when `ORB_ALLOW_EMAIL_DRAFTS=0`).
+- Verified allowed-read behavior (`orb.mail.inbox.summary` returned `200` and live inbox payload).
+- Verified no ORB-side duplicate contact/message store introduced by current mesh/manifest implementation.
+
+### Runtime Verification Summary
+- CRM health: `http://127.0.0.1:21000/health` -> `ok`
+- Prime Mail health: `http://127.0.0.1:19000/api/health` -> `ok`
+- ORB readiness: TestClient checks for `/api/v1/readiness` -> `ok`
+- Cross-app contact parity confirmed for:
+  - `substrate.sync.test+1780199795@example.com`
+  - Same contact visible in both CRM and Prime Mail.
+
+### Known Issue
+- Inbox summary payload-noise issue was mitigated in this session by compacting ORB summary/search outputs to metadata + cleaned preview text; full payload remains available via `orb.mail.message.get`.
+
 ## Session: 2026-04-30 | Claude Sonnet 4.6 | CALI-UCM OOM fix + Testing Ladder
 
 ### Changes
 
 #### `R:\CALI-UCM\SuccessorRepresentation.ts`
-- Replaced `computeEigendecomposition()` â€” eliminated 8.59GB Float64Array allocation (`32768^2 Ã— 8 bytes`)
+- Replaced `computeEigendecomposition()` — eliminated 8.59GB Float64Array allocation (`32768^2 × 8 bytes`)
 - Empty SR: immediate zero-vector fallback, no matrix allocated
-- Non-empty SR: caps to 256 visited states, max 256Ã—256 matrix (~512KB), scatter-back to full dim^3 vectors
+- Non-empty SR: caps to 256 visited states, max 256×256 matrix (~512KB), scatter-back to full dim^3 vectors
 - Confirmed fix: adapter now returns `{ routed: true }` instead of `CALI_UCM_TIMEOUT`
 
-#### `R:\CALI-UCM\` â€” Testing Ladder (new files)
-- `package.json`, `vitest.config.ts` â€” Vitest 2.x + v8 coverage (90/90/95/90 thresholds)
-- `tests/helpers/` â€” GovernanceDenialError, governed-step, seeded-random, report-writer
-- `tests/level1/smoke.test.ts` â€” 10 tests S-01..S-10 â†’ WIRING_PROVEN
-- `tests/level2/cognitive-ethical.gate.test.ts` â€” 18 tests G-01..G-18 â†’ GOVERNANCE_PROVEN
-- `tests/integration/cognitive-ethical.integration.test.ts` â€” 10 tests I-01..I-10 @ 100 iters
-- `tests/e2e/e2e.trials.test.ts` â€” 10 tests E-01..E-10 @ 100/500 iters
+#### `R:\CALI-UCM\` — Testing Ladder (new files)
+- `package.json`, `vitest.config.ts` — Vitest 2.x + v8 coverage (90/90/95/90 thresholds)
+- `tests/helpers/` — GovernanceDenialError, governed-step, seeded-random, report-writer
+- `tests/level1/smoke.test.ts` — 10 tests S-01..S-10 → WIRING_PROVEN
+- `tests/level2/cognitive-ethical.gate.test.ts` — 18 tests G-01..G-18 → GOVERNANCE_PROVEN
+- `tests/integration/cognitive-ethical.integration.test.ts` — 10 tests I-01..I-10 @ 100 iters
+- `tests/e2e/e2e.trials.test.ts` — 10 tests E-01..E-10 @ 100/500 iters
 
-#### `R:\CALI-UCM\IntegratedCore4Runtime.ts` â€” DIAGNOSTIC INSTRUMENTATION (PENDING REMOVAL)
-- Added `fs.appendFileSync` stepDiag() calls at every stage â€” used to pinpoint OOM location
+#### `R:\CALI-UCM\IntegratedCore4Runtime.ts` — DIAGNOSTIC INSTRUMENTATION (PENDING REMOVAL)
+- Added `fs.appendFileSync` stepDiag() calls at every stage — used to pinpoint OOM location
 - **Must be removed next session** after test results are confirmed
 
 ### Test Run Status
-- `npx vitest run --coverage` launched as background task at session end â€” results pending
-- All DIAG logs show stepWithTransport completing end-to-end (25â€“700ms per step)
+- `npx vitest run --coverage` launched as background task at session end — results pending
+- All DIAG logs show stepWithTransport completing end-to-end (25–700ms per step)
 - Reports will appear in `R:\orb_mesh\exports\desktop\test_reports\` when complete
 
 ### Pending Next Session
@@ -79,7 +103,7 @@
 - Replaced direct `R:\...` research/cache/substrate constants with resolver-backed paths.
 - Updated `instance.manifest.json` product identity and split launcher metadata into `launchers.windows` and `launchers.wsl`.
 - Quarantined malformed duplicate path:
-  - from `R:\Orb_Assistant_Desktop\electron\Rï€ºïœOrb_Assistant_Desktopïœsystem`
+  - from `R:\Orb_Assistant_Desktop\electron\ROrb_Assistant_Desktopsystem`
   - to `R:\_quarantine\malformed_paths\Orb_Assistant_Desktop_electron_bad_system_path_2026-04-29`
 
 ### Verification
@@ -245,20 +269,20 @@ Launcher:   R:\Orb_Assistant_Desktop\launch_desktop_orb.ps1
 
 ---
 
-## Session: 2026-04-18 | claude-sonnet-4-6 | VSCode/Windows  *(continued â€” orb drift + voice hotkey)*
+## Session: 2026-04-18 | claude-sonnet-4-6 | VSCode/Windows  *(continued — orb drift + voice hotkey)*
 
 ### Changes
 
-#### `electron/src/orb-renderer.js` â€” Orb no longer drifts to screen center
+#### `electron/src/orb-renderer.js` — Orb no longer drifts to screen center
 - Added `ORB_HOME_X_RATIO = 0.82`, `ORB_HOME_Y_RATIO = 0.80` constants and `getHomePosition()` helper
 - `chooseAutonomousDriftTarget` (no-cursor branch): replaced `viewportCenter` with `homePos` (bottom-right zone); candidate scoring now penalises distance from home, not center
 - `buildSteeringVector` edge-slack recovery: now pulls toward home position instead of center
 - Stuck-at-edge recovery: targets home + jitter instead of center + jitter
 - `ensureCursorClearance` last-resort fallback: `getHomePosition()` instead of `0.5, 0.5`
 
-#### `electron/main/main.js` â€” Global hotkey for voice without clicking dock
+#### `electron/main/main.js` — Global hotkey for voice without clicking dock
 - Added `globalShortcut` to Electron imports
-- Registered `Ctrl+Shift+Space` (Win/Linux) / `Cmd+Shift+Space` (Mac) in `whenReady` â†’ calls `listenOnce()`
+- Registered `Ctrl+Shift+Space` (Win/Linux) / `Cmd+Shift+Space` (Mac) in `whenReady` → calls `listenOnce()`
 - Unregisters all shortcuts on `before-quit`
 - Note: **double-click the orb** also triggers voice capture (already wired)
 
@@ -266,9 +290,9 @@ Launcher:   R:\Orb_Assistant_Desktop\launch_desktop_orb.ps1
 
 ## Session: 2026-04-18 | claude-sonnet-4-6 | VSCode/Windows  *(continued)*
 
-### Changes â€” HLSF Visualization + Orb Registry Panel
+### Changes — HLSF Visualization + Orb Registry Panel
 
-#### Continuation â€” live snapshot wiring completed
+#### Continuation — live snapshot wiring completed
 
 #### `electron/src/ui/orb-dock-station.jsx`
 - **Added** `hlsfSnapshot` to telemetry state and **added** `applyHLSFSnapshot`
@@ -290,14 +314,14 @@ Launcher:   R:\Orb_Assistant_Desktop\launch_desktop_orb.ps1
   `spatialCoord`, `driftDetected`
 - **Updated** `applyCognitivePulse`: now captures all HLSF fields from `cognitive_pulse`
   events (`four_mind`, `field_density`, `epistemic_alignment`, `spatial_coordinate`,
-  `drift_detected`) â€” previously these were dropped silently
-- **Added** `HLSFFieldView` canvas component: 300Ã—300 canvas showing
-  â€” 4 epistemic mind arms (CALEON/KAYGEE/CALI-X/EMPIRICAL), length = confidence
-  â€” Field density outer ring, opacity scales with density
-  â€” Center core pulse = epistemic alignment
-  â€” Spatial coord dot (yellow) = HLSF node position
-  â€” Drift state changes core glow to red
-  â€” MIND_LABELS, MIND_COLORS, MIND_ORDER constants
+  `drift_detected`) — previously these were dropped silently
+- **Added** `HLSFFieldView` canvas component: 300×300 canvas showing
+  — 4 epistemic mind arms (CALEON/KAYGEE/CALI-X/EMPIRICAL), length = confidence
+  — Field density outer ring, opacity scales with density
+  — Center core pulse = epistemic alignment
+  — Spatial coord dot (yellow) = HLSF node position
+  — Drift state changes core glow to red
+  — MIND_LABELS, MIND_COLORS, MIND_ORDER constants
 - **Added** `OrbRegistryPanel` component: reads `getMeshRegistry()` IPC, renders
   each registered Orb as a selectable row with online/offline indicator
 - **Updated** ORB tab: shows `OrbRegistryPanel` ("Connected Orbs" panel at top),
@@ -326,8 +350,8 @@ Launcher:   R:\Orb_Assistant_Desktop\launch_desktop_orb.ps1
 ```
 Substrate:  r:\Orb_Assistant_Desktop
 Document:   ORB_PRODUCT_ECOSYSTEM.md (created this session)
-JSX lines:  1393 (down from 1487 â€” old monolithic layout removed)
-Bundle:     src/ui/orb-dock-station.bundle.js â€” 1.1mb, clean build
+JSX lines:  1393 (down from 1487 — old monolithic layout removed)
+Bundle:     src/ui/orb-dock-station.bundle.js — 1.1mb, clean build
 Branch:     main | e76246b
 ```
 
@@ -340,7 +364,7 @@ Branch:     main | e76246b
   `skinStudioFrameState`, `windowLabel`, `processLabel`, `meshRootLabel`, `controllerLabel`
 - **Added** three-tier tabbed layout:
   - Header: orb pulse dot + "ORB DOCK" + TIER N | tab nav (ORB/RUNTIME/SETTINGS) |
-    Studio button (tierâ‰¥3) + Dock/Launch button + clock
+    Studio button (tier≥3) + Dock/Launch button + clock
   - ORB tab: Orb Observatory (OrbDiagram + DockedOrbMirror) + ChatPanel
   - RUNTIME tab: Core System + Orb Stats (2-col grid) + Live Runtime pills + Latency
     sparkline + Event Feed
@@ -349,7 +373,7 @@ Branch:     main | e76246b
     LISTEN toggle
 - **Added** `OrbStudio` component: consistent dark styling, tab nav (first 6 Studio tabs),
   full-height iframe, status bar, Reload button
-- **Updated** root render: detects `?view=studio` query param â†’ renders OrbStudio,
+- **Updated** root render: detects `?view=studio` query param → renders OrbStudio,
   otherwise OrbDockStation
 - **Updated** `tier` source: reads from `?tier=N` URL query param (set by main.js)
   instead of local state
@@ -357,12 +381,12 @@ Branch:     main | e76246b
 #### `electron/main/main.js`
 - **Added** `let studioWindow = null`
 - **Updated** `openDockStationWindow()`: reads `ORB_DOCK_TIER` env var, sets
-  tier-appropriate window dimensions (Tier 1: 480Ã—740, Tier 2+: 860Ã—860),
+  tier-appropriate window dimensions (Tier 1: 480×740, Tier 2+: 860×860),
   passes `?tier=N` query param to loadFile
-- **Added** `openStudioWindow()`: creates 1280Ã—900 BrowserWindow, loads dock HTML
+- **Added** `openStudioWindow()`: creates 1280×900 BrowserWindow, loads dock HTML
   with `?view=studio`, sends `orb:studio-connected` / `orb:studio-closed` events
   to dock window on open/close
-- **Added** IPC handler `orb:open-studio` â†’ calls `openStudioWindow()`
+- **Added** IPC handler `orb:open-studio` → calls `openStudioWindow()`
 
 #### `electron/main/preload.js`
 - **Added** `openStudio: () => ipcRenderer.invoke('orb:open-studio')`
@@ -377,9 +401,9 @@ Branch:     main | e76246b
 - `reason_with_cali()` routes via local LLM when `llm_route == "local"`
 
 ### New Documents Created
-- `r:\Orb_Assistant_Desktop\ORB_PRODUCT_ECOSYSTEM.md` â€” product tier definition,
-  addon model, mesh configuration examples including enterprise (22â€“25 Orb) scenario
-- `r:\Orb_Assistant_Desktop\SESSION_NOTES.md` â€” this file
+- `r:\Orb_Assistant_Desktop\ORB_PRODUCT_ECOSYSTEM.md` — product tier definition,
+  addon model, mesh configuration examples including enterprise (22–25 Orb) scenario
+- `r:\Orb_Assistant_Desktop\SESSION_NOTES.md` — this file
 
 ### Architecture Decisions Made
 - **Substrate vs Product**: `r:/Orb_Assistant_Desktop` is Bryan's personal dev
@@ -389,20 +413,20 @@ Branch:     main | e76246b
   mesh root. Works for 2 Orbs or 45+. No hardcoded Orb assumptions.
 - **Studio is a separate window**: Electron BrowserWindow, same HTML bundle loaded
   with `?view=studio`. Consistent styling with Dock, not a browser window.
-- **Tier gating via env + URL**: `ORB_DOCK_TIER` env â†’ passed as `?tier=N` â†’
+- **Tier gating via env + URL**: `ORB_DOCK_TIER` env → passed as `?tier=N` →
   read in JSX to show/hide tabs and Studio button.
 - **EGF disabled by default**: `ORB_ENABLE_EGF_TENSOR` not set. HLSF always active
   via `hlsf_singleton`. EGF requires torch + explicit opt-in.
 
 ### Pending / Next
-- [ ] Wire HLSF + EGF field data into OrbDiagram (real cognitive visualization â€”
+- [ ] Wire HLSF + EGF field data into OrbDiagram (real cognitive visualization —
       `four_mind`, `field_density`, `spatial_coordinate`, `epistemic_alignment`
       from `cognitive_pulse` events not yet captured in useTelemetry)
 - [ ] Orb registry panel in Dock ORB tab (reads `orb_registry.json` from mesh,
       shows connected Orbs, allows switching active Orb)
 - [ ] Mesh heartbeat / online status per Orb (check exports directory for fresh
       status artifact)
-- [ ] `ORB_PRODUCT_ECOSYSTEM.md` â€” add pricing, licensing/activation mechanism,
+- [ ] `ORB_PRODUCT_ECOSYSTEM.md` — add pricing, licensing/activation mechanism,
       mesh write path spec for Website and Browser Orbs
 - [ ] Swarm task format spec
 
@@ -612,9 +636,13 @@ Changed:    electron/src/orb-renderer.js
   - `electron/src/cali_skg.py`
 
 ## Session: 2026-05-25 | Codex | Prime swarm lineage normalization
-- Patched electron/src/orb-renderer.js with deterministic prime lineage resolver (esolvePrimeSwarmLineage).
-- Runtime now normalizes any requested swarm count to canonical set [2,3,5,7,11] and records equestedCount, esolvedCount, 
-ormalized, equestedPrime, and lineageToken.
+- Patched electron/src/orb-renderer.js with deterministic prime lineage resolver (
+esolvePrimeSwarmLineage).
+- Runtime now normalizes any requested swarm count to canonical set [2,3,5,7,11] and records 
+equestedCount, 
+esolvedCount, 
+ormalized, 
+equestedPrime, and lineageToken.
 - Added mission-level lineage telemetry ([SWARM_LINEAGE]) on dispatch and return, keyed by missionId, preserving canonical audit context without changing Dock or voice routing.
 
 - 2026-05-25: Dock startup layout normalized to keep control buttons on-page at open (wrapped rows + responsive header width in electron/src/ui/orb-dock-station.jsx).
@@ -624,7 +652,8 @@ ormalized, equestedPrime, and lineageToken.
 - 2026-05-25: Canonical prime policy enforced again. Swarm counts now normalize strictly to approved set [2,3,5,7,11] across Dock manual input and renderer runtime (including query-derived numeric requests).
 - 2026-05-25: Added STRICT_COHERENCE lock in docs (README.md, ORB_SWARM_AUDIT_DOCTRINE.md) for Prime ORB swarm cardinality. Canonical set is fixed to [2,3,5,7,11]; all count inputs must normalize to this set; non-canonical deployment is an audit fault.
 - 2026-05-25: LLM/TTS connectivity alignment patch. Active local services observed: Ollama on 11434, Qwen bridge on 8003. Updated orb-instance.local.ps1 and electron/src/floating_assistant_orb.py default Qwen endpoint to http://127.0.0.1:8003 to resolve VOICE READY false due to stale 8020 config.
-- 2026-05-25: Dock status truth patch for connection pills. local_llm now includes live probe (eady, status_code, error) from backend /api/tags check; Dock now uses local_llm.ready as primary signal for LLM CONNECTED and retains existing Qwen voice probe path for VOICE READY.
+- 2026-05-25: Dock status truth patch for connection pills. local_llm now includes live probe (
+eady, status_code, error) from backend /api/tags check; Dock now uses local_llm.ready as primary signal for LLM CONNECTED and retains existing Qwen voice probe path for VOICE READY.
 - 2026-05-25: Voice connectivity truth patch. Restored Qwen endpoint default to 8020 and require synthesis-route capability for voice-ready.
 - 2026-05-25: Implemented manifest-backed DockStation service controls and monitoring. Manifest: CALI_System/core_knowledge/spruked/services.json. Services tab now uses real status/open/start/stop behavior with truthful not-configured handling and last-service audit details (service/action/result/timestamp/status_code/error). Memory tab now shows configured substrate paths including CALI system, memory, notes, voice cache, and logs with existence indicators.
 - 2026-05-25: Dock chat now plays ORB speech immediately from speak_result bridge events (even when fallback TTS is produced outside the initial chat payload), with audio-path dedupe to avoid duplicate playback.
@@ -671,8 +700,10 @@ pm start and ORB_OPEN_DOCK_ON_START=1; no inspector 9229 listener and no Network
 
 ## 2026-05-25 15:30:44 -05:00 | Minimal spine mode
 - Added ORB_MINIMAL_SPINE_MODE=1 to orb-instance.local.ps1 with UCM and speech recognition disabled.
-- Added eason_with_local_llm_only() in loating_assistant_orb.py; it calls only local Ollama/Qwen at 127.0.0.1:11434 / qwen2.5:3b.
-- Query handler now short-circuits in minimal mode: returns query_result first with minimal_spine=true, easoning_provider=llm, oice_provider=qwen, 	ts_provider=qwen, 	ts_fallback_used=false, then emits Qwen speech after the result.
+- Added 
+eason_with_local_llm_only() in loating_assistant_orb.py; it calls only local Ollama/Qwen at 127.0.0.1:11434 / qwen2.5:3b.
+- Query handler now short-circuits in minimal mode: returns query_result first with minimal_spine=true, 
+easoning_provider=llm, oice_provider=qwen, 	ts_provider=qwen, 	ts_fallback_used=false, then emits Qwen speech after the result.
 - Validation passed: Python compile and JS checks.
 
 ## 2026-05-25 15:32:33 -05:00 | Minimal spine microphone one-shot
@@ -708,3 +739,50 @@ pm start and ORB_OPEN_DOCK_ON_START=1; no inspector 9229 listener and no Network
 - Kept useful fixes: Dock runtime snapshot, Dock transaction recorder, Dock z-order over ORB overlay, minimal orb_state_result, and speech_heard -> orb:speech-pulse forwarding for the Dock mic button.
 - Final confirmed live services from this session: Qwen bridge 127.0.0.1:8020, Qwen CustomVoice backend 127.0.0.1:8031, Ollama 127.0.0.1:11434, and visible Dock Station.
 - Main remaining known issue: normal query path can still be slowed by full ORB/CALI/voice/status layers; safest next pass is one focused query_result latency test, not another broad refactor.
+
+## 9:30 PM Resume Point - 2026-05-31 19:28:10
+
+Stop reason: usage budget dropped to ~2%; do not run broad scans when resuming.
+
+Current project: R:\R_Drive_Substrate\Orb_Assistant_Desktop / DockStation + floating ORB.
+
+What was changed before stop:
+- electron/src/orb-renderer.js: emergency cursor-leash fix. Autonomous ORB should not chase cursor or clamp to cursor monitor; cursor is only avoidance/guided signal.
+- electron/main/main.js: launch authority split started; generic setOrbVisibility(true) is blocked and dedicated orb:launch-from-dock path was added. Tray cleanup partially patched with destroyTray().
+- electron/main/preload.js: exposed launchOrbFromDock().
+- electron/src/ui/orb-dock-station.jsx: Launch / Activate buttons changed to call launchOrbFromDock().
+- electron/src/ui/orb-dock-station.bundle.js: bundle was rebuilt before later main patches, but may need rebuild again after final UI changes.
+- electron/src/ui/orb-dock-station-substrate.js: removed bootstrap auto-call to setOrbVisibility(true).
+
+Verified before stop:
+- 
+ode --check electron/main/main.js, electron/main/preload.js, and electron/src/orb-renderer.js passed at that point.
+- Readiness returned 200 on http://127.0.0.1:21100/api/v1/readiness during prior checks.
+- Visible pre-launch ORB check previously returned VISIBLE_CALEON_ORB_COUNT=0.
+
+Known unresolved:
+- DockStation Launch ORB / Activate ORB still reported by user as not launching the visible ORB.
+- EGF dock display/cognition wiring was requested but not completed.
+- System tray may show stale ORB icons from prior forced-killed Electron instances; patch started but needs clean verification.
+- Do not resume EGF work until Launch / Activate is fixed.
+
+Resume rule:
+- No broad scans.
+- Fix one thing only: Launch / Activate.
+- Inspect only: electron/main/main.js, electron/main/preload.js, electron/src/ui/orb-dock-station.jsx, electron/src/orb-renderer.js.
+- Verify only: DockStation button -> preload -> main IPC -> ORB BrowserWindow -> visible Caleon Orb after click, and zero Caleon Orb before click.
+
+Low-token resume prompt:
+Fix Launch / Activate only. No broad scans. Inspect only main.js, preload.js, orb-dock-station.jsx, orb-renderer.js. Make DockStation button launch the ORB BrowserWindow and verify visible Caleon Orb appears only after click.
+"@
+ = @"
+
+[2026-05-31 19:28:10] 9:30 PM RESUME HANDOFF
+- Usage budget dropped to ~2%; stopped active debugging.
+- Cursor tether fix applied in electron/src/orb-renderer.js.
+- Launch authority split partially applied: orb:launch-from-dock added; generic setOrbVisibility(true) blocked.
+- Preload exposes launchOrbFromDock(); DockStation buttons call it.
+- Tray cleanup partially patched in electron/main/main.js.
+- User reports Launch / Activate still does not launch ORB. This is next and only priority.
+- EGF dock cognition monitor requested but not implemented; defer until launch works.
+- Next pass must avoid broad scans and inspect only main/preload/dock-station/orb-renderer.

@@ -5,7 +5,7 @@ This is a sovereign ORB instance provisioned from the WSL forge copy.
 Identity
 - `instance_id`: `desktop`
 - `app_id`: `com.orbassistant.desktop`
-- `shared_mesh_root`: `/mnt/r/orb_mesh`
+- `shared_mesh_root`: `/mnt/r/R_Drive_Substrate/orb_mesh`
 
 Runtime
 - Launch with `./launch_desktop_orb.sh`
