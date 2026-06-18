@@ -194,6 +194,7 @@ class CALIFloatingOrb:
         self._emit_lock = threading.Lock()
         self._latency_mask_lock = threading.Lock()
         self._latency_mask_playing_until = 0.0
+        self._last_whistle_summon_at = 0.0
         self.cali = None
         self.desktop_presence = None
         self.swarm_extension = None
@@ -1098,6 +1099,85 @@ class CALIFloatingOrb:
             print(f"CALI hearing error: {e}", file=sys.stderr)
             return None
 
+    def _detect_whistle_summon(self, audio_data, sample_rate):
+        try:
+            import numpy as np
+        except Exception:
+            return False
+
+        try:
+            cooldown = float(os.getenv("ORB_WHISTLE_SUMMON_COOLDOWN_SEC", "4.0"))
+            now = time.time()
+            if now - self._last_whistle_summon_at < cooldown:
+                return False
+
+            signal = np.asarray(audio_data, dtype=np.float32).flatten()
+            if signal.size < max(1024, int(sample_rate * 0.25)):
+                return False
+
+            signal = signal - float(np.mean(signal))
+            rms = float(np.sqrt(np.mean(signal * signal)))
+            min_rms = float(os.getenv("ORB_WHISTLE_MIN_RMS", "0.018"))
+            if rms < min_rms:
+                return False
+
+            max_samples = int(sample_rate * 1.6)
+            if signal.size > max_samples:
+                signal = signal[:max_samples]
+
+            window = np.hanning(signal.size).astype(np.float32)
+            spectrum = np.abs(np.fft.rfft(signal * window))
+            freqs = np.fft.rfftfreq(signal.size, d=1.0 / float(sample_rate))
+            if spectrum.size < 8:
+                return False
+
+            whistle_min = float(os.getenv("ORB_WHISTLE_MIN_HZ", "1150"))
+            whistle_max = float(os.getenv("ORB_WHISTLE_MAX_HZ", "4200"))
+            band_mask = (freqs >= whistle_min) & (freqs <= whistle_max)
+            low_mask = (freqs >= 120) & (freqs < 950)
+            if not np.any(band_mask):
+                return False
+
+            band = spectrum[band_mask]
+            peak = float(np.max(band))
+            band_sum = float(np.sum(band)) + 1e-9
+            total_sum = float(np.sum(spectrum)) + 1e-9
+            low_sum = float(np.sum(spectrum[low_mask])) + 1e-9
+            peak_freq = float(freqs[band_mask][int(np.argmax(band))])
+            tonal_ratio = peak / band_sum
+            band_energy_ratio = band_sum / total_sum
+            high_to_low_ratio = band_sum / low_sum
+
+            if (
+                tonal_ratio >= float(os.getenv("ORB_WHISTLE_TONAL_RATIO", "0.18"))
+                and band_energy_ratio >= float(os.getenv("ORB_WHISTLE_BAND_RATIO", "0.34"))
+                and high_to_low_ratio >= float(os.getenv("ORB_WHISTLE_HIGH_LOW_RATIO", "1.15"))
+            ):
+                self._last_whistle_summon_at = now
+                self._emit({
+                    "type": "cali_summon",
+                    "source": "whistle",
+                    "data": {
+                        "peak_hz": round(peak_freq, 1),
+                        "rms": round(rms, 5),
+                        "tonal_ratio": round(tonal_ratio, 4),
+                    },
+                })
+                return True
+        except Exception as exc:
+            print(f"Whistle summon detection error: {exc}", file=sys.stderr)
+        return False
+
+    def _is_cali_summon_request(self, text):
+        normalized = re.sub(r"[^\w\s]", " ", str(text or "").lower())
+        normalized = re.sub(r"\s+", " ", normalized).strip()
+        if not normalized:
+            return False
+        return bool(
+            re.search(r"\b(cali|orb|assistant)\s+(come here|come to me|over here|come back|return|come)\b", normalized)
+            or re.search(r"\b(come here|come to me|over here|get over here|summon cali|call cali|cali here)\b", normalized)
+        )
+
     def frame_text_with_acp(self, text, context=None):
         normalized = str(text or "").strip()
         return {"source": "text_input", "raw_input": text, "normalized_text": normalized, "transcript": normalized, "confidence": 1.0 if normalized else 0.0, "_source": "native_text_frame", "context": context or {}}
@@ -1362,6 +1442,8 @@ class CALIFloatingOrb:
             self._emit({"type": "listening_state", "data": {"listening": True, "mode": mode}})
             import soundfile as sf
             audio_data = mic.record_chunk()
+            if self._detect_whistle_summon(audio_data, mic.sample_rate):
+                return ""
             cali_hearing = self.hear_with_cali(audio_data.flatten())
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
                 temp_path = temp_file.name
@@ -1372,6 +1454,9 @@ class CALIFloatingOrb:
                 if transcription and transcription.strip():
                     print(f"ðŸŽ¤ Heard: {transcription}", file=sys.stderr)
                     self._emit({"type": "speech_heard", "data": {"transcript": transcription}})
+                    if self._is_cali_summon_request(transcription):
+                        self._emit({"type": "cali_summon", "source": "voice", "data": {"transcript": transcription}})
+                        return transcription
                     self.emit_latency_mask_speech()
                     _align = self.alignment_layer.filter(transcription, {"source": "speech_input"})
                     if not _align["allowed"]:
@@ -2095,5 +2180,3 @@ def _main() -> None:
 
 if __name__ == "__main__":
     _main()
-
-

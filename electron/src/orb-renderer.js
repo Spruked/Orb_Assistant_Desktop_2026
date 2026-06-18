@@ -92,6 +92,9 @@ const ORB_DESKTOP_CURSOR_BEHAVIOR = process?.env?.ORB_DESKTOP_CURSOR_BEHAVIOR !=
 const ORB_CURSOR_AVAILABILITY_ENABLED = process?.env?.ORB_CURSOR_AVAILABILITY_ENABLED !== '0';
 const ORB_CURSOR_AVAILABILITY_DISTANCE = parseEnvInt('ORB_CURSOR_AVAILABILITY_DISTANCE', 1700, 600, 5000);
 const ORB_CURSOR_AVAILABILITY_COOLDOWN_MS = parseEnvInt('ORB_CURSOR_AVAILABILITY_COOLDOWN_MS', 8000, 2500, 60000);
+const ORB_SUMMON_THRUST_MS = parseEnvInt('ORB_SUMMON_THRUST_MS', 5200, 1200, 12000);
+const ORB_SUMMON_THRUST_SPEED = parseEnvFloat('ORB_SUMMON_THRUST_SPEED', 5.8, 1.2, 12);
+const ORB_SUMMON_THRUST_ACCEL = parseEnvFloat('ORB_SUMMON_THRUST_ACCEL', 0.35, 0.06, 1);
 const ORB_CURSOR_FOLLOW_OFFSET_X = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_X', 18, -500, 500);
 const ORB_CURSOR_FOLLOW_OFFSET_Y = parseEnvInt('ORB_CURSOR_FOLLOW_OFFSET_Y', 16, -500, 500);
 const ORB_CURSOR_FOLLOW_LERP = parseEnvFloat('ORB_CURSOR_FOLLOW_LERP', 0.026, 0.008, 0.08);
@@ -1050,6 +1053,15 @@ function buildAutonomousMotionProfile(baseProfile, current, target, isGuidedInte
   return profile;
 }
 
+function buildSummonMotionProfile() {
+  return {
+    maxSpeed: ORB_SUMMON_THRUST_SPEED,
+    accel: ORB_SUMMON_THRUST_ACCEL,
+    damping: 0.992,
+    steerMul: 1.18,
+  };
+}
+
 function toPlayableAudioUrl(audioPath) {
   if (!audioPath || typeof audioPath !== 'string') {
     return null;
@@ -1168,6 +1180,8 @@ function FloatingOrb() {
   const patrolIndexRef = useRef(0);
   const lastPatrolAtRef = useRef(0);
   const lastCursorAvailabilityAtRef = useRef(0);
+  const summonThrusterUntilRef = useRef(0);
+  const summonTargetRef = useRef(null);
   const pendingSwarmMissionsRef = useRef([]);
   const lastUserInputAtRef = useRef(Date.now());
   const companionIntentRef = useRef(new CompanionIntent({ playfulnessEnabled: ORB_PLAYFUL_IDLE_ENABLED }));
@@ -1283,6 +1297,35 @@ function FloatingOrb() {
   const isExplanationRequest = (text = '') => {
     const q = String(text || '').toLowerCase();
     return q.includes('explain') || q.includes('why') || q.includes('detail') || q.includes('how does');
+  };
+
+  const isSummonRequest = (text = '') => {
+    const q = String(text || '').toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!q) return false;
+    return (
+      /\b(orb|cali|assistant)\s+(come|come here|come to me|summon|return|here|over here)\b/.test(q) ||
+      /\b(come here|come to me|over here|get over here|summon orb|call orb|come back)\b/.test(q)
+    );
+  };
+
+  const engageSummonThruster = (source = 'manual') => {
+    const cursor = lastKnownCursorRef.current;
+    const target = chooseCursorAvailabilityTarget(cursor, monitorRectsRef.current);
+    summonTargetRef.current = target;
+    summonThrusterUntilRef.current = Date.now() + ORB_SUMMON_THRUST_MS;
+    targetCursorPositionRef.current = target;
+    lastCursorAvailabilityAtRef.current = Date.now();
+    lastForcedRetargetAtRef.current = Date.now();
+    lastRetargetAtRef.current = Date.now();
+    setInteractionStateWithLog('summon_thruster', source);
+    setMovementStateWithLog('returning_home', 'summon_thruster');
+    setTone('Summoned');
+    setBridgeStatus('Summon thruster engaged');
+    setBloomLevel(1);
+    setOrbScale(1.12);
+    showSpeechBubble('Coming.', { mode: 'state', persistMs: 1800 });
+    pulseOrb(1, 1.12, 220);
+    setTimeout(() => setOrbScale(1), 560);
   };
 
   const toShortCue = (text = '', maxWords = 12) => {
@@ -1554,8 +1597,10 @@ function FloatingOrb() {
           const cursorDistance = cursor
             ? Math.hypot(current.x - cursor.x, current.y - cursor.y)
             : 0;
+          const summonActive = summonTargetRef.current && now < summonThrusterUntilRef.current;
           const bridgeFault = String(bridgeStatus || '').toLowerCase().includes('error');
           const isGuidedInteractionActive = Boolean(
+            summonActive ||
             interactionStateRef.current === 'point_target' ||
             cueAwaitMotionRef.current === true ||
             isSubmitting ||
@@ -1664,6 +1709,7 @@ function FloatingOrb() {
             ORB_DESKTOP_CURSOR_BEHAVIOR &&
             cursor &&
             monitorRects.length &&
+            !summonActive &&
             !isGuidedInteractionActive &&
             !isInputFocused &&
             !isSpeakingHold &&
@@ -1762,14 +1808,30 @@ function FloatingOrb() {
             targetCursorPositionRef.current = avoidInputZone(avoidCenterWorkZone(offsetTarget), ct);
           }
 
+          if (summonActive && summonTargetRef.current) {
+            targetCursorPositionRef.current = summonTargetRef.current;
+            const distanceToSummon = Math.hypot(
+              targetCursorPositionRef.current.x - current.x,
+              targetCursorPositionRef.current.y - current.y
+            );
+            if (distanceToSummon <= ORB_CURSOR_COMFORT_RADIUS) {
+              summonThrusterUntilRef.current = 0;
+              summonTargetRef.current = null;
+              setInteractionStateWithLog('observe_user', 'summon_arrived');
+              setMovementStateWithLog('idle_hover', 'summon_arrived');
+            }
+          }
+
           const target = targetCursorPositionRef.current;
           const motionBounds = getFullMotionBounds();
-          const motionProfile = buildAutonomousMotionProfile(
-            intent.motionProfile,
-            current,
-            target,
-            isGuidedInteractionActive
-          );
+          const motionProfile = summonActive
+            ? buildSummonMotionProfile()
+            : buildAutonomousMotionProfile(
+                intent.motionProfile,
+                current,
+                target,
+                isGuidedInteractionActive
+              );
           const motionStep = fieldMotionRef.current.update({
             currentPosition: current,
             targetZone: target,
@@ -2121,6 +2183,17 @@ function FloatingOrb() {
       }),
       window.electronAPI.onCognitivePulse((_event, pulse) => applyPulse(pulse)),
       window.electronAPI.onSpeechPulse((_event, message) => {
+        const transcript = (
+          message?.transcription ||
+          message?.transcript ||
+          message?.data?.transcription ||
+          message?.data?.transcript ||
+          ''
+        );
+        if (isSummonRequest(transcript)) {
+          engageSummonThruster('voice');
+          return;
+        }
         applyPulse(message?.data || {});
         setTone('Responding');
         setBridgeStatus(message?.response_text || message?.transcription || 'Voice response ready');
@@ -2151,6 +2224,10 @@ function FloatingOrb() {
           playOrbAudio(audioSource);
         }
 
+        if (message?.type === 'cali_summon') {
+          engageSummonThruster(message?.source || payload?.source || 'summon');
+          return;
+        }
         if (message?.type === 'ready') {
           setBridgeStatus('Python bridge ready');
           setTone('Present');
@@ -2263,6 +2340,17 @@ function FloatingOrb() {
           }
         }
         if (message?.type === 'speech_pulse') {
+          const transcript = (
+            message?.transcription ||
+            message?.transcript ||
+            message?.data?.transcription ||
+            message?.data?.transcript ||
+            ''
+          );
+          if (isSummonRequest(transcript)) {
+            engageSummonThruster('voice');
+            return;
+          }
           const text = message?.response_text || message?.data?.response_text || message?.research?.response_text || '';
           if (text) {
             showSpeechBubble(text);
@@ -2423,6 +2511,12 @@ function FloatingOrb() {
     setIsSubmitting(true);
     const text = commandText.trim();
     try {
+      if (isSummonRequest(text)) {
+        engageSummonThruster('typed');
+        setLastResponseText('CALI summon thruster engaged.');
+        setCommandText('');
+        return;
+      }
       if (mode === 'ask') {
         setTone('Querying');
         deliverGuidanceCue('Got it. One step at a time.');

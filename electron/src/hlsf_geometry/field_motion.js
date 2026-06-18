@@ -19,11 +19,12 @@ class FieldMotion {
     const dvx = desiredVelocity.x - this.velocity.x;
     const dvy = desiredVelocity.y - this.velocity.y;
     const dvm = Math.hypot(dvx, dvy);
-    const scale = dvm > maxAcceleration ? maxAcceleration / dvm : 1;
+    const accelerationLimit = Math.max(0.01, Math.min(maxAcceleration, profile.accel || maxAcceleration));
+    const scale = dvm > accelerationLimit ? accelerationLimit / dvm : 1;
 
     this.velocity = {
-      x: (this.velocity.x + dvx * scale * profile.accel) * profile.damping,
-      y: (this.velocity.y + dvy * scale * profile.accel) * profile.damping,
+      x: (this.velocity.x + dvx * scale) * profile.damping,
+      y: (this.velocity.y + dvy * scale) * profile.damping,
     };
 
     const raw = {
