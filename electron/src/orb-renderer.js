@@ -77,7 +77,7 @@ const ORB_EDGE_REPEL_DISTANCE = 260;
 const ORB_EDGE_REPEL_GAIN = 2.15;
 const ORB_CENTER_RECOVERY_GAIN = 1.15;
 const ORB_HARD_ESCAPE_CLEARANCE = ORB_MIN_CURSOR_CLEARANCE - 8;
-const ORB_MAX_ACCELERATION = 0.065;
+const ORB_MAX_ACCELERATION = parseEnvFloat('ORB_MAX_ACCELERATION', 0.065, 0.02, 0.35);
 const ORB_VELOCITY_DAMPING = 0.986;
 const ORB_HOME_X_RATIO = parseEnvFloat('ORB_HOME_X_RATIO', 0.5, 0.1, 0.9);
 const ORB_HOME_Y_RATIO = parseEnvFloat('ORB_HOME_Y_RATIO', 0.5, 0.1, 0.9);
@@ -1595,8 +1595,9 @@ function FloatingOrb() {
             logCursorBlocked('cursor attraction blocked: autonomous mode');
           } else if (
             ORB_CURSOR_FOLLOW &&
-            intent.intent === 'returning' &&
             cursor &&
+            !isInputFocused &&
+            !isSpeakingHold &&
             (!ORB_CURSOR_ASSIST_MODE_ONLY || isGuidedInteractionActive)
           ) {
             const anchored = getCursorDisplayAnchor(cursor, monitorRects);
@@ -1617,6 +1618,7 @@ function FloatingOrb() {
           }
 
           if (
+            ORB_CURSOR_FOLLOW &&
             ORB_DESKTOP_CURSOR_BEHAVIOR &&
             !isDocked &&
             displayActiveRef.current &&
@@ -2020,8 +2022,8 @@ function FloatingOrb() {
           logCursorBlocked('cursor drift-heading influence blocked: autonomous mode');
         }
         lastCursorPointRef.current = cursorPoint;
-        if (!displayActiveRef.current) {
-          const resetPosition = ORB_DESKTOP_CURSOR_BEHAVIOR
+          if (!displayActiveRef.current) {
+          const resetPosition = ORB_CURSOR_FOLLOW
             ? getCursorFollowTarget(cursorPoint, monitorRectsRef.current)
             : ensureCursorClearance(
                 cursorPositionRef.current,
@@ -2033,7 +2035,7 @@ function FloatingOrb() {
         }
         displayActiveRef.current = true;
         setDisplayActive(true);
-        if (ORB_DESKTOP_CURSOR_BEHAVIOR && !orbDockedRef.current && orbVisible) {
+        if (ORB_CURSOR_FOLLOW && ORB_DESKTOP_CURSOR_BEHAVIOR && !orbDockedRef.current && orbVisible) {
           targetCursorPositionRef.current = getCursorFollowTarget(cursorPoint, monitorRectsRef.current);
         }
       }),
