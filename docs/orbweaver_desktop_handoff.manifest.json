@@ -1,0 +1,94 @@
+{
+  "schema": "orbweaver.desktop_handoff.v1",
+  "desktop_orb": {
+    "name": "Desktop ORB",
+    "role": "presentation_ingestion_voice_presence",
+    "root_windows": "R:\\Orb_Assistant_Desktop",
+    "launcher_windows": "R:\\Orb_Assistant_Desktop\\launch_desktop_orb.ps1",
+    "api_manifest_windows": "R:\\Orb_Assistant_Desktop\\instance.manifest.json"
+  },
+  "orbweaver": {
+    "role": "diagnostic_scan_navigation_pointer_research_worker",
+    "desktop_orb_must_not_scan": true
+  },
+  "result_surface": {
+    "root_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\orbweaver_results",
+    "incoming_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\orbweaver_results\\incoming",
+    "processed_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\orbweaver_results\\processed",
+    "archive_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\orbweaver_results\\archive",
+    "quarantine_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\orbweaver_results\\quarantine",
+    "contract_windows": "R:\\Orb_Assistant_Desktop\\docs\\ORBWEAVER_DIAGNOSTIC_RESULT_CONTRACT.md",
+    "schema_windows": "R:\\Orb_Assistant_Desktop\\docs\\orbweaver_diagnostic_result.schema.json"
+  },
+  "pointer_surface": {
+    "root_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer",
+    "captures_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer\\captures",
+    "state_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer\\state",
+    "actions_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer\\actions",
+    "baseline_maps_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer\\baseline_maps",
+    "contract_windows": "R:\\Orb_Assistant_Desktop\\docs\\TAMP_ON_DEMAND_POINTER_CONTRACT.md",
+    "baseline_contract_windows": "R:\\Orb_Assistant_Desktop\\docs\\BASELINE_REFERENCE_MAPS_CONTRACT.md",
+    "perception_contract_windows": "R:\\Orb_Assistant_Desktop\\docs\\DESKTOP_SCENE_SWEEP_PERCEPTION_CONTRACT.md",
+    "baseline_schema_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer\\baseline_map.schema.json",
+    "observation_snapshot_schema_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_pointer\\observation_snapshot.schema.json",
+    "coordinate_policy": "prefer_virtual_desktop_coordinates",
+    "automatic_actions": ["observe", "hover_context", "point_at", "explain", "dismiss"],
+    "operator_review_actions": ["select", "open", "operator_override"]
+  },
+  "morb_deployment_surface": {
+    "root_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\morb_deployments",
+    "jobs_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\morb_deployments\\jobs",
+    "active_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\morb_deployments\\active",
+    "results_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\morb_deployments\\results",
+    "archive_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\morb_deployments\\archive",
+    "quarantine_windows": "R:\\Orb_Assistant_Desktop\\CALI_System\\diagnostics\\morb_deployments\\quarantine",
+    "contract_windows": "R:\\Orb_Assistant_Desktop\\docs\\MORB_RESEARCH_DIAGNOSTIC_DEPLOYMENT_CONTRACT.md",
+    "desktop_mcp_morb_module_windows": "R:\\Orb_Assistant_Desktop\\mcp\\orb_desktop_mcp\\orb_morbs",
+    "morb_roles": ["research", "diagnostic", "scan", "repair_plan", "verification"],
+    "qwen_code_tool": {
+      "allowed_for_morbs": true,
+      "purpose": "diagnostics_code_inspection_repair_planning_verification",
+      "root_windows": "R:\\Services\\qwen-code-main\\qwen-code-main",
+      "runtime_boundary": "tool_only_not_desktop_conversation_runtime"
+    },
+    "prime_cardinality_policy": {
+      "required": true,
+      "allowed_counts": [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31],
+      "never_allowed": [1],
+      "non_prime_counts_allowed": false,
+      "normalization": "round_up_to_next_supported_prime"
+    },
+    "desktop_orb_role": "deploy_supervise_present_gate",
+    "repair_execution_policy": "operator_approval_required"
+  },
+  "shared_substrate": {
+    "research_root_windows": "R:\\substrate",
+    "orb_state_root_windows": "R:\\substrate\\orb_state",
+    "voice_root_windows": "R:\\substrate\\orb_voice",
+    "source_of_truth_vault_policy": "one_shared_vault_only_in_r_drive_substrate"
+  },
+  "orb_mesh": {
+    "shared_mesh_root_windows": "R:\\mesh",
+    "purpose": "all_orbs_write_non_personal_operational_facts_here"
+  },
+  "vault_policy": {
+    "repo_local_vault_policy": "one_vault_per_repo",
+    "desktop_repo_vault_candidates": [
+      "R:\\Orb_Assistant_Desktop\\vault_system",
+      "R:\\Orb_Assistant_Desktop\\Vault_System_1.0",
+      "R:\\Orb_Assistant_Desktop\\system\\vault_system"
+    ],
+    "shared_truth_policy": "do_not_duplicate_the_r_substrate_vault_inside_desktop_orb"
+  },
+  "privacy_boundary": {
+    "never_scan_or_ingest": [
+      "personal_documents",
+      "emails",
+      "browser_history",
+      "passwords",
+      "encrypted_stores",
+      "cloud_accounts",
+      "financial_data"
+    ]
+  }
+}

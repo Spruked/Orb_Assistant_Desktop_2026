@@ -1,0 +1,296 @@
+R:\Orb_Assistant_Desktop structure_tree.txt
+Generated: 2026-10-20 03:51:43 -0500
+Scope: this repository only. Directories only; collapsed folders are not expanded.
+Regenerate with: python scripts/generate_trees.py
+
+Directories (256):
+.orb-assistant-desktop/ [collapsed]
+.orb-runtime/ [collapsed]
+.pytest_cache/ [collapsed]
+.vscode/ [collapsed]
+_archive/ [collapsed]
+api/  (8 files)  - FastAPI backend (tribunal, health) - not part of the desktop runtime
+  __pycache__/ [collapsed]
+caleon-immutable-memory-matrix/  (0 files)
+cali_orb_state_machine/  (10 files)
+cali_skills/  (2 files)
+  active/  (0 files)
+  core/  (6 files)
+    __pycache__/ [collapsed]
+  library/  (0 files)
+    code_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+    finance_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+    goat_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+      profiles/  (0 files)
+      staging/  (0 files)
+        audio_cache/ [collapsed]
+    legal_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+    proprime_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+    research_skill/  (3 files)
+      __pycache__/ [collapsed]
+      cache/  (0 files)
+      memory/  (3 files)
+    security_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+      vault/  (0 files)
+    spruked_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+    system_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+    truemark_skill/  (3 files)
+      __pycache__/ [collapsed]
+      memory/  (3 files)
+      staging/  (1 files)
+CALI_System/  (0 files)
+  cache/  (0 files)
+    sentence_transformers/  (0 files)
+  config/  (2 files)
+  core_knowledge/  (0 files)
+    goat_system/  (2 files)
+    spruked/  (3 files)
+    truemark_mint/  (3 files)
+  diagnostics/  (0 files)
+    morb_deployments/  (1 files)
+      active/  (1 files)
+      archive/  (1 files)
+      jobs/  (1 files)
+      quarantine/  (1 files)
+      results/  (1 files)
+    orbweaver_results/  (1 files)
+      archive/  (1 files)
+      incoming/  (1 files)
+      processed/  (1 files)
+      quarantine/  (1 files)
+  logs/ [collapsed]
+  memory/  (3 files)
+    a_posteriori/  (1 files)
+    a_priori/  (1 files)
+    cali_skills/  (0 files)
+    conversation_tests/  (35 files)
+    patterns/  (0 files)
+  morb_logs/  (0 files)
+  notes/  (0 files)
+    conversation_tests/  (35 files)
+  runtime_logs/ [collapsed]
+  swarm_results/  (0 files)
+  voice_cache/ [collapsed]
+dist/ [collapsed]
+docs/  (15 files)  - Contracts, handoffs, reviews
+  reviews/  (2 files)
+electron/  (14 files)  - Electron host: main process, preload, renderer, Dock Station, Python ORB process
+  .orb-assistant/ [collapsed]
+  audio_cache/ [collapsed]
+  CALI_System/  (0 files)
+    cache/  (0 files)
+    config/  (0 files)
+    core_knowledge/  (0 files)
+      goat_system/  (2 files)
+      spruked/  (3 files)
+      truemark_mint/  (3 files)
+    logs/ [collapsed]
+    memory/  (3 files)
+      a_posteriori/  (0 files)
+      a_priori/  (1 files)
+      cali_skills/  (0 files)
+      patterns/  (0 files)
+    notes/  (0 files)
+    swarm_results/  (0 files)
+    voice_cache/ [collapsed]
+  logs/ [collapsed]
+  main/  (11 files)  - Electron main process (windows, IPC, bridge to Python, MCP client)
+  node_modules/ [collapsed]
+  Rdatasetsbulk_mirrorsagriculture_food_and_water/  (2 files)
+  Rdatasetsbulk_mirrorsbiomedical_and_public_health/  (2 files)
+  Rdatasetsbulk_mirrorsearth_systems_and_climate/  (0 files)
+  Rdatasetsbulk_mirrorsfinancial_economic/  (2 files)
+  Rdatasetsbulk_mirrorsgeospatial_and_regional_analysis/  (4 files)
+  Rdatasetsbulk_mirrorsindustrial_manufacturing/  (2 files)
+  Rdatasetsbulk_mirrorsmacro_economic_indicators/  (2 files)
+  Rdatasetsbulk_mirrorsmicro_economic_markets/  (2 files)
+  Rdatasetsbulk_mirrorsscientific_literature_and_evidence/  (4 files)
+  Rdatasetsbulk_mirrorsspace_exploration_and_mars/  (4 files)
+  scripts/  (1 files)
+  src/  (58 files)  - Renderer (orb-shell.html, orb-renderer.js, Three.js scene), Python ORB runtime, Dock UI
+    __pycache__/ [collapsed]
+    caleon_presence/  (1 files)
+      __pycache__/ [collapsed]
+      core/  (3 files)
+        __pycache__/ [collapsed]
+    cali_swarm_extension/  (2 files)
+      __pycache__/ [collapsed]
+      research/  (5 files)
+        __pycache__/ [collapsed]
+      substrate/  (2 files)
+        __pycache__/ [collapsed]
+      swarm/  (3 files)
+    components/  (4 files)
+      core_4_minds/  (1 files)
+        __pycache__/ [collapsed]
+        bspinoza/  (1 files)
+        hhume/  (1 files)
+        hlocke/  (1 files)
+        ikant/  (1 files)
+    core-bridges/  (5 files)
+      __pycache__/ [collapsed]
+    hlsf_geometry/  (2 files)
+      __pycache__/ [collapsed]
+    interface/  (3 files)
+    kokoro_baseline/  (0 files)
+    logic_seeds/  (1 files)
+      deductive_SKG/  (1 files)
+        job/  (1 files)
+        jobs/  (1 files)
+        logic/  (2 files)
+      deductive_validator/  (1 files)
+        job/  (1 files)
+        logic/  (2 files)
+      inductive/  (2 files)
+      inductive_skg/  (0 files)
+        logic/  (3 files)
+      inductive_validator/  (1 files)
+        logic/  (2 files)
+      intuitive/  (1 files)
+      intuitive_skg/  (0 files)
+        logic/  (2 files)
+      intuitive_validator/  (1 files)
+        logic/  (2 files)
+    skins/  (3 files)
+    ui/  (6 files)  - Dock Station / Studio UI (orb-dock-station.*)
+    vault_system/  (2 files)
+      __pycache__/ [collapsed]
+  test-results/ [collapsed]
+mcp/  (0 files)  - Desktop MCP server (desktop control tools, pointer runtime, safety guard)
+  orb_desktop_mcp/  (4 files)
+    __pycache__/ [collapsed]
+    docs/  (1 files)
+    orb_browser/  (2 files)
+      __pycache__/ [collapsed]
+    orb_cognition/  (7 files)
+      __pycache__/ [collapsed]
+    orb_controller/  (3 files)
+      __pycache__/ [collapsed]
+    orb_desktop/  (2 files)
+      __pycache__/ [collapsed]
+    orb_llm/  (2 files)
+      __pycache__/ [collapsed]
+    orb_morbs/  (2 files)
+      __pycache__/ [collapsed]
+    orb_pointer/  (12 files)
+      __pycache__/ [collapsed]
+      actions/  (0 files)
+      baseline_maps/  (1 files)
+      captures/  (0 files)
+      state/  (0 files)
+    orb_safety/  (2 files)
+      __pycache__/ [collapsed]
+    orb_substrate/  (2 files)
+      __pycache__/ [collapsed]
+    tests/  (2 files)
+modules/  (0 files)
+  Epistemic_Gravity_Field/  (9 files)
+    __pycache__/ [collapsed]
+  Orb/  (1 files)
+node_modules/ [collapsed]
+pointer doctrine files/  (11 files)
+scripts/  (16 files)  - Launch, voice stack, packaging and maintenance scripts
+  __pycache__/ [collapsed]
+swarm/  (4 files)
+system/  (2 files)  - Local system configuration and swarm substrate
+  CALI_System/  (0 files)
+    cache/  (0 files)
+      sentence_transformers/  (0 files)
+    config/  (3 files)
+    diagnostics/  (0 files)
+    logs/ [collapsed]
+    memory/  (2 files)
+      a_posteriori/  (1 files)
+      a_priori/  (1 files)
+      patterns/  (0 files)
+    morb_logs/  (0 files)
+    swarm_results/  (0 files)
+    voice_cache/ [collapsed]
+  cognition/  (0 files)
+    cali_ucm_adapter/  (5 files)
+      node_modules/ [collapsed]
+  swarm/  (4 files)
+tools/  (0 files)  - Bundled tools (kept out of source commits)
+  tesseract/ [collapsed]
+vault_logic_system/  (4 files)  - Vault Logic System: modular framework (vaults, engine, glyphs, telemetry) - vendored, tracked in this repo
+  config/  (2 files)
+    environments/  (3 files)
+  docs/  (6 files)
+  engine/  (3 files)
+    integration_hooks/  (2 files)
+  examples/  (3 files)
+  glyphs/  (2 files)
+    _template/  (1 files)
+  interfaces/  (0 files)
+    api/  (1 files)
+    cli/  (1 files)
+  memory/  (3 files)  - Framework memory slot: provider + binding. A.I.M.S. is the only memory authority
+    __pycache__/ [collapsed]
+    aims/  (10 files)  - A.I.M.S. (Agnostic Immutable Memory System) - short-term cache, long-term ledger, vault, SKG
+      .github/  (0 files)
+        workflows/  (1 files)
+      memory_core/  (10 files)
+        __pycache__/ [collapsed]
+        skg/  (5 files)
+          __pycache__/ [collapsed]
+      tests/  (5 files)
+  scripts/  (5 files)
+  telemetry/  (3 files)
+    dashboard/  (2 files)
+    traces/  (2 files)
+  tests/  (0 files)
+    integration/  (4 files)
+    unit/  (2 files)
+  vaults/  (0 files)
+    _template/  (2 files)
+      rules/  (1 files)
+
+Top-level files (32):
+  .gitignore
+  .orb-instance.env
+  .orb-instance.env.example
+  .orb-launch.log
+  cali_skg_info
+  CALIORBMetal1024.png
+  dev.log
+  DEVLOG.md
+  ENDPOINTS_SCAN.md
+  femalesample40s.wav
+  folder_tree.txt
+  generate_tree.ps1
+  handoff.md
+  IMMUTABLE_LAW.md
+  install_orb_desktop.bat
+  instance.manifest.json
+  launch_desktop_orb.bat
+  launch_desktop_orb.ps1
+  launch_desktop_orb.sh
+  orb-instance.local.ps1
+  orb-instance.windows.ps1
+  orb-render-diagnostics.log
+  ORB_PRODUCT_ECOSYSTEM.md
+  ORB_SWARM_AUDIT_DOCTRINE.md
+  ORBS_MULTI_DOCK_PLAN.md
+  package-lock.json
+  package.json
+  README.md
+  SESSION_NOTES.md
+  SOVEREIGN_INSTANCE.md
+  structure_tree.txt
+  tree.txt

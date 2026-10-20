@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "maps": [
+    {
+      "schema_version": "1.0",
+      "map_id": "browser_common_v1",
+      "application_family": "browser_common",
+      "platform": "windows",
+      "doctrine": {
+        "role": "fallback_reference_map",
+        "truth_source": "live_observation",
+        "side_effect_policy": "operator_review_required"
+      },
+      "regions": [
+        { "id": "tab_strip", "label": "Tab strip", "aliases": ["tabs"], "normalized_rect": { "x": 0.06, "y": 0.00, "width": 0.76, "height": 0.07 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "Approximate common Chromium/Firefox tab row." },
+        { "id": "new_tab", "label": "New tab button", "aliases": ["plus tab"], "normalized_rect": { "x": 0.30, "y": 0.01, "width": 0.04, "height": 0.05 }, "allowed_use": ["observe", "reorient", "hover_context"], "requires_live_confirmation": true, "notes": "May vary with tab count." },
+        { "id": "back", "label": "Back button", "aliases": ["go back"], "normalized_rect": { "x": 0.00, "y": 0.07, "width": 0.035, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "forward", "label": "Forward button", "aliases": ["go forward"], "normalized_rect": { "x": 0.035, "y": 0.07, "width": 0.035, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "refresh", "label": "Refresh button", "aliases": ["reload"], "normalized_rect": { "x": 0.07, "y": 0.07, "width": 0.04, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "address_bar", "label": "Address bar", "aliases": ["url bar", "omnibox", "search bar"], "normalized_rect": { "x": 0.11, "y": 0.07, "width": 0.69, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "Action into the address bar requires operator review when it types or navigates." },
+        { "id": "downloads", "label": "Downloads", "aliases": ["download shelf", "downloads button"], "normalized_rect": { "x": 0.84, "y": 0.07, "width": 0.04, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "browser_menu", "label": "Browser menu", "aliases": ["three dots", "hamburger menu"], "normalized_rect": { "x": 0.955, "y": 0.07, "width": 0.035, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "bookmarks_bar", "label": "Bookmarks bar", "aliases": ["favorites bar"], "normalized_rect": { "x": 0.00, "y": 0.125, "width": 1.00, "height": 0.045 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "May be hidden." },
+        { "id": "page_viewport", "label": "Page viewport", "aliases": ["web page", "content area"], "normalized_rect": { "x": 0.00, "y": 0.13, "width": 1.00, "height": 0.87 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "Primary live OCR/DOM target area." },
+        { "id": "permission_dialog", "label": "Permission dialog", "aliases": ["allow dialog", "site permission"], "normalized_rect": { "x": 0.06, "y": 0.11, "width": 0.34, "height": 0.24 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "Buttons require operator review." },
+        { "id": "save_download_prompt", "label": "Save or download prompt", "aliases": ["download prompt"], "normalized_rect": { "x": 0.58, "y": 0.74, "width": 0.38, "height": 0.22 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "Prompt location varies by browser." }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "map_id": "file_explorer_v1",
+      "application_family": "file_explorer",
+      "platform": "windows",
+      "doctrine": {
+        "role": "fallback_reference_map",
+        "truth_source": "live_observation",
+        "side_effect_policy": "operator_review_required"
+      },
+      "regions": [
+        { "id": "toolbar", "label": "Toolbar", "aliases": ["command bar"], "normalized_rect": { "x": 0.00, "y": 0.00, "width": 1.00, "height": 0.09 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "address_breadcrumb_bar", "label": "Address breadcrumb bar", "aliases": ["address bar", "path bar", "breadcrumbs"], "normalized_rect": { "x": 0.15, "y": 0.09, "width": 0.62, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "search_box", "label": "Search box", "aliases": ["search"], "normalized_rect": { "x": 0.78, "y": 0.09, "width": 0.21, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "Typing requires operator review." },
+        { "id": "navigation_pane", "label": "Navigation pane", "aliases": ["left pane", "folders"], "normalized_rect": { "x": 0.00, "y": 0.15, "width": 0.20, "height": 0.85 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "file_list_pane", "label": "File list pane", "aliases": ["files", "folder contents"], "normalized_rect": { "x": 0.20, "y": 0.20, "width": 0.62, "height": 0.80 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "Target rows must be re-scanned by OCR/UI Automation." },
+        { "id": "details_columns", "label": "Details columns", "aliases": ["name column", "date modified", "type", "size"], "normalized_rect": { "x": 0.20, "y": 0.15, "width": 0.62, "height": 0.05 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "Only present in details view." },
+        { "id": "preview_pane", "label": "Preview pane", "aliases": ["right preview"], "normalized_rect": { "x": 0.82, "y": 0.15, "width": 0.18, "height": 0.85 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "May be hidden." },
+        { "id": "context_menu", "label": "Context menu", "aliases": ["right click menu"], "normalized_rect": { "x": 0.35, "y": 0.30, "width": 0.28, "height": 0.48 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "Menu location depends on selected target." }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "map_id": "windows_settings_v1",
+      "application_family": "settings",
+      "platform": "windows",
+      "doctrine": {
+        "role": "fallback_reference_map",
+        "truth_source": "live_observation",
+        "side_effect_policy": "operator_review_required"
+      },
+      "regions": [
+        { "id": "settings_sidebar", "label": "Settings sidebar", "aliases": ["left navigation"], "normalized_rect": { "x": 0.00, "y": 0.10, "width": 0.25, "height": 0.90 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "settings_search", "label": "Settings search", "aliases": ["find a setting"], "normalized_rect": { "x": 0.04, "y": 0.03, "width": 0.36, "height": 0.055 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "Typing requires operator review." },
+        { "id": "settings_content", "label": "Settings content", "aliases": ["main settings page"], "normalized_rect": { "x": 0.25, "y": 0.10, "width": 0.75, "height": 0.90 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "" }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "map_id": "windows_common_dialog_v1",
+      "application_family": "windows_common_dialog",
+      "platform": "windows",
+      "doctrine": {
+        "role": "fallback_reference_map",
+        "truth_source": "live_observation",
+        "side_effect_policy": "operator_review_required"
+      },
+      "regions": [
+        { "id": "dialog_message", "label": "Dialog message", "aliases": ["message text"], "normalized_rect": { "x": 0.08, "y": 0.12, "width": 0.84, "height": 0.48 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at", "explain"], "requires_live_confirmation": true, "notes": "" },
+        { "id": "primary_button", "label": "Primary button", "aliases": ["ok", "yes", "save"], "normalized_rect": { "x": 0.55, "y": 0.78, "width": 0.18, "height": 0.10 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "Click requires operator review." },
+        { "id": "secondary_button", "label": "Secondary button", "aliases": ["cancel", "no"], "normalized_rect": { "x": 0.75, "y": 0.78, "width": 0.18, "height": 0.10 }, "allowed_use": ["observe", "reorient", "hover_context", "point_at"], "requires_live_confirmation": true, "notes": "Click requires operator review." }
+      ]
+    }
+  ]
+}

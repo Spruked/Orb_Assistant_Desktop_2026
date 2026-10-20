@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://desktop-orb.local/schemas/observation_snapshot.schema.json",
+  "title": "Desktop ORB Observation Snapshot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "source",
+    "scope",
+    "timestamp",
+    "display_map",
+    "objects",
+    "blocked_regions",
+    "confidence",
+    "evidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "snapshot_id": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "string",
+      "enum": ["desktop_scene_sweep", "virtual_lidar_sweep", "camera_perception"]
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["active_task_area", "active_window", "selected_monitor", "authorized_camera_frame"]
+    },
+    "timestamp": { "type": "string", "minLength": 1 },
+    "display_map": {
+      "type": "object",
+      "required": ["virtual_bounds", "display_rects"],
+      "additionalProperties": false,
+      "properties": {
+        "virtual_bounds": { "$ref": "#/$defs/rect" },
+        "display_rects": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/rect" },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "index": { "type": "integer", "minimum": 0 }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "active_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "process": { "type": "string" },
+        "bounds": { "$ref": "#/$defs/rect" }
+      }
+    },
+    "objects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/visible_object" }
+    },
+    "blocked_regions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/blocked_region" }
+    },
+    "cursor": { "$ref": "#/$defs/point" },
+    "orb": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "radius": { "type": "number", "minimum": 0 }
+      }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "object",
+      "required": ["x", "y"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      }
+    },
+    "rect": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "width": { "type": "number", "minimum": 0 },
+        "height": { "type": "number", "minimum": 0 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["source", "value", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["screen_capture", "window_geometry", "ui_automation", "dom", "ocr", "visual_shape", "camera", "baseline_map", "verification"]
+        },
+        "value": {},
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "visible_object": {
+      "type": "object",
+      "required": ["id", "type", "bounding_box", "evidence", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["button", "checkbox", "slider", "menu", "tab", "dialog", "text_field", "folder", "document", "image", "shortcut", "drive", "application_icon", "browser_control", "page_card", "form", "shopping_cart", "checkout_section", "warning", "loading_indicator", "error_banner", "permission_prompt", "disabled_control", "window_boundary", "popup", "unknown"]
+        },
+        "probable_role": { "type": "string" },
+        "visible_text": { "type": "string" },
+        "application": { "type": "string" },
+        "window": { "type": "string" },
+        "bounding_box": { "$ref": "#/$defs/rect" },
+        "clickable": { "type": "string", "enum": ["yes", "likely", "unknown", "no"] },
+        "obstructed": { "type": "boolean" },
+        "disabled": { "type": "boolean" },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence" }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "blocked_region": {
+      "type": "object",
+      "required": ["id", "reason", "bounding_box"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "reason": {
+          "type": "string",
+          "enum": ["orb_overlap", "window_overlap", "modal_block", "offscreen", "disabled", "unsafe", "unknown"]
+        },
+        "bounding_box": { "$ref": "#/$defs/rect" }
+      }
+    }
+  }
+}

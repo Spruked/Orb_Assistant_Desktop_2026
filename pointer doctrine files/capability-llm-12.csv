@@ -1,0 +1,13 @@
+﻿Capability,LLM,Your System
+World model,❌ none,✔ CorrespondenceState
+Contradiction tracking,❌ none,✔ KnowledgeClaim + edges
+Drift detection,❌ none,✔ drift vectors + velocity
+Provenance,❌ none,✔ EvidenceItem chain
+Confidence,❌ token logits,✔ geometric distance
+Novelty detection,❌ none,✔ ECM escalation
+Ethical grounding,❌ RLHF patterns,✔ philosopher beams
+Multi-beam reasoning,❌ none,✔ Hume/Kant/Locke/Spinoza
+Error correction,❌ none,✔ Drift Ping
+Antifragility,❌ none,✔ challenge → correction
+Temporal coherence,❌ none,✔ vault + drift history
+Understanding,❌ mimicked,"✔ structured, geometric, principled"

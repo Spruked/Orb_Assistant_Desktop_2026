@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orbweaver.diagnostic_result.v1",
+  "title": "Orb Weaver Diagnostic Result",
+  "type": "object",
+  "required": [
+    "schema",
+    "result_id",
+    "created_at",
+    "producer",
+    "scope",
+    "summary",
+    "findings",
+    "metrics",
+    "research",
+    "raw_refs",
+    "privacy"
+  ],
+  "properties": {
+    "schema": {
+      "const": "orbweaver.diagnostic_result.v1"
+    },
+    "result_id": {
+      "type": "string",
+      "minLength": 8
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "producer": {
+      "type": "object",
+      "required": ["name", "version", "checkout", "host"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "checkout": { "type": "string" },
+        "host": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "scope": {
+      "type": "object",
+      "required": ["mode", "allowed_domains", "excluded_domains"],
+      "properties": {
+        "mode": { "const": "system_diagnostics" },
+        "allowed_domains": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/domain" }
+        },
+        "excluded_domains": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/neverIngestDomain" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": ["state", "severity", "headline", "details", "recommended_next_action"],
+      "properties": {
+        "state": { "$ref": "#/$defs/state" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "headline": { "type": "string" },
+        "details": { "type": "string" },
+        "recommended_next_action": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "research": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/researchEntry" }
+    },
+    "raw_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "personal_domain_excluded",
+        "contains_personal_documents",
+        "contains_email_content",
+        "contains_browser_history",
+        "contains_password_or_secret_material"
+      ],
+      "properties": {
+        "personal_domain_excluded": { "const": true },
+        "contains_personal_documents": { "const": false },
+        "contains_email_content": { "const": false },
+        "contains_browser_history": { "const": false },
+        "contains_password_or_secret_material": { "const": false },
+        "contains_encrypted_store_content": { "const": false },
+        "contains_cloud_account_content": { "const": false },
+        "contains_financial_data": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "mesh_publication": {
+      "type": "object",
+      "properties": {
+        "publishable": { "type": "boolean" },
+        "mesh_root": { "type": "string" },
+        "topic": { "type": "string" },
+        "fact_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "vault_refs": {
+      "type": "object",
+      "properties": {
+        "repo_vault": { "type": ["string", "null"] },
+        "substrate_vault": { "type": ["string", "null"] },
+        "source_of_truth": {
+          "enum": ["repo_vault", "substrate_vault", "none"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "morb_execution": {
+      "type": "object",
+      "properties": {
+        "used_deployed_morb": { "type": "boolean" },
+        "morb_job_id": { "type": ["string", "null"] },
+        "morb_id": { "type": ["string", "null"] },
+        "morb_count": {
+          "type": ["integer", "null"],
+          "enum": [null, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+        },
+        "cardinality_policy": {
+          "enum": ["prime_only", "none"]
+        },
+        "morb_type": {
+          "enum": ["research", "diagnostic", "scan", "repair_plan", "verification", "none"]
+        },
+        "result_ref": { "type": ["string", "null"] },
+        "repair_plan_ref": { "type": ["string", "null"] },
+        "repair_execution_requires_operator_approval": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "state": {
+      "enum": ["READY", "CHECKING", "DEGRADED", "ERROR", "OFF", "UNKNOWN"]
+    },
+    "severity": {
+      "enum": ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    },
+    "domain": {
+      "enum": [
+        "system_state_model",
+        "os_health_signals",
+        "driver_stack",
+        "network_model",
+        "security_posture",
+        "storage_integrity",
+        "thermal_model",
+        "power_model",
+        "app_behavior",
+        "llm_runtime_state",
+        "orb_subsystems",
+        "cpu_metrics",
+        "gpu_metrics",
+        "ram_usage",
+        "disk_health",
+        "motherboard_sensors",
+        "peripheral_status",
+        "event_logs",
+        "process_table",
+        "startup_items",
+        "services_state",
+        "driver_versions",
+        "registry_health",
+        "interface_status",
+        "latency_profile",
+        "dns_resolution",
+        "firewall_rules",
+        "suspicious_processes",
+        "av_status",
+        "port_activity",
+        "credential_health",
+        "crash_reports",
+        "update_status",
+        "resource_usage",
+        "model_load",
+        "audio_pipeline",
+        "motion_engine",
+        "voice_pipeline",
+        "vault_integrity"
+      ]
+    },
+    "neverIngestDomain": {
+      "enum": [
+        "personal_documents",
+        "emails",
+        "browser_history",
+        "passwords",
+        "encrypted_stores",
+        "cloud_accounts",
+        "financial_data"
+      ]
+    },
+    "finding": {
+      "type": "object",
+      "required": [
+        "id",
+        "category",
+        "state",
+        "severity",
+        "title",
+        "evidence",
+        "interpretation",
+        "recommended_action",
+        "requires_operator_approval"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "$ref": "#/$defs/domain" },
+        "state": { "$ref": "#/$defs/state" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "title": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "interpretation": { "type": "string" },
+        "recommended_action": {
+          "type": ["string", "null"]
+        },
+        "requires_operator_approval": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "researchEntry": {
+      "type": "object",
+      "required": ["category", "query", "summary", "sources"],
+      "properties": {
+        "category": {
+          "enum": [
+            "driver_updates",
+            "known_issues",
+            "security_advisories",
+            "performance_tuning",
+            "llm_runtime_best_practices",
+            "hardware_specs",
+            "thermal_solutions",
+            "network_troubleshooting"
+          ]
+        },
+        "query": { "type": "string" },
+        "summary": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "url", "publisher", "retrieved_at"],
+            "properties": {
+              "title": { "type": "string" },
+              "url": { "type": "string" },
+              "publisher": { "type": "string" },
+              "retrieved_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

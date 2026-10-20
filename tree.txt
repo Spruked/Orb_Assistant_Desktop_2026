@@ -1,0 +1,868 @@
+R:\Orb_Assistant_Desktop tree.txt
+Generated: 2026-10-20 03:51:43 -0500
+Scope: this repository only. Dependency, runtime, cache and archive folders are collapsed.
+Regenerate with: python scripts/generate_trees.py
+
+Orb_Assistant_Desktop/
+├── .orb-assistant-desktop [collapsed]
+├── .orb-runtime [collapsed]
+├── .pytest_cache [collapsed]
+├── .vscode [collapsed]
+├── _archive [collapsed]
+├── api
+│   ├── __pycache__ [collapsed]
+│   ├── __init__.py
+│   ├── main.py
+│   ├── orb_substrate.py
+│   ├── OrbService.d.ts
+│   ├── OrbService.js
+│   ├── requirements.txt
+│   ├── research_executor.py
+│   └── stream_structure.json
+├── caleon-immutable-memory-matrix
+├── cali_orb_state_machine
+│   ├── cali_skg_INTEGRATION.py
+│   ├── floating_assistant_orb_main_INTEGRATION.py
+│   ├── FloatingOrb.jsx
+│   ├── orb-bridge_UPDATED.js
+│   ├── orb_behavior_runtime.py
+│   ├── orb_command_router.py
+│   ├── orb_lifecycle.py
+│   ├── orb_state_machine.py
+│   ├── README_STATE_MACHINE.md
+│   └── SUPERSEDED.md
+├── cali_skills
+│   ├── active
+│   ├── core
+│   │   ├── __pycache__ [collapsed]
+│   │   ├── arbitrator.py
+│   │   ├── context.py
+│   │   ├── interface.py
+│   │   ├── loader.py
+│   │   ├── memory_bridge.py
+│   │   └── registry.py
+│   ├── library
+│   │   ├── code_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── finance_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── goat_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── profiles
+│   │   │   ├── staging
+│   │   │   │   └── audio_cache [collapsed]
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── legal_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── proprime_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── research_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── cache
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── security_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── vault
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── spruked_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   ├── system_skill
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── memory
+│   │   │   │   ├── a_posteriori.jsonl
+│   │   │   │   ├── a_priori.jsonl
+│   │   │   │   └── patterns.jsonl
+│   │   │   ├── knowledge.skg
+│   │   │   ├── logic.py
+│   │   │   └── skill.json
+│   │   └── truemark_skill
+│   │       ├── __pycache__ [collapsed]
+│   │       ├── memory
+│   │       │   ├── a_posteriori.jsonl
+│   │       │   ├── a_priori.jsonl
+│   │       │   └── patterns.jsonl
+│   │       ├── staging
+│   │       │   └── knft_20260411_160555_9dd4e461.json
+│   │       ├── knowledge.skg
+│   │       ├── logic.py
+│   │       └── skill.json
+│   ├── index.json
+│   └── requirements.txt
+├── CALI_System
+│   ├── cache
+│   │   └── sentence_transformers
+│   ├── config
+│   │   ├── advanced_api_imports.json
+│   │   └── api_registry.json
+│   ├── core_knowledge
+│   │   ├── goat_system
+│   │   │   ├── overview.txt
+│   │   │   └── structure.json
+│   │   ├── spruked
+│   │   │   ├── overview.txt
+│   │   │   ├── services.json
+│   │   │   └── sites.json
+│   │   └── truemark_mint
+│   │       ├── commands.json
+│   │       ├── launch.json
+│   │       └── overview.txt
+│   ├── diagnostics
+│   │   ├── morb_deployments
+│   │   │   ├── active
+│   │   │   │   └── .gitkeep
+│   │   │   ├── archive
+│   │   │   │   └── .gitkeep
+│   │   │   ├── jobs
+│   │   │   │   └── .gitkeep
+│   │   │   ├── quarantine
+│   │   │   │   └── .gitkeep
+│   │   │   ├── results
+│   │   │   │   └── .gitkeep
+│   │   │   └── README.md
+│   │   └── orbweaver_results
+│   │       ├── archive
+│   │       │   └── .gitkeep
+│   │       ├── incoming
+│   │       │   └── .gitkeep
+│   │       ├── processed
+│   │       │   └── .gitkeep
+│   │       ├── quarantine
+│   │       │   └── .gitkeep
+│   │       └── README.md
+│   ├── logs [collapsed]
+│   ├── memory
+│   │   ├── a_posteriori
+│   │   │   └── vault.jsonl
+│   │   ├── a_priori
+│   │   │   └── vault.jsonl
+│   │   ├── cali_skills
+│   │   ├── conversation_tests
+│   │   │   ├── 2026-05-25T05-20-57-581Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T05-27-55-485Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T05-45-04-386Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T06-24-22-243Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T06-40-40-036Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T07-26-10-437Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T17-35-48-542Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T17-51-04-463Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T18-25-12-981Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T18-31-40-751Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T18-41-22-161Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T18-45-28-890Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T18-58-11-669Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T19-22-24-434Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T20-04-17-294Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T20-13-59-804Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T20-21-09-952Z-conversation-proof.json
+│   │   │   ├── 2026-05-25T22-19-40-115Z-conversation-proof.json
+│   │   │   ├── 2026-05-28T05-09-40-544Z-conversation-proof.json
+│   │   │   ├── 2026-05-28T05-17-56-375Z-conversation-proof.json
+│   │   │   ├── 2026-05-28T05-23-33-215Z-conversation-proof.json
+│   │   │   ├── 2026-05-28T05-41-25-241Z-conversation-proof.json
+│   │   │   ├── 2026-05-30T03-45-17-650Z-conversation-proof.json
+│   │   │   ├── 2026-05-30T09-29-47-198Z-conversation-proof.json
+│   │   │   ├── 2026-05-31T05-10-09-045Z-conversation-proof.json
+│   │   │   ├── 2026-05-31T14-26-18-671Z-conversation-proof.json
+│   │   │   ├── 2026-05-31T17-37-10-158Z-conversation-proof.json
+│   │   │   ├── 2026-06-11T17-44-49-262Z-conversation-proof.json
+│   │   │   ├── 2026-06-18T20-49-43-358Z-conversation-proof.json
+│   │   │   ├── 2026-06-19T01-55-54-152Z-conversation-proof.json
+│   │   │   ├── 2026-06-20T06-48-12-415Z-conversation-proof.json
+│   │   │   ├── 2026-06-20T19-06-24-425Z-conversation-proof.json
+│   │   │   ├── 2026-06-20T19-11-25-852Z-conversation-proof.json
+│   │   │   ├── 2026-06-29T13-39-47-261Z-conversation-proof.json
+│   │   │   └── 2026-07-28T10-21-26-717Z-conversation-proof.json
+│   │   ├── patterns
+│   │   ├── decisions.jsonl
+│   │   ├── patterns.db
+│   │   └── short_term_cache.db
+│   ├── morb_logs
+│   ├── notes
+│   │   └── conversation_tests
+│   │       ├── 2026-05-25T05-20-57-581Z-conversation-proof.md
+│   │       ├── 2026-05-25T05-27-55-485Z-conversation-proof.md
+│   │       ├── 2026-05-25T05-45-04-386Z-conversation-proof.md
+│   │       ├── 2026-05-25T06-24-22-243Z-conversation-proof.md
+│   │       ├── 2026-05-25T06-40-40-036Z-conversation-proof.md
+│   │       ├── 2026-05-25T07-26-10-437Z-conversation-proof.md
+│   │       ├── 2026-05-25T17-35-48-542Z-conversation-proof.md
+│   │       ├── 2026-05-25T17-51-04-463Z-conversation-proof.md
+│   │       ├── 2026-05-25T18-25-12-981Z-conversation-proof.md
+│   │       ├── 2026-05-25T18-31-40-751Z-conversation-proof.md
+│   │       ├── 2026-05-25T18-41-22-161Z-conversation-proof.md
+│   │       ├── 2026-05-25T18-45-28-890Z-conversation-proof.md
+│   │       ├── 2026-05-25T18-58-11-669Z-conversation-proof.md
+│   │       ├── 2026-05-25T19-22-24-434Z-conversation-proof.md
+│   │       ├── 2026-05-25T20-04-17-294Z-conversation-proof.md
+│   │       ├── 2026-05-25T20-13-59-804Z-conversation-proof.md
+│   │       ├── 2026-05-25T20-21-09-952Z-conversation-proof.md
+│   │       ├── 2026-05-25T22-19-40-115Z-conversation-proof.md
+│   │       ├── 2026-05-28T05-09-40-544Z-conversation-proof.md
+│   │       ├── 2026-05-28T05-17-56-375Z-conversation-proof.md
+│   │       ├── 2026-05-28T05-23-33-215Z-conversation-proof.md
+│   │       ├── 2026-05-28T05-41-25-241Z-conversation-proof.md
+│   │       ├── 2026-05-30T03-45-17-650Z-conversation-proof.md
+│   │       ├── 2026-05-30T09-29-47-198Z-conversation-proof.md
+│   │       ├── 2026-05-31T05-10-09-045Z-conversation-proof.md
+│   │       ├── 2026-05-31T14-26-18-671Z-conversation-proof.md
+│   │       ├── 2026-05-31T17-37-10-158Z-conversation-proof.md
+│   │       ├── 2026-06-11T17-44-49-262Z-conversation-proof.md
+│   │       ├── 2026-06-18T20-49-43-358Z-conversation-proof.md
+│   │       ├── 2026-06-19T01-55-54-152Z-conversation-proof.md
+│   │       ├── 2026-06-20T06-48-12-415Z-conversation-proof.md
+│   │       ├── 2026-06-20T19-06-24-425Z-conversation-proof.md
+│   │       ├── 2026-06-20T19-11-25-852Z-conversation-proof.md
+│   │       ├── 2026-06-29T13-39-47-261Z-conversation-proof.md
+│   │       └── 2026-07-28T10-21-26-717Z-conversation-proof.md
+│   ├── runtime_logs [collapsed]
+│   ├── swarm_results
+│   └── voice_cache [collapsed]
+├── dist [collapsed]
+├── docs
+│   ├── reviews
+│   │   ├── ORB_ASSISTANT_DESKTOP_REVIEW_2026-08-11.md
+│   │   └── WIRING_REVIEW_AND_SUBSTRATE_CONNECTIONS.md
+│   ├── AUDIT_2026-10-20_AUTHORIZATION_AND_WIRING.md
+│   ├── BASELINE_REFERENCE_MAPS_CONTRACT.md
+│   ├── DESKTOP_ORB_SESSION_HANDOFF_2026-07-28.md
+│   ├── DESKTOP_SCENE_SWEEP_PERCEPTION_CONTRACT.md
+│   ├── LLM_RUNTIME.md
+│   ├── MEMORY_ARCHITECTURE.md
+│   ├── MORB_RESEARCH_DIAGNOSTIC_DEPLOYMENT_CONTRACT.md
+│   ├── ORB_SKINS.md
+│   ├── orbweaver_desktop_handoff.manifest.json
+│   ├── orbweaver_diagnostic_result.schema.json
+│   ├── ORBWEAVER_DIAGNOSTIC_RESULT_CONTRACT.md
+│   ├── PERFORMANCE_2026-10-20.md
+│   ├── PRIME_ORB_DOCKSTATION_MONITORING_CONTRACT.md
+│   ├── TAMP_ON_DEMAND_POINTER_CONTRACT.md
+│   └── THREE_RUNTIMES.md
+├── electron
+│   ├── .orb-assistant [collapsed]
+│   ├── audio_cache [collapsed]
+│   ├── CALI_System
+│   │   ├── cache
+│   │   ├── config
+│   │   ├── core_knowledge
+│   │   │   ├── goat_system
+│   │   │   │   ├── overview.txt
+│   │   │   │   └── structure.json
+│   │   │   ├── spruked
+│   │   │   │   ├── overview.txt
+│   │   │   │   ├── services.json
+│   │   │   │   └── sites.json
+│   │   │   └── truemark_mint
+│   │   │       ├── commands.json
+│   │   │       ├── launch.json
+│   │   │       └── overview.txt
+│   │   ├── logs [collapsed]
+│   │   ├── memory
+│   │   │   ├── a_posteriori
+│   │   │   ├── a_priori
+│   │   │   │   └── vault.jsonl
+│   │   │   ├── cali_skills
+│   │   │   ├── patterns
+│   │   │   ├── decisions.jsonl
+│   │   │   ├── patterns.db
+│   │   │   └── short_term_cache.db
+│   │   ├── notes
+│   │   ├── swarm_results
+│   │   └── voice_cache [collapsed]
+│   ├── logs [collapsed]
+│   ├── main
+│   │   ├── cali_voice.pt
+│   │   ├── cpu-budget.test.js
+│   │   ├── legacy-observer.js
+│   │   ├── main.js
+│   │   ├── orb-appearance.js
+│   │   ├── orb-appearance.test.js
+│   │   ├── orb-bridge.js
+│   │   ├── orb-bridge.js.bak-20260629-034646
+│   │   ├── orb-desktop-mcp-client.js
+│   │   ├── preload.js
+│   │   └── skg-worker.js
+│   ├── node_modules [collapsed]
+│   ├── Rdatasetsbulk_mirrorsagriculture_food_and_water
+│   │   ├── usgs_water_services_prefetch_20260429_215100.json
+│   │   └── usgs_water_services_prefetch_20260429_222743.json
+│   ├── Rdatasetsbulk_mirrorsbiomedical_and_public_health
+│   │   ├── cdc_resp_lens_prefetch_20260429_215102.json
+│   │   └── cdc_resp_lens_prefetch_20260429_222745.json
+│   ├── Rdatasetsbulk_mirrorsearth_systems_and_climate
+│   ├── Rdatasetsbulk_mirrorsfinancial_economic
+│   │   ├── sec_edgar_submissions_prefetch_20260429_215115.json
+│   │   └── sec_edgar_submissions_prefetch_20260429_222758.json
+│   ├── Rdatasetsbulk_mirrorsgeospatial_and_regional_analysis
+│   │   ├── census_geocoder_prefetch_20260429_215122.json
+│   │   ├── census_geocoder_prefetch_20260429_222842.json
+│   │   ├── usgs_earthquake_feed_prefetch_20260429_215121.json
+│   │   └── usgs_earthquake_feed_prefetch_20260429_222824.json
+│   ├── Rdatasetsbulk_mirrorsindustrial_manufacturing
+│   │   ├── bls_public_api_prefetch_20260429_215118.json
+│   │   └── bls_public_api_prefetch_20260429_222817.json
+│   ├── Rdatasetsbulk_mirrorsmacro_economic_indicators
+│   │   ├── world_bank_indicators_prefetch_20260429_215117.json
+│   │   └── world_bank_indicators_prefetch_20260429_222809.json
+│   ├── Rdatasetsbulk_mirrorsmicro_economic_markets
+│   │   ├── census_acs_api_prefetch_20260429_215120.json
+│   │   └── census_acs_api_prefetch_20260429_222820.json
+│   ├── Rdatasetsbulk_mirrorsscientific_literature_and_evidence
+│   │   ├── crossref_works_prefetch_20260429_215137.json
+│   │   ├── crossref_works_prefetch_20260429_222938.json
+│   │   ├── pubmed_eutils_prefetch_20260429_215136.json
+│   │   └── pubmed_eutils_prefetch_20260429_222937.json
+│   ├── Rdatasetsbulk_mirrorsspace_exploration_and_mars
+│   │   ├── open_notify_iss_prefetch_20260429_215132.json
+│   │   ├── open_notify_iss_prefetch_20260429_222935.json
+│   │   ├── spacex_public_api_v5_prefetch_20260429_215122.json
+│   │   └── spacex_public_api_v5_prefetch_20260429_222852.json
+│   ├── scripts
+│   │   └── start-electron.js
+│   ├── src
+│   │   ├── __pycache__ [collapsed]
+│   │   ├── caleon_presence
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── core
+│   │   │   │   ├── __pycache__ [collapsed]
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── desktop_presence.py
+│   │   │   │   └── memory_learner.py
+│   │   │   └── __init__.py
+│   │   ├── cali_swarm_extension
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── research
+│   │   │   │   ├── __pycache__ [collapsed]
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── api_selector.py
+│   │   │   │   ├── echo_stack_integration.py
+│   │   │   │   ├── findings_synthesizer.py
+│   │   │   │   └── swarm_research_orchestrator.py
+│   │   │   ├── substrate
+│   │   │   │   ├── __pycache__ [collapsed]
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── local_substrate.py
+│   │   │   ├── swarm
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── lane_strategies.py
+│   │   │   │   └── orb_swarm_bridge.py
+│   │   │   ├── __init__.py
+│   │   │   └── runtime_bridge.py
+│   │   ├── components
+│   │   │   ├── core_4_minds
+│   │   │   │   ├── __pycache__ [collapsed]
+│   │   │   │   ├── bspinoza
+│   │   │   │   │   └── spinoza_monism_skg.json
+│   │   │   │   ├── hhume
+│   │   │   │   │   └── hume_skepticism_skg.json
+│   │   │   │   ├── hlocke
+│   │   │   │   │   └── locke_empiricism_skg.json
+│   │   │   │   ├── ikant
+│   │   │   │   │   └── kant_critical_skg.json
+│   │   │   │   └── tribunal.py
+│   │   │   ├── FloatingOrb.css
+│   │   │   ├── FloatingOrb.jsx
+│   │   │   ├── LivingOrb.css
+│   │   │   └── LivingOrb.jsx
+│   │   ├── core-bridges
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── caleon.py
+│   │   │   ├── cali.py
+│   │   │   ├── cali_x_one.py
+│   │   │   ├── kaygee.py
+│   │   │   └── ucm_core_ecm.py
+│   │   ├── hlsf_geometry
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── engine.py
+│   │   │   └── field_motion.js
+│   │   ├── interface
+│   │   │   ├── companion_intent.js
+│   │   │   ├── gravity_field_2d.py
+│   │   │   └── orb_window.py
+│   │   ├── kokoro_baseline
+│   │   ├── logic_seeds
+│   │   │   ├── deductive_SKG
+│   │   │   │   ├── job
+│   │   │   │   │   └── execute.py
+│   │   │   │   ├── jobs
+│   │   │   │   │   └── execute.py
+│   │   │   │   ├── logic
+│   │   │   │   │   ├── cognitive_state.py
+│   │   │   │   │   └── deductive_logic.py
+│   │   │   │   └── worker.json
+│   │   │   ├── deductive_validator
+│   │   │   │   ├── job
+│   │   │   │   │   └── validate.py
+│   │   │   │   ├── logic
+│   │   │   │   │   ├── deductive_validation.py
+│   │   │   │   │   └── validation_state.py
+│   │   │   │   └── worker.json
+│   │   │   ├── inductive
+│   │   │   │   ├── cursor_habit.json
+│   │   │   │   └── moral_habit.json
+│   │   │   ├── inductive_skg
+│   │   │   │   └── logic
+│   │   │   │       ├── cognitive_stat.py
+│   │   │   │       ├── cognitive_state.py
+│   │   │   │       └── inductive_logic.py
+│   │   │   ├── inductive_validator
+│   │   │   │   ├── logic
+│   │   │   │   │   ├── inductive_validation.py
+│   │   │   │   │   └── validation_state.py
+│   │   │   │   └── worker.json
+│   │   │   ├── intuitive
+│   │   │   │   └── pattern_recognition.json
+│   │   │   ├── intuitive_skg
+│   │   │   │   └── logic
+│   │   │   │       ├── cognitive_state.py
+│   │   │   │       └── intuitive_logic.py
+│   │   │   ├── intuitive_validator
+│   │   │   │   ├── logic
+│   │   │   │   │   ├── intuitive_validation.py
+│   │   │   │   │   └── validation_state.py
+│   │   │   │   └── worker.json
+│   │   │   └── validation_pipeline.py
+│   │   ├── skins
+│   │   │   ├── blueeyeorb1600.png
+│   │   │   ├── cali_orb_assistant_round.png
+│   │   │   └── orb-skins.json
+│   │   ├── ui
+│   │   │   ├── index.html
+│   │   │   ├── orb-dock-station-substrate.js
+│   │   │   ├── orb-dock-station.bundle.js
+│   │   │   ├── orb-dock-station.html
+│   │   │   ├── orb-dock-station.jsx
+│   │   │   └── renderer.js
+│   │   ├── vault_system
+│   │   │   ├── __pycache__ [collapsed]
+│   │   │   ├── __init__.py
+│   │   │   └── manager.py
+│   │   ├── audio_runtime.py
+│   │   ├── bayesian_engine.py
+│   │   ├── cali-launcher.js
+│   │   ├── cali_skg.py
+│   │   ├── cognitive_inference.py
+│   │   ├── cognitive_test_results_20260414_133408.csv
+│   │   ├── cognitive_test_results_20260414_133604.csv
+│   │   ├── core_knowledge.py
+│   │   ├── dashboard.html
+│   │   ├── epistemic_gain_calculator.py
+│   │   ├── epistemic_swarm_governor_skg.py
+│   │   ├── floating_assistant_orb.py
+│   │   ├── floating_assistant_orb_main.py
+│   │   ├── index.html
+│   │   ├── ingest_skin.py
+│   │   ├── llm_client.py
+│   │   ├── main.jsx
+│   │   ├── orb-motion-readme.txt
+│   │   ├── orb-presence-bootstrap.js
+│   │   ├── orb-renderer.js
+│   │   ├── orb-renderer.js.bak
+│   │   ├── orb-shell.html
+│   │   ├── orb-workspace-motion-policy.js
+│   │   ├── orb_behavior_runtime.py
+│   │   ├── orb_command_router.py
+│   │   ├── orb_controller.py
+│   │   ├── orb_heartbeat.py
+│   │   ├── orb_lifecycle.py
+│   │   ├── orb_memory.py
+│   │   ├── orb_notes.py
+│   │   ├── orb_routing_meta.py
+│   │   ├── orb_runtime_status.py
+│   │   ├── orb_services.py
+│   │   ├── orb_skg_manager.py
+│   │   ├── orb_state_machine.py
+│   │   ├── primitive_cache.py
+│   │   ├── primitive_normalization_aliases.json
+│   │   ├── primitive_response_cache.json
+│   │   ├── R_tree_new.txt
+│   │   ├── settings.html
+│   │   ├── src_contents_no_posteriori.txt
+│   │   ├── substrate_sentinel.py
+│   │   ├── system_integration_test.py
+│   │   ├── test_bridge.py
+│   │   ├── test_cognitive.py
+│   │   ├── test_full_pipeline.py
+│   │   ├── test_hlsf_snapshot.py
+│   │   ├── test_llm_reasoning.py
+│   │   ├── test_orb_memory.py
+│   │   ├── test_pipeline.py
+│   │   ├── test_presence_budget.py
+│   │   ├── test_runtimes.py
+│   │   ├── test_sentinel_stress.py
+│   │   ├── test_simple.py
+│   │   ├── tree_src.txt
+│   │   ├── tts_client.py
+│   │   ├── voice_engine_manager.py
+│   │   └── voice_payload.py
+│   ├── test-results [collapsed]
+│   ├── CALIOrb512.png
+│   ├── launch.sh
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── SESSION_RECORD_2026-03-18_212816_CDT.md
+│   ├── SESSION_RECORD_2026-04-01_161032_CDT.md
+│   ├── SESSION_RECORD_2026-04-02_201206_CDT.md
+│   ├── SESSION_RECORD_2026-04-14_120000_CDT.md
+│   ├── system-folder-tree.txt
+│   ├── test_cali_skg.py
+│   ├── test_skg_manager.py
+│   └── voice_trace.txt
+├── mcp
+│   └── orb_desktop_mcp
+│       ├── __pycache__ [collapsed]
+│       ├── docs
+│       │   └── ARCHITECTURE.md
+│       ├── orb_browser
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   └── browser_orchestrator.py
+│       ├── orb_cognition
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   ├── Desktop_ORB_Professional_Inculcation_v1.1.md
+│       │   ├── doctrine_governance.py
+│       │   ├── doctrine_v1
+│       │   ├── ORBS FOUNDATIONAL ARCHITECTURE STANDARD.docx
+│       │   ├── tpc_core.py
+│       │   └── Triple_Predicate_Cubed.docx
+│       ├── orb_controller
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   ├── mcp_bridge.py
+│       │   └── qwen_code_runner.py
+│       ├── orb_desktop
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   └── desktop_orchestrator.py
+│       ├── orb_llm
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   └── local_llm.py
+│       ├── orb_morbs
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   └── action_morb.py
+│       ├── orb_pointer
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── actions
+│       │   ├── baseline_maps
+│       │   │   └── windows_baseline_reference_maps.json
+│       │   ├── captures
+│       │   ├── state
+│       │   ├── baseline_map.schema.json
+│       │   ├── observation_snapshot.schema.json
+│       │   ├── ocr_visual_verification.py
+│       │   ├── orbEscalation.ts
+│       │   ├── orbState.ts
+│       │   ├── pointer_plot_schema.py
+│       │   ├── pointerPlotTypes.ts
+│       │   ├── pointerResolution.ts
+│       │   ├── pointerRuntime.ts
+│       │   ├── promotion.py
+│       │   ├── README.md
+│       │   └── scan_extraction.py
+│       ├── orb_safety
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   └── safety_guard.py
+│       ├── orb_substrate
+│       │   ├── __pycache__ [collapsed]
+│       │   ├── __init__.py
+│       │   └── r_substrate.py
+│       ├── tests
+│       │   ├── __init__.py
+│       │   └── test_orb_suite.py
+│       ├── __init__.py
+│       ├── orb_mcp_server.py
+│       ├── requirements.txt
+│       └── tree.txt
+├── modules
+│   ├── Epistemic_Gravity_Field
+│   │   ├── __pycache__ [collapsed]
+│   │   ├── .gitignore
+│   │   ├── __init__.py
+│   │   ├── distribution_shift_test.py
+│   │   ├── LICENSE
+│   │   ├── perturb_test.py
+│   │   ├── README.md
+│   │   ├── space_field.py
+│   │   ├── stress_test.py
+│   │   └── visualize.py
+│   └── Orb
+│       └── floating_assistant_orb.py
+├── node_modules [collapsed]
+├── pointer doctrine files
+│   ├── capability-llm-12.csv
+│   ├── orbEscalation.ts
+│   ├── orbState.ts
+│   ├── pointer_plot_schema.py
+│   ├── pointerPlotTypes.ts
+│   ├── pointerResolution.ts
+│   ├── pointerRuntime (2).ts
+│   ├── pointerRuntime.ts
+│   ├── promotion.py
+│   ├── README.md
+│   └── scan_extraction.py
+├── scripts
+│   ├── __pycache__ [collapsed]
+│   ├── build_windows_portable_package.ps1
+│   ├── Disable-OrbVoiceStartupShortcut.ps1
+│   ├── Enable-OrbVoiceStartupShortcut.ps1
+│   ├── generate_trees.py
+│   ├── install_windows_orb.ps1
+│   ├── launch_dandy_studio_and_obs.ps1
+│   ├── launch_orb_instance.sh
+│   ├── orb_qwen_code_chat.ps1
+│   ├── orb_qwen_code_env.ps1
+│   ├── orb_qwen_code_status.ps1
+│   ├── provision_sovereign_orb.py
+│   ├── qwen_tts_wsl_proxy.py
+│   ├── Register-OrbVoiceStackStartup.ps1
+│   ├── Start-OrbVoiceStack.ps1
+│   ├── test_desktop_orb_production.ps1
+│   └── Unregister-OrbVoiceStackStartup.ps1
+├── swarm
+│   ├── Invoice_2026-05-12_202062065634_V106946241.pdf
+│   ├── microorb.jpg
+│   ├── MouseWithoutBordersSetup.msi
+│   └── substrate.db
+├── system
+│   ├── CALI_System
+│   │   ├── cache
+│   │   │   └── sentence_transformers
+│   │   ├── config
+│   │   │   ├── advanced_api_imports.json
+│   │   │   ├── api_registry.json
+│   │   │   └── dandy_studio_operator_profile.json
+│   │   ├── diagnostics
+│   │   ├── logs [collapsed]
+│   │   ├── memory
+│   │   │   ├── a_posteriori
+│   │   │   │   └── vault.jsonl
+│   │   │   ├── a_priori
+│   │   │   │   └── vault.jsonl
+│   │   │   ├── patterns
+│   │   │   ├── hearing_skg_v3.json
+│   │   │   └── patterns.db
+│   │   ├── morb_logs
+│   │   ├── swarm_results
+│   │   └── voice_cache [collapsed]
+│   ├── cognition
+│   │   └── cali_ucm_adapter
+│   │       ├── node_modules [collapsed]
+│   │       ├── index.ts
+│   │       ├── package-lock.json
+│   │       ├── package.json
+│   │       ├── README.md
+│   │       └── tsconfig.json
+│   ├── swarm
+│   │   ├── stimulus_events.jsonl
+│   │   ├── substrate.db
+│   │   ├── substrate.db-shm
+│   │   └── substrate.db-wal
+│   ├── orb_standard.json
+│   └── protected_paths.json
+├── tools
+│   └── tesseract [collapsed]
+├── vault_logic_system
+│   ├── config
+│   │   ├── environments
+│   │   │   ├── dev.yaml
+│   │   │   ├── prod.yaml
+│   │   │   └── test.yaml
+│   │   ├── telemetry.yaml
+│   │   └── vault_config.yaml
+│   ├── docs
+│   │   ├── architecture.md
+│   │   ├── glyph_guide.md
+│   │   ├── memory_matrix.md
+│   │   ├── migration_guide.md
+│   │   ├── telemetry_best_practices.md
+│   │   └── vault_types.md
+│   ├── engine
+│   │   ├── integration_hooks
+│   │   │   ├── on_vault_apply.py
+│   │   │   └── post_resolution.yaml
+│   │   ├── evaluator.py
+│   │   ├── resolver.js
+│   │   └── signal_map.json
+│   ├── examples
+│   │   ├── input_career_change.json
+│   │   ├── input_game_quest.json
+│   │   └── input_medical_triage.json
+│   ├── glyphs
+│   │   ├── _template
+│   │   │   └── custom_glyph.json
+│   │   ├── glyph_map.json
+│   │   └── trace_engine.js
+│   ├── interfaces
+│   │   ├── api
+│   │   │   └── openapi.yaml
+│   │   └── cli
+│   │       └── commands.md
+│   ├── memory
+│   │   ├── __pycache__ [collapsed]
+│   │   ├── aims
+│   │   │   ├── .github
+│   │   │   │   └── workflows
+│   │   │   │       └── tests.yml
+│   │   │   ├── memory_core
+│   │   │   │   ├── __pycache__ [collapsed]
+│   │   │   │   ├── skg
+│   │   │   │   │   ├── __pycache__ [collapsed]
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── backend.py
+│   │   │   │   │   ├── domain.py
+│   │   │   │   │   ├── trio.py
+│   │   │   │   │   └── types.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── glyph_trace.py
+│   │   │   │   ├── indexes.py
+│   │   │   │   ├── long_term.py
+│   │   │   │   ├── memory_layer.py
+│   │   │   │   ├── retrieval_ledger.py
+│   │   │   │   ├── short_term.py
+│   │   │   │   ├── temporal.py
+│   │   │   │   ├── vault.py
+│   │   │   │   └── writer_lock.py
+│   │   │   ├── tests
+│   │   │   │   ├── test_complete_cognitive_memory_cycle.py
+│   │   │   │   ├── test_core_integrity.py
+│   │   │   │   ├── test_graphqlite_backend.py
+│   │   │   │   ├── test_service_security.py
+│   │   │   │   └── test_three_skgs.py
+│   │   │   ├── .gitignore
+│   │   │   ├── DEV_LOG.md
+│   │   │   ├── HARDENING_CONTRACT.md
+│   │   │   ├── LICENSE
+│   │   │   ├── pyproject.toml
+│   │   │   ├── README.md
+│   │   │   ├── requirements.txt
+│   │   │   ├── service.py
+│   │   │   ├── system_outline.md
+│   │   │   └── UPSTREAM.txt
+│   │   ├── aims_binding.yaml
+│   │   ├── consolidation.py
+│   │   └── provider.py
+│   ├── scripts
+│   │   ├── consolidate_memory.py
+│   │   ├── export_telemetry.js
+│   │   ├── export_to_json.lua
+│   │   ├── generate_glyph_report.py
+│   │   └── validate_vaults.sh
+│   ├── telemetry
+│   │   ├── dashboard
+│   │   │   ├── anomaly_detector.js
+│   │   │   └── metrics_dashboard.md
+│   │   ├── traces
+│   │   │   ├── agent_decisions.json
+│   │   │   └── latency_buckets.json
+│   │   ├── alerts.yaml
+│   │   ├── collector.py
+│   │   └── telemetry.yaml
+│   ├── tests
+│   │   ├── integration
+│   │   │   ├── test_ethical_dilemma.json
+│   │   │   ├── test_glyph_drift.json
+│   │   │   ├── test_memory_consolidation.json
+│   │   │   └── test_pricing_edge_case.json
+│   │   └── unit
+│   │       ├── test_telemetry_alerts.json
+│   │       └── vault_template_test.json
+│   ├── vaults
+│   │   └── _template
+│   │       ├── rules
+│   │       │   └── condition.js
+│   │       ├── logic.md
+│   │       └── vault.json
+│   ├── .gitignore
+│   ├── README.md
+│   ├── tree.txt
+│   └── UPSTREAM.txt
+├── .gitignore
+├── .orb-instance.env
+├── .orb-instance.env.example
+├── .orb-launch.log
+├── cali_skg_info
+├── CALIORBMetal1024.png
+├── dev.log
+├── DEVLOG.md
+├── ENDPOINTS_SCAN.md
+├── femalesample40s.wav
+├── folder_tree.txt
+├── generate_tree.ps1
+├── handoff.md
+├── IMMUTABLE_LAW.md
+├── install_orb_desktop.bat
+├── instance.manifest.json
+├── launch_desktop_orb.bat
+├── launch_desktop_orb.ps1
+├── launch_desktop_orb.sh
+├── orb-instance.local.ps1
+├── orb-instance.windows.ps1
+├── orb-render-diagnostics.log
+├── ORB_PRODUCT_ECOSYSTEM.md
+├── ORB_SWARM_AUDIT_DOCTRINE.md
+├── ORBS_MULTI_DOCK_PLAN.md
+├── package-lock.json
+├── package.json
+├── README.md
+├── SESSION_NOTES.md
+├── SOVEREIGN_INSTANCE.md
+├── structure_tree.txt
+└── tree.txt

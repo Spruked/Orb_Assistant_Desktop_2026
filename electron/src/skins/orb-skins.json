@@ -1,0 +1,84 @@
+{
+  "version": 2,
+  "default": "default",
+  "skins": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Live colors: the orb's look follows its current mode, as originally designed.",
+      "gradient": null
+    },
+    {
+      "id": "brilliant-blue",
+      "name": "Brilliant Blue",
+      "description": "Bright sky-blue core.",
+      "gradient": { "core": "#e8f7ff", "mid": "#64d2ff", "edge": "#1590ff", "deep": "#002d6e" }
+    },
+    {
+      "id": "spruked",
+      "name": "Spruked Blue",
+      "description": "The blue marble core of the spruked.com orb.",
+      "gradient": { "core": "#e8f4ff", "mid": "#4aa3ff", "edge": "#1d4fd8", "deep": "#06174a" }
+    },
+    {
+      "id": "cyber",
+      "name": "Cyber",
+      "description": "Cyan into violet.",
+      "gradient": { "core": "#c0ffff", "mid": "#00e5ff", "edge": "#b829dd", "deep": "#0e001e" }
+    },
+    {
+      "id": "sunset",
+      "name": "Sunset",
+      "description": "Warm gold into coral.",
+      "gradient": { "core": "#fff4a0", "mid": "#ff9f43", "edge": "#ff6b6b", "deep": "#2e0010" }
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "description": "Mint into deep green.",
+      "gradient": { "core": "#b0fff0", "mid": "#00cec9", "edge": "#00b894", "deep": "#002018" }
+    },
+    {
+      "id": "neon",
+      "name": "Neon",
+      "description": "Electric green into hot pink.",
+      "gradient": { "core": "#ffffff", "mid": "#80ffb0", "edge": "#ff0080", "deep": "#120016" }
+    },
+    {
+      "id": "cosmic",
+      "name": "Cosmic",
+      "description": "Lavender into royal blue.",
+      "gradient": { "core": "#e0d0ff", "mid": "#8a6cdd", "edge": "#4169e1", "deep": "#000820" }
+    },
+    {
+      "id": "fire",
+      "name": "Fire",
+      "description": "Molten yellow into red.",
+      "gradient": { "core": "#fff0a0", "mid": "#ff8c00", "edge": "#ff4500", "deep": "#180000" }
+    },
+    {
+      "id": "ice",
+      "name": "Ice",
+      "description": "Frost white into steel blue.",
+      "gradient": { "core": "#ffffff", "mid": "#e8f8ff", "edge": "#87ceeb", "deep": "#0e2030" }
+    },
+    {
+      "id": "plasma",
+      "name": "Plasma",
+      "description": "Cyan into magenta.",
+      "gradient": { "core": "#ffffff", "mid": "#80e8ff", "edge": "#ff1493", "deep": "#080010" }
+    },
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "description": "Near-black glass with a silver glow.",
+      "gradient": { "core": "#e6ecff", "mid": "#8a94b0", "edge": "#2b3140", "deep": "#05060a" }
+    },
+    {
+      "id": "rose-gold",
+      "name": "Rose Gold",
+      "description": "Blush into warm rose.",
+      "gradient": { "core": "#ffd1e0", "mid": "#ef9fba", "edge": "#c24a76", "deep": "#3a0f24" }
+    }
+  ]
+}

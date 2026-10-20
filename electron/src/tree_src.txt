@@ -1,0 +1,50 @@
+R:.
+├───caleon_presence
+│   ├───core
+│   │   └───__pycache__
+│   └───__pycache__
+├───cali_swarm_extension
+│   ├───research
+│   │   └───__pycache__
+│   ├───substrate
+│   │   └───__pycache__
+│   ├───swarm
+│   └───__pycache__
+├───components
+│   └───core_4_minds
+│       ├───bspinoza
+│       ├───hhume
+│       ├───hlocke
+│       ├───ikant
+│       └───__pycache__
+├───core-bridges
+├───hlsf_geometry
+│   └───__pycache__
+├───interface
+├───kokoro_baseline
+├───logic_seeds
+│   ├───deductive_SKG
+│   │   ├───job
+│   │   ├───jobs
+│   │   └───logic
+│   ├───deductive_validator
+│   │   ├───job
+│   │   ├───logic
+│   │   └───vault
+│   ├───inductive
+│   ├───inductive_skg
+│   │   └───logic
+│   ├───inductive_validator
+│   │   └───logic
+│   ├───intuitive
+│   ├───intuitive_skg
+│   │   └───logic
+│   └───intuitive_validator
+│       └───logic
+├───skins
+├───ui
+├───vault_system
+│   ├───posteriori
+│   └───__pycache__
+└───__pycache__
+

@@ -1,0 +1,5 @@
+Vendored from https://github.com/Spruked/Vault-Logic-System-Template (branch main)
+Commit: 963f621add0733f7b8fcfa836d982756694192d2 ("Initial commit for Vault Logic System Template")
+Cloned: 2026-10-20. The upstream .git directory was removed so these files are tracked by the Orb_Assistant_Desktop repository.
+Local folder renamed from Vault-Logic-System-Template to vault_logic_system on 2026-10-20.
+A.I.M.S. is installed inside it at memory/aims and is the framework's only memory authority (see memory/aims_binding.yaml once added).

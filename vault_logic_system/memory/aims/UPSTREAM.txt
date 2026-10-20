@@ -1,0 +1,4 @@
+Vendored from https://github.com/Spruked/AIMS (branch main)
+Commit: d72a3ce8538c582332b5148f1945923e86e26482 ("Update SKG modules and tests")
+Cloned: 2026-10-20. The upstream .git directory was removed so these files are tracked by the Orb_Assistant_Desktop repository.
+To compare with or pull from upstream, clone it fresh and diff against this directory.

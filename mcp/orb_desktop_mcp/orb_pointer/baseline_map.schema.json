@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://desktop-orb.local/schemas/baseline_reference_map.schema.json",
+  "title": "Desktop ORB Baseline Reference Map",
+  "type": "object",
+  "required": ["schema_version", "map_id", "application_family", "doctrine", "regions"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "map_id": { "type": "string", "minLength": 1 },
+    "application_family": { "type": "string", "minLength": 1 },
+    "platform": { "type": "string", "default": "windows" },
+    "doctrine": {
+      "type": "object",
+      "required": ["role", "truth_source", "side_effect_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string", "const": "fallback_reference_map" },
+        "truth_source": { "type": "string", "const": "live_observation" },
+        "side_effect_policy": { "type": "string", "const": "operator_review_required" }
+      }
+    },
+    "regions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "normalized_rect", "allowed_use"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "aliases": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
+          },
+          "normalized_rect": {
+            "type": "object",
+            "required": ["x", "y", "width", "height"],
+            "additionalProperties": false,
+            "properties": {
+              "x": { "type": "number", "minimum": 0, "maximum": 1 },
+              "y": { "type": "number", "minimum": 0, "maximum": 1 },
+              "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+            }
+          },
+          "allowed_use": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["observe", "reorient", "hover_context", "point_at", "explain"]
+            },
+            "minItems": 1
+          },
+          "requires_live_confirmation": { "type": "boolean", "default": true },
+          "notes": { "type": "string", "default": "" }
+        }
+      }
+    }
+  }
+}

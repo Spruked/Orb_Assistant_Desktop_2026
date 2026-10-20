@@ -1,0 +1,248 @@
+R:\Orb_Assistant_Desktop structure tree.txt
+Generated: 2026-08-11 22:53:44 -05:00
+Scope: R:\Orb_Assistant_Desktop only
+Note: dependency, runtime, archive, and bundled-tool trees are collapsed.
+
+Directory paths (242):
+  .orb-assistant-desktop [collapsed]
+  .orb-runtime [collapsed]
+  .pytest_cache [collapsed]
+  .vscode [collapsed]
+  _archive [collapsed]
+  api
+  api\__pycache__ [collapsed]
+  caleon-immutable-memory-matrix
+  cali_orb_state_machine
+  cali_skills
+  cali_skills\active
+  cali_skills\core
+  cali_skills\core\__pycache__ [collapsed]
+  cali_skills\library
+  cali_skills\library\code_skill
+  cali_skills\library\code_skill\__pycache__ [collapsed]
+  cali_skills\library\code_skill\memory
+  cali_skills\library\finance_skill
+  cali_skills\library\finance_skill\__pycache__ [collapsed]
+  cali_skills\library\finance_skill\memory
+  cali_skills\library\goat_skill
+  cali_skills\library\goat_skill\__pycache__ [collapsed]
+  cali_skills\library\goat_skill\memory
+  cali_skills\library\goat_skill\profiles
+  cali_skills\library\goat_skill\staging
+  cali_skills\library\goat_skill\staging\audio_cache
+  cali_skills\library\legal_skill
+  cali_skills\library\legal_skill\__pycache__ [collapsed]
+  cali_skills\library\legal_skill\memory
+  cali_skills\library\proprime_skill
+  cali_skills\library\proprime_skill\__pycache__ [collapsed]
+  cali_skills\library\proprime_skill\memory
+  cali_skills\library\research_skill
+  cali_skills\library\research_skill\__pycache__ [collapsed]
+  cali_skills\library\research_skill\cache
+  cali_skills\library\research_skill\memory
+  cali_skills\library\security_skill
+  cali_skills\library\security_skill\__pycache__ [collapsed]
+  cali_skills\library\security_skill\memory
+  cali_skills\library\spruked_skill
+  cali_skills\library\spruked_skill\__pycache__ [collapsed]
+  cali_skills\library\spruked_skill\memory
+  cali_skills\library\system_skill
+  cali_skills\library\system_skill\__pycache__ [collapsed]
+  cali_skills\library\system_skill\memory
+  cali_skills\library\truemark_skill
+  cali_skills\library\truemark_skill\__pycache__ [collapsed]
+  cali_skills\library\truemark_skill\memory
+  cali_skills\library\truemark_skill\staging
+  CALI_System
+  CALI_System\cache
+  CALI_System\cache\sentence_transformers
+  CALI_System\config
+  CALI_System\core_knowledge
+  CALI_System\core_knowledge\goat_system
+  CALI_System\core_knowledge\spruked
+  CALI_System\core_knowledge\truemark_mint
+  CALI_System\diagnostics
+  CALI_System\diagnostics\morb_deployments
+  CALI_System\diagnostics\morb_deployments\active
+  CALI_System\diagnostics\morb_deployments\archive
+  CALI_System\diagnostics\morb_deployments\jobs
+  CALI_System\diagnostics\morb_deployments\quarantine
+  CALI_System\diagnostics\morb_deployments\results
+  CALI_System\diagnostics\orbweaver_results
+  CALI_System\diagnostics\orbweaver_results\archive
+  CALI_System\diagnostics\orbweaver_results\incoming
+  CALI_System\diagnostics\orbweaver_results\processed
+  CALI_System\diagnostics\orbweaver_results\quarantine
+  CALI_System\logs
+  CALI_System\memory
+  CALI_System\memory\a_posteriori
+  CALI_System\memory\a_priori
+  CALI_System\memory\cali_skills
+  CALI_System\memory\conversation_tests
+  CALI_System\memory\patterns
+  CALI_System\morb_logs
+  CALI_System\notes
+  CALI_System\notes\conversation_tests
+  CALI_System\runtime_logs
+  CALI_System\swarm_results
+  CALI_System\voice_cache
+  dist [collapsed]
+  docs
+  docs\reviews
+  electron
+  electron\.orb-assistant
+  electron\.orb-assistant\blob_storage
+  electron\.orb-assistant\blob_storage\507edc9d-060c-43e4-9ccb-c6eed75c9872
+  electron\.orb-assistant\Code Cache
+  electron\.orb-assistant\Code Cache\js
+  electron\.orb-assistant\Code Cache\js\index-dir
+  electron\.orb-assistant\Code Cache\wasm
+  electron\.orb-assistant\Code Cache\wasm\index-dir
+  electron\.orb-assistant\DawnCache
+  electron\.orb-assistant\DawnGraphiteCache
+  electron\.orb-assistant\DawnWebGPUCache
+  electron\.orb-assistant\GPUCache
+  electron\.orb-assistant\Local Storage
+  electron\.orb-assistant\Local Storage\leveldb
+  electron\.orb-assistant\Network
+  electron\.orb-assistant\Session Storage
+  electron\.orb-assistant\Shared Dictionary
+  electron\.orb-assistant\Shared Dictionary\cache
+  electron\.orb-assistant\Shared Dictionary\cache\index-dir
+  electron\.orb-assistant\skins
+  electron\.orb-assistant\skins\metadata
+  electron\audio_cache
+  electron\CALI_System
+  electron\CALI_System\cache
+  electron\CALI_System\config
+  electron\CALI_System\core_knowledge
+  electron\CALI_System\core_knowledge\goat_system
+  electron\CALI_System\core_knowledge\spruked
+  electron\CALI_System\core_knowledge\truemark_mint
+  electron\CALI_System\logs
+  electron\CALI_System\memory
+  electron\CALI_System\memory\a_posteriori
+  electron\CALI_System\memory\a_priori
+  electron\CALI_System\memory\cali_skills
+  electron\CALI_System\memory\patterns
+  electron\CALI_System\notes
+  electron\CALI_System\swarm_results
+  electron\CALI_System\voice_cache
+  electron\logs
+  electron\main
+  electron\node_modules [collapsed]
+  electron\R??datasets?bulk_mirrors?agriculture_food_and_water
+  electron\R??datasets?bulk_mirrors?biomedical_and_public_health
+  electron\R??datasets?bulk_mirrors?earth_systems_and_climate
+  electron\R??datasets?bulk_mirrors?financial_economic
+  electron\R??datasets?bulk_mirrors?geospatial_and_regional_analysis
+  electron\R??datasets?bulk_mirrors?industrial_manufacturing
+  electron\R??datasets?bulk_mirrors?macro_economic_indicators
+  electron\R??datasets?bulk_mirrors?micro_economic_markets
+  electron\R??datasets?bulk_mirrors?scientific_literature_and_evidence
+  electron\R??datasets?bulk_mirrors?space_exploration_and_mars
+  electron\scripts
+  electron\src
+  electron\src\__pycache__ [collapsed]
+  electron\src\caleon_presence
+  electron\src\caleon_presence\__pycache__ [collapsed]
+  electron\src\caleon_presence\core
+  electron\src\caleon_presence\core\__pycache__ [collapsed]
+  electron\src\cali_swarm_extension
+  electron\src\cali_swarm_extension\__pycache__ [collapsed]
+  electron\src\cali_swarm_extension\research
+  electron\src\cali_swarm_extension\research\__pycache__ [collapsed]
+  electron\src\cali_swarm_extension\substrate
+  electron\src\cali_swarm_extension\substrate\__pycache__ [collapsed]
+  electron\src\cali_swarm_extension\swarm
+  electron\src\components
+  electron\src\components\core_4_minds
+  electron\src\components\core_4_minds\__pycache__ [collapsed]
+  electron\src\components\core_4_minds\bspinoza
+  electron\src\components\core_4_minds\hhume
+  electron\src\components\core_4_minds\hlocke
+  electron\src\components\core_4_minds\ikant
+  electron\src\core-bridges
+  electron\src\core-bridges\__pycache__ [collapsed]
+  electron\src\hlsf_geometry
+  electron\src\hlsf_geometry\__pycache__ [collapsed]
+  electron\src\interface
+  electron\src\kokoro_baseline
+  electron\src\logic_seeds
+  electron\src\logic_seeds\deductive_SKG
+  electron\src\logic_seeds\deductive_SKG\job
+  electron\src\logic_seeds\deductive_SKG\jobs
+  electron\src\logic_seeds\deductive_SKG\logic
+  electron\src\logic_seeds\deductive_validator
+  electron\src\logic_seeds\deductive_validator\job
+  electron\src\logic_seeds\deductive_validator\logic
+  electron\src\logic_seeds\inductive
+  electron\src\logic_seeds\inductive_skg
+  electron\src\logic_seeds\inductive_skg\logic
+  electron\src\logic_seeds\inductive_validator
+  electron\src\logic_seeds\inductive_validator\logic
+  electron\src\logic_seeds\intuitive
+  electron\src\logic_seeds\intuitive_skg
+  electron\src\logic_seeds\intuitive_skg\logic
+  electron\src\logic_seeds\intuitive_validator
+  electron\src\logic_seeds\intuitive_validator\logic
+  electron\src\skins
+  electron\src\ui
+  electron\src\vault_system
+  electron\src\vault_system\__pycache__ [collapsed]
+  electron\test-results
+  mcp
+  mcp\orb_desktop_mcp
+  mcp\orb_desktop_mcp\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\docs
+  mcp\orb_desktop_mcp\orb_browser
+  mcp\orb_desktop_mcp\orb_browser\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_cognition
+  mcp\orb_desktop_mcp\orb_cognition\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_controller
+  mcp\orb_desktop_mcp\orb_controller\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_desktop
+  mcp\orb_desktop_mcp\orb_desktop\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_llm
+  mcp\orb_desktop_mcp\orb_llm\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_morbs
+  mcp\orb_desktop_mcp\orb_morbs\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_pointer
+  mcp\orb_desktop_mcp\orb_pointer\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_pointer\actions
+  mcp\orb_desktop_mcp\orb_pointer\baseline_maps
+  mcp\orb_desktop_mcp\orb_pointer\captures
+  mcp\orb_desktop_mcp\orb_pointer\state
+  mcp\orb_desktop_mcp\orb_safety
+  mcp\orb_desktop_mcp\orb_safety\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\orb_substrate
+  mcp\orb_desktop_mcp\orb_substrate\__pycache__ [collapsed]
+  mcp\orb_desktop_mcp\tests
+  modules
+  modules\Epistemic_Gravity_Field
+  modules\Orb
+  node_modules [collapsed]
+  pointer doctrine files
+  scripts
+  scripts\__pycache__ [collapsed]
+  swarm
+  system
+  system\CALI_System
+  system\CALI_System\cache
+  system\CALI_System\cache\sentence_transformers
+  system\CALI_System\config
+  system\CALI_System\diagnostics
+  system\CALI_System\logs
+  system\CALI_System\memory
+  system\CALI_System\memory\a_posteriori
+  system\CALI_System\memory\a_priori
+  system\CALI_System\memory\patterns
+  system\CALI_System\morb_logs
+  system\CALI_System\swarm_results
+  system\CALI_System\voice_cache
+  system\cognition
+  system\cognition\cali_ucm_adapter
+  system\cognition\cali_ucm_adapter\node_modules [collapsed]
+  system\swarm
+  tools
+  tools\tesseract [collapsed]

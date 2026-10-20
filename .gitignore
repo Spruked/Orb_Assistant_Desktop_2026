@@ -289,3 +289,27 @@ swarm/*.pdf
 # Nested repos managed separately
 caleon-immutable-memory-matrix/
 modules/Epistemic_Gravity_Field/
+
+# --- Orb Assistant Desktop: local, private or bulky material (not source) ---
+node_modules/
+_archive/
+tools/tesseract/
+*.wav
+*.pt
+*.bak
+*.bak-*
+*.db
+*.sqlite*
+*.log
+orb-render-diagnostics.log
+electron/voice_trace.txt
+electron/audio_cache/
+electron/logs/
+electron/test-results/
+electron/R:*
+electron/SESSION_RECORD_*.md
+CALI_System/voice_cache/
+.orb-runtime/*
+!.orb-runtime/correspondence_engine/
+.orb-runtime/correspondence_engine/**/__pycache__/
+.orb-assistant-desktop/

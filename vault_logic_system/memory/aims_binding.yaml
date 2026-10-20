@@ -1,0 +1,29 @@
+# Vault Logic System -> A.I.M.S. binding
+#
+# A.I.M.S. (memory/aims) is the ONLY memory authority in this system. It replaces
+# the template's placeholder matrix store (memory/matrix_store.yaml and
+# memory/domains/*.json), which have been removed so there is exactly one place
+# where memory lives.
+memory:
+  authority: aims
+  package: memory/aims                    # relative to the vault_logic_system root
+  store_path_env: ORB_AIMS_STORE_PATH     # persistent data lives OUTSIDE the repo
+  default_store_path: "R:/Substrate_Vault_R/vaults/orb_assistant_desktop/aims"
+  security_mode_env: AIMS_SECURITY_MODE   # visual (default) | authenticated
+  keyring_env:                            # authenticated mode only; never stored in the repo
+    key_id: AIMS_GLYPH_KEY_ID
+    key: AIMS_GLYPH_KEY
+    keys_file: AIMS_GLYPH_KEYS_FILE
+
+  # How the framework's old memory vocabulary maps onto A.I.M.S. tiers.
+  tiers:
+    sensory: short_term        # volatile cache, decays, never written to the ledger
+    short_term: short_term     # working memory (vivacity decay, capped)
+    long_term: long_term       # append-only, hash + Glyph chained, tri-timestamped
+    knowledge: vault           # A Priori / A Posteriori atoms and the SKG
+
+  rules:
+    - "Nothing in this system keeps a second copy of memory. Hosts call the provider."
+    - "High-frequency signals (cursor, presence, status polls) stay in short_term."
+    - "Only recurring or decision-grade material is promoted to long_term."
+    - "The vault ledger is never edited or pruned; interpretation lives in the SKG."
